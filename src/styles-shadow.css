@@ -1,0 +1,574 @@
+/* Shadow DOM styles for the questionnaire embed.
+ * Reuses the same CSS variable names as @qaiddev/thumbs-embed
+ * so themes work in both. */
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.qaid-q-root {
+  font-family: var(--qaid-font-family, system-ui, -apple-system, sans-serif);
+  font-size: var(--qaid-font-size, 16px);
+  color: light-dark(#1f2937, #f9fafb);
+}
+
+/* ==================== Modal mode ==================== */
+
+.qaid-q-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(0, 0, 0, var(--qaid-backdrop-opacity, 0.4));
+  animation: qaid-q-fade 0.18s ease-out;
+}
+
+@keyframes qaid-q-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.qaid-q-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  width: var(--qaid-modal-width, 480px);
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==================== Card ==================== */
+
+.qaid-q-card {
+  background: light-dark(#ffffff, #1f2937);
+  color: light-dark(#1f2937, #f9fafb);
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.6));
+  padding: 1.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* When inline (no modal), drop the heavy shadow + max-height.
+ * `:where()` keeps specificity at 0,1,0 so themes can override these
+ * defaults with a plain `.qaid-q-card { ... }` rule. */
+:where(.qaid-q-root.qaid-q-inline) .qaid-q-card {
+  box-shadow: none;
+  border: 1px solid light-dark(#e5e7eb, #374151);
+}
+
+/* ==================== Header ==================== */
+
+.qaid-q-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.qaid-q-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+  color: light-dark(#1f2937, #f9fafb);
+}
+
+.qaid-q-step-counter {
+  font-size: 0.875rem;
+  color: light-dark(#6b7280, #9ca3af);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.qaid-q-close {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: light-dark(#6b7280, #9ca3af);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.qaid-q-close:hover {
+  background: light-dark(#f3f4f6, #374151);
+  color: light-dark(#1f2937, #f9fafb);
+}
+
+.qaid-q-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+}
+
+/* ==================== Progress bar ==================== */
+
+.qaid-q-progress {
+  position: relative;
+  height: 4px;
+  background: light-dark(#e5e7eb, #374151);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.qaid-q-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--qaid-positive, #10b981);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+/* ==================== Body / step ==================== */
+
+.qaid-q-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.qaid-q-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: qaid-q-slide 0.22s ease-out;
+}
+
+@keyframes qaid-q-slide {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.qaid-q-label {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: light-dark(#1f2937, #f9fafb);
+  line-height: 1.35;
+}
+
+.qaid-q-label .qaid-q-required {
+  color: var(--qaid-negative, #ef4444);
+  margin-left: 0.25rem;
+}
+
+.qaid-q-description {
+  font-size: 0.875rem;
+  color: light-dark(#6b7280, #9ca3af);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.qaid-q-error {
+  font-size: 0.8125rem;
+  color: var(--qaid-negative, #ef4444);
+  margin: 0;
+  min-height: 1.1em;
+}
+
+/* ==================== Inputs (shared) ==================== */
+
+.qaid-q-input,
+.qaid-q-textarea {
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid light-dark(#d1d5db, #374151);
+  border-radius: 0.625rem;
+  font-family: inherit;
+  font-size: 1rem;
+  background: light-dark(#ffffff, #111827);
+  color: light-dark(#1f2937, #f9fafb);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.qaid-q-textarea {
+  min-height: 7rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.qaid-q-input:focus,
+.qaid-q-textarea:focus {
+  outline: none;
+  border-color: var(--qaid-marker, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 20%, transparent);
+}
+
+.qaid-q-input::placeholder,
+.qaid-q-textarea::placeholder {
+  color: light-dark(#9ca3af, #6b7280);
+}
+
+/* ==================== Currency ==================== */
+
+.qaid-q-currency {
+  position: relative;
+}
+
+.qaid-q-currency-prefix {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: light-dark(#6b7280, #9ca3af);
+  font-size: 1rem;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.qaid-q-currency .qaid-q-input {
+  padding-left: 2.25rem;
+}
+
+/* ==================== Range ==================== */
+
+.qaid-q-range-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.qaid-q-range-value {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--qaid-positive, #10b981);
+}
+
+.qaid-q-range-value .qaid-q-range-unit {
+  font-size: 1rem;
+  font-weight: 500;
+  color: light-dark(#6b7280, #9ca3af);
+  margin-left: 0.25rem;
+}
+
+.qaid-q-range {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: light-dark(#e5e7eb, #374151);
+  outline: none;
+}
+
+.qaid-q-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--qaid-positive, #10b981);
+  border: 3px solid light-dark(#ffffff, #1f2937);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.qaid-q-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--qaid-positive, #10b981);
+  border: 3px solid light-dark(#ffffff, #1f2937);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.qaid-q-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+}
+
+.qaid-q-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+}
+
+.qaid-q-range-bounds {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: light-dark(#6b7280, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== Multiple choice ==================== */
+
+.qaid-q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.qaid-q-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid light-dark(#e5e7eb, #374151);
+  border-radius: 0.625rem;
+  background: light-dark(#ffffff, #111827);
+  text-align: left;
+  font-size: 1rem;
+  color: light-dark(#1f2937, #f9fafb);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+
+.qaid-q-option:hover {
+  border-color: light-dark(#9ca3af, #4b5563);
+  background: light-dark(#f9fafb, #1f2937);
+}
+
+.qaid-q-option:focus-visible {
+  outline: none;
+  border-color: var(--qaid-marker, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 25%, transparent);
+}
+
+.qaid-q-option.qaid-q-selected {
+  border-color: var(--qaid-positive, #10b981);
+  background: color-mix(in srgb, var(--qaid-positive, #10b981) 10%, transparent);
+}
+
+.qaid-q-option-marker {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid light-dark(#d1d5db, #4b5563);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.125rem;
+  background: light-dark(#ffffff, #111827);
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.qaid-q-option.qaid-q-multi .qaid-q-option-marker {
+  border-radius: 0.25rem;
+}
+
+.qaid-q-option.qaid-q-selected .qaid-q-option-marker {
+  border-color: var(--qaid-positive, #10b981);
+  background: var(--qaid-positive, #10b981);
+}
+
+.qaid-q-option.qaid-q-selected .qaid-q-option-marker::after {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: light-dark(#ffffff, #1f2937);
+}
+
+.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker::after {
+  content: "";
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 0;
+  background: transparent;
+  border-right: 2px solid light-dark(#ffffff, #1f2937);
+  border-bottom: 2px solid light-dark(#ffffff, #1f2937);
+  transform: rotate(45deg) translate(-1px, -2px);
+}
+
+.qaid-q-option-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.qaid-q-option-label {
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.qaid-q-option-desc {
+  font-size: 0.8125rem;
+  color: light-dark(#6b7280, #9ca3af);
+  line-height: 1.4;
+}
+
+.qaid-q-option-key {
+  flex-shrink: 0;
+  align-self: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  background: light-dark(#f3f4f6, #374151);
+  color: light-dark(#6b7280, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==================== Footer ==================== */
+
+.qaid-q-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.qaid-q-footer-left {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.qaid-q-footer-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.qaid-q-btn {
+  padding: 0.625rem 1.125rem;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: filter 0.15s, background 0.15s, color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.qaid-q-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+}
+
+.qaid-q-btn-secondary {
+  background: transparent;
+  border-color: light-dark(#d1d5db, #4b5563);
+  color: light-dark(#374151, #d1d5db);
+}
+
+.qaid-q-btn-secondary:hover {
+  background: light-dark(#f3f4f6, #374151);
+}
+
+.qaid-q-btn-primary {
+  background: var(--qaid-positive, #10b981);
+  color: var(--qaid-positive-text, #ffffff);
+  border-color: transparent;
+}
+
+.qaid-q-btn-primary:hover {
+  filter: brightness(0.9);
+}
+
+.qaid-q-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.qaid-q-hint {
+  font-size: 0.75rem;
+  color: light-dark(#6b7280, #9ca3af);
+}
+
+.qaid-q-hint kbd {
+  display: inline-block;
+  padding: 0.05rem 0.35rem;
+  border-radius: 0.25rem;
+  background: light-dark(#f3f4f6, #374151);
+  border: 1px solid light-dark(#e5e7eb, #4b5563);
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: light-dark(#374151, #e5e7eb);
+}
+
+/* ==================== Done state ==================== */
+
+.qaid-q-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1.5rem 0;
+}
+
+.qaid-q-done-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--qaid-positive, #10b981) 18%, transparent);
+  color: var(--qaid-positive, #10b981);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.qaid-q-done-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.qaid-q-done-message {
+  color: light-dark(#6b7280, #9ca3af);
+  margin: 0;
+}
+
+/* ==================== Saving indicator ==================== */
+
+.qaid-q-saving {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: light-dark(#6b7280, #9ca3af);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.qaid-q-saving.qaid-q-visible {
+  opacity: 1;
+}
+
+.qaid-q-saving-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--qaid-positive, #10b981);
+  animation: qaid-q-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes qaid-q-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}

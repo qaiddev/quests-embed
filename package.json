@@ -1,0 +1,42 @@
+{
+  "name": "@qaiddev/quests-embed",
+  "version": "0.1.0",
+  "description": "Step-by-step questionnaire embed with dynamic JSON-defined forms",
+  "type": "module",
+  "main": "./dist/qaid-quests.umd.cjs",
+  "module": "./dist/qaid-quests.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/qaid-quests.js",
+      "require": "./dist/qaid-quests.umd.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.18",
+    "happy-dom": "^20.5.1",
+    "typescript": "^5.3.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  },
+  "keywords": [
+    "quests",
+    "questionnaire",
+    "form",
+    "survey",
+    "embed",
+    "qaid"
+  ],
+  "license": "MIT"
+}
