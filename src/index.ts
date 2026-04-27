@@ -35,6 +35,7 @@ import { QaidQuests } from "./embed";
 import type { QuestsConfig } from "./types";
 
 export { QaidQuests };
+export { getVisibleQuestions, evaluateRule } from "./visibility";
 export type {
   QuestsConfig,
   ResolvedQuestsConfig,
@@ -48,6 +49,7 @@ export type {
   MultipleChoiceOption,
   Answers,
   AnswerValue,
+  VisibilityRule,
   CreateResponsePayload,
   CreateResponseResult,
   UpdateAnswerPayload,

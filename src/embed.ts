@@ -9,6 +9,7 @@ import type {
 } from "./types";
 import { applyCssVars, buildCssVars, getEmbedStyles } from "./styles";
 import { createInput, type QuestionInput } from "./inputs";
+import { getVisibleQuestions } from "./visibility";
 
 const VISITOR_ID_KEY = "qaid_visitor_id";
 
@@ -38,6 +39,13 @@ export class QaidQuests {
 
   private state: EmbedState = "LOADING";
   private stepIndex = 0;
+  // Cached subset of questionnaire.questions that are currently visible
+  // given the answers so far. Recomputed on every answer change so
+  // stepIndex always indexes into THIS list, not the raw question array.
+  private visibleQuestions: Question[] = [];
+  // Latched goToStep request when called before init finishes. Applied
+  // once the questionnaire + visible list are ready.
+  private pendingGoToStep: string | null = null;
   // True after the first step has rendered. Used so the focus-on-step
   // logic in renderStep() can distinguish initial mount (driven by the
   // `autoFocus` config) from subsequent step changes (always focused so
@@ -64,6 +72,7 @@ export class QaidQuests {
   private cardEl: HTMLDivElement | null = null;
   private titleEl: HTMLHeadingElement | null = null;
   private stepCounterEl: HTMLDivElement | null = null;
+  private progressEl: HTMLDivElement | null = null;
   private progressFillEl: HTMLDivElement | null = null;
   private bodyEl: HTMLDivElement | null = null;
   private footerEl: HTMLDivElement | null = null;
@@ -93,6 +102,7 @@ export class QaidQuests {
       autoAdvance: config.autoAdvance ?? false,
       saveDebounceMs: config.saveDebounceMs ?? 500,
       autoFocus: config.autoFocus ?? true,
+      progressPosition: config.progressPosition ?? "top",
     };
 
     this.inlineQuestionnaire = config.questionnaire;
@@ -123,6 +133,15 @@ export class QaidQuests {
         throw new Error("Questionnaire is empty");
       }
       this.questionnaire = q;
+      this.recomputeVisible();
+      // Apply any goToStep request that came in before init finished.
+      if (this.pendingGoToStep) {
+        const idx = this.visibleQuestions.findIndex(
+          (qn) => qn.id === this.pendingGoToStep,
+        );
+        if (idx !== -1) this.stepIndex = idx;
+        this.pendingGoToStep = null;
+      }
       // Fire-and-forget create. The form is usable immediately;
       // saves will queue until the response id arrives.
       this.createResponse();
@@ -167,6 +186,12 @@ export class QaidQuests {
 
     if (userContainer) {
       this.shadowHost.style.display = "block";
+      // Fill the user-supplied container vertically so the card can
+      // flex/shrink-to-fit when the host has a definite height. When
+      // the container is content-sized (no fixed/min height), this is
+      // a no-op — the chain just grows naturally as before.
+      this.shadowHost.style.height = "100%";
+      this.shadowHost.style.minHeight = "0";
       userContainer.appendChild(this.shadowHost);
       this.isUserContainer = true;
     } else {
@@ -248,20 +273,14 @@ export class QaidQuests {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
 
-    const header = document.createElement("div");
-    header.className = "qaid-q-header";
+    const isBottom = this.config.progressPosition === "bottom";
+    const hasTitle = !!this.questionnaire.title;
+    const hasDescription = !!this.questionnaire.description;
+    const hasCloseBtn = !this.isUserContainer;
 
-    const titleWrap = document.createElement("div");
-    this.titleEl = document.createElement("h2");
-    this.titleEl.className = "qaid-q-title";
-    this.titleEl.textContent = this.questionnaire.title ?? "";
-    if (this.questionnaire.title) titleWrap.appendChild(this.titleEl);
-
-    const right = document.createElement("div");
-    right.style.display = "flex";
-    right.style.alignItems = "center";
-    right.style.gap = "0.5rem";
-
+    // These three are created up front and reused across step renders.
+    // In top mode they slot into the header / above the body; in bottom
+    // mode the footer in renderStep() pulls them into its own row.
     this.savingEl = document.createElement("div");
     this.savingEl.className = "qaid-q-saving";
     const dot = document.createElement("span");
@@ -274,38 +293,69 @@ export class QaidQuests {
     this.stepCounterEl = document.createElement("div");
     this.stepCounterEl.className = "qaid-q-step-counter";
 
-    right.appendChild(this.savingEl);
-    right.appendChild(this.stepCounterEl);
+    this.progressEl = document.createElement("div");
+    this.progressEl.className = isBottom
+      ? "qaid-q-progress qaid-q-progress--inline"
+      : "qaid-q-progress";
+    this.progressFillEl = document.createElement("div");
+    this.progressFillEl.className = "qaid-q-progress-fill";
+    this.progressEl.appendChild(this.progressFillEl);
 
-    if (!this.isUserContainer) {
-      const closeBtn = document.createElement("button");
-      closeBtn.type = "button";
-      closeBtn.className = "qaid-q-close";
-      closeBtn.setAttribute("aria-label", "Close form");
-      closeBtn.innerHTML = CLOSE_ICON;
-      closeBtn.addEventListener("click", () => this.close());
-      right.appendChild(closeBtn);
+    // Skip the header row entirely when there's nothing to show in it
+    // — keeps the form flush at the top of inline embeds with no
+    // title/description and bottom-progress.
+    const showHeader = hasTitle || hasCloseBtn || !isBottom;
+    if (showHeader) {
+      const header = document.createElement("div");
+      header.className = "qaid-q-header";
+
+      const titleWrap = document.createElement("div");
+      if (hasTitle) {
+        this.titleEl = document.createElement("h2");
+        this.titleEl.className = "qaid-q-title";
+        this.titleEl.textContent = this.questionnaire.title!;
+        titleWrap.appendChild(this.titleEl);
+      }
+
+      const right = document.createElement("div");
+      right.style.display = "flex";
+      right.style.alignItems = "center";
+      right.style.gap = "0.5rem";
+
+      // Saving + step counter live in the header in top mode. In bottom
+      // mode the footer owns them.
+      if (!isBottom) {
+        right.appendChild(this.savingEl);
+        right.appendChild(this.stepCounterEl);
+      }
+
+      if (hasCloseBtn) {
+        const closeBtn = document.createElement("button");
+        closeBtn.type = "button";
+        closeBtn.className = "qaid-q-close";
+        closeBtn.setAttribute("aria-label", "Close form");
+        closeBtn.innerHTML = CLOSE_ICON;
+        closeBtn.addEventListener("click", () => this.close());
+        right.appendChild(closeBtn);
+      }
+
+      header.appendChild(titleWrap);
+      header.appendChild(right);
+      this.cardEl.appendChild(header);
     }
 
-    header.appendChild(titleWrap);
-    header.appendChild(right);
-    this.cardEl.appendChild(header);
-
-    if (this.questionnaire.description) {
+    if (hasDescription) {
       const desc = document.createElement("p");
       desc.className = "qaid-q-description";
-      desc.textContent = this.questionnaire.description;
-      desc.style.marginTop = "-0.5rem";
+      desc.textContent = this.questionnaire.description!;
+      desc.style.marginTop = showHeader ? "-0.5rem" : "0";
       desc.style.marginBottom = "0.75rem";
       this.cardEl.appendChild(desc);
     }
 
-    const progress = document.createElement("div");
-    progress.className = "qaid-q-progress";
-    this.progressFillEl = document.createElement("div");
-    this.progressFillEl.className = "qaid-q-progress-fill";
-    progress.appendChild(this.progressFillEl);
-    this.cardEl.appendChild(progress);
+    if (!isBottom) {
+      this.cardEl.appendChild(this.progressEl);
+    }
 
     this.bodyEl = document.createElement("div");
     this.bodyEl.className = "qaid-q-body";
@@ -323,9 +373,19 @@ export class QaidQuests {
   private renderStep(): void {
     if (!this.questionnaire || !this.bodyEl || !this.footerEl) return;
 
-    const total = this.questionnaire.questions.length;
+    const total = this.visibleQuestions.length;
+    if (total === 0) {
+      // No visible questions — should be unreachable when the validator
+      // forbids visibleIf on the first question, but guard against
+      // misauthored inline questionnaires that gate everything.
+      void this.submit();
+      return;
+    }
+    if (this.stepIndex >= total) {
+      this.stepIndex = total - 1;
+    }
     const idx = this.stepIndex;
-    const question = this.questionnaire.questions[idx];
+    const question = this.visibleQuestions[idx];
 
     if (this.stepCounterEl) {
       this.stepCounterEl.textContent = `${idx + 1} / ${total}`;
@@ -389,26 +449,19 @@ export class QaidQuests {
 
     // Footer
     this.footerEl.replaceChildren();
-    const left = document.createElement("div");
-    left.className = "qaid-q-footer-left";
-    const right = document.createElement("div");
-    right.className = "qaid-q-footer-right";
+    const isBottomProgress = this.config.progressPosition === "bottom";
 
-    if (idx > 0) {
-      const back = document.createElement("button");
-      back.type = "button";
-      back.className = "qaid-q-btn qaid-q-btn-secondary";
-      back.textContent = this.questionnaire.backLabel ?? "Back";
-      back.addEventListener("click", () => this.back());
-      left.appendChild(back);
-    }
-
-    const hint = document.createElement("span");
-    hint.className = "qaid-q-hint";
-    hint.innerHTML = isLast
-      ? `<kbd>Enter</kbd> to submit`
-      : `<kbd>Enter</kbd> to continue`;
-    right.appendChild(hint);
+    const back =
+      idx > 0
+        ? (() => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "qaid-q-btn qaid-q-btn-secondary";
+            b.textContent = this.questionnaire!.backLabel ?? "Back";
+            b.addEventListener("click", () => this.back());
+            return b;
+          })()
+        : null;
 
     const next = document.createElement("button");
     next.type = "button";
@@ -417,10 +470,35 @@ export class QaidQuests {
       ? (this.questionnaire.submitLabel ?? "Submit")
       : (this.questionnaire.nextLabel ?? "Next");
     next.addEventListener("click", () => this.advance(question, errorEl));
-    right.appendChild(next);
 
-    this.footerEl.appendChild(left);
-    this.footerEl.appendChild(right);
+    if (isBottomProgress) {
+      // Single-row footer: [back] [progress fills] [savingEl][stepCounter] [next]
+      this.footerEl.classList.add("qaid-q-footer--inline-progress");
+      if (back) this.footerEl.appendChild(back);
+      if (this.progressEl) this.footerEl.appendChild(this.progressEl);
+      if (this.savingEl) this.footerEl.appendChild(this.savingEl);
+      if (this.stepCounterEl) this.footerEl.appendChild(this.stepCounterEl);
+      this.footerEl.appendChild(next);
+    } else {
+      this.footerEl.classList.remove("qaid-q-footer--inline-progress");
+      const left = document.createElement("div");
+      left.className = "qaid-q-footer-left";
+      const right = document.createElement("div");
+      right.className = "qaid-q-footer-right";
+
+      if (back) left.appendChild(back);
+
+      const hint = document.createElement("span");
+      hint.className = "qaid-q-hint";
+      hint.innerHTML = isLast
+        ? `<kbd>Enter</kbd> to submit`
+        : `<kbd>Enter</kbd> to continue`;
+      right.appendChild(hint);
+      right.appendChild(next);
+
+      this.footerEl.appendChild(left);
+      this.footerEl.appendChild(right);
+    }
 
     // Focus policy:
     //   - Initial render: only focus when `autoFocus` is enabled.
@@ -488,9 +566,11 @@ export class QaidQuests {
       return;
     }
     // Capture latest value (e.g. range may not have fired its first change).
+    // handleAnswerChange already calls recomputeVisible after recording
+    // the answer, so visibleQuestions is up-to-date here.
     this.handleAnswerChange(question, this.currentInput.getValue(), { immediate: true });
 
-    const last = this.stepIndex === this.questionnaire.questions.length - 1;
+    const last = this.stepIndex === this.visibleQuestions.length - 1;
     if (last) {
       void this.submit();
       return;
@@ -504,6 +584,12 @@ export class QaidQuests {
     this.flushPendingSave();
     if (this.stepIndex > 0) {
       this.stepIndex--;
+      // Defensive: a previous answer may have been changed in a way that
+      // shrinks the visible tail. Recompute and clamp.
+      this.recomputeVisible();
+      if (this.stepIndex >= this.visibleQuestions.length) {
+        this.stepIndex = Math.max(0, this.visibleQuestions.length - 1);
+      }
       this.renderStep();
     }
   }
@@ -512,12 +598,21 @@ export class QaidQuests {
   // Answer handling + autosave
   // ------------------------------------------------------------------
 
+  private recomputeVisible(): void {
+    if (!this.questionnaire) return;
+    this.visibleQuestions = getVisibleQuestions(this.questionnaire, this.answers);
+  }
+
   private handleAnswerChange(
     question: Question,
     value: AnswerValue,
     opts: { immediate?: boolean } = {},
   ): void {
     this.answers[question.id] = value;
+    // Visibility may flip on follow-up questions when this answer
+    // changes. Recompute synchronously so advance() / back() see the
+    // up-to-date list. We don't re-render here — the user is mid-edit.
+    this.recomputeVisible();
 
     const debounced =
       question.type === "text" ||
@@ -684,6 +779,29 @@ export class QaidQuests {
   /** Read-only snapshot of current answers */
   public getAnswers(): Answers {
     return { ...this.answers };
+  }
+
+  /**
+   * Jump to the visible question with the given id. Returns true if
+   * the question is currently visible (and the embed navigated to
+   * it), false if it's hidden by an unmet `visibleIf` predicate or
+   * unknown. If the embed is still initializing, the request is
+   * latched and applied as soon as the questionnaire is ready.
+   *
+   * Intended for editor previews and other host-driven step control.
+   */
+  public goToStep(questionId: string): boolean {
+    if (this.state !== "READY" || !this.questionnaire) {
+      this.pendingGoToStep = questionId;
+      return false;
+    }
+    const idx = this.visibleQuestions.findIndex((q) => q.id === questionId);
+    if (idx === -1) return false;
+    if (idx === this.stepIndex) return true;
+    this.flushPendingSave();
+    this.stepIndex = idx;
+    this.renderStep();
+    return true;
   }
 }
 

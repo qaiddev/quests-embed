@@ -1,7 +1,7 @@
 {
   "name": "@qaiddev/quests-embed",
-  "version": "0.1.0",
-  "description": "Step-by-step questionnaire embed with dynamic JSON-defined forms",
+  "version": "1.0.0",
+  "description": "Have Questions for your Users?",
   "type": "module",
   "main": "./dist/qaid-quests.umd.cjs",
   "module": "./dist/qaid-quests.js",
@@ -16,12 +16,24 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qaiddev/quests-embed.git"
+  },
+  "homepage": "https://github.com/qaiddev/quests-embed#readme",
+  "bugs": {
+    "url": "https://github.com/qaiddev/quests-embed/issues"
+  },
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build && tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "prepublishOnly": "npm run test:run && npm run build"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.18",
@@ -33,6 +45,10 @@
   "keywords": [
     "quests",
     "questionnaire",
+    "question",
+    "answer",
+    "feedback",
+    "QA",
     "form",
     "survey",
     "embed",

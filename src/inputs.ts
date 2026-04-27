@@ -360,7 +360,14 @@ function createMultipleChoiceInput(
   opts: QuestionInputOptions,
 ): QuestionInput {
   const wrap = document.createElement("div");
-  wrap.className = "qaid-q-options";
+  const alignment = q.imageAlignment ?? "horizontal";
+  const hasAnyImage = q.options.some((o) => !!o.image);
+  const layoutClass = hasAnyImage
+    ? alignment === "vertical"
+      ? " qaid-q-options--image-vertical"
+      : " qaid-q-options--image-horizontal"
+    : "";
+  wrap.className = `qaid-q-options${layoutClass}`;
   wrap.setAttribute("role", q.multiple ? "group" : "radiogroup");
   wrap.setAttribute("aria-label", q.label);
 
@@ -389,6 +396,16 @@ function createMultipleChoiceInput(
 
     const body = document.createElement("span");
     body.className = "qaid-q-option-body";
+
+    if (opt.image) {
+      const img = document.createElement("img");
+      img.className = "qaid-q-option-image";
+      img.src = opt.image;
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      body.appendChild(img);
+    }
 
     const label = document.createElement("span");
     label.className = "qaid-q-option-label";

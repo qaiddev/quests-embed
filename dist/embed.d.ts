@@ -6,6 +6,8 @@ export declare class QaidQuests {
     private configUrl;
     private state;
     private stepIndex;
+    private visibleQuestions;
+    private pendingGoToStep;
     private hasRenderedStep;
     private answers;
     private responseId;
@@ -21,6 +23,7 @@ export declare class QaidQuests {
     private cardEl;
     private titleEl;
     private stepCounterEl;
+    private progressEl;
     private progressFillEl;
     private bodyEl;
     private footerEl;
@@ -40,6 +43,7 @@ export declare class QaidQuests {
     private renderDone;
     private advance;
     private back;
+    private recomputeVisible;
     private handleAnswerChange;
     private flushPendingSave;
     private saveAnswer;
@@ -54,4 +58,14 @@ export declare class QaidQuests {
     destroy(): void;
     /** Read-only snapshot of current answers */
     getAnswers(): Answers;
+    /**
+     * Jump to the visible question with the given id. Returns true if
+     * the question is currently visible (and the embed navigated to
+     * it), false if it's hidden by an unmet `visibleIf` predicate or
+     * unknown. If the embed is still initializing, the request is
+     * latched and applied as soon as the questionnaire is ready.
+     *
+     * Intended for editor previews and other host-driven step control.
+     */
+    goToStep(questionId: string): boolean;
 }

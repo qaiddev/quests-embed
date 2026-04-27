@@ -3,6 +3,22 @@
  * Loaded from JSON, either inline or remote.
  */
 
+/**
+ * Predicate that gates a question's visibility based on prior answers.
+ * Predicates may only reference questions that appear EARLIER in the
+ * `questions` array; forward references are rejected at validation time.
+ *
+ * Composition: `allOf` / `anyOf` accept arrays of nested rules.
+ * Atom forms target a single prior question via `questionId`.
+ */
+export type VisibilityRule =
+  | { allOf: VisibilityRule[] }
+  | { anyOf: VisibilityRule[] }
+  | { questionId: string; equals: string | number }
+  | { questionId: string; notEquals: string | number }
+  | { questionId: string; in: Array<string | number> }
+  | { questionId: string; answered: boolean };
+
 /** Common fields on every question */
 interface QuestionBase {
   /** Stable id used as the answer key */
@@ -13,6 +29,8 @@ interface QuestionBase {
   description?: string;
   /** Whether an answer is required to advance */
   required?: boolean;
+  /** Predicate gating visibility; absent means always visible. */
+  visibleIf?: VisibilityRule;
 }
 
 export interface TextQuestion extends QuestionBase {
@@ -67,6 +85,9 @@ export interface MultipleChoiceOption {
   label: string;
   /** Optional description shown below the option label */
   description?: string;
+  /** Optional image URL. Rendered as a 1:1 thumbnail next to or above
+   *  the label, depending on the question's `imageAlignment`. */
+  image?: string;
 }
 
 export interface MultipleChoiceQuestion extends QuestionBase {
@@ -74,6 +95,13 @@ export interface MultipleChoiceQuestion extends QuestionBase {
   options: MultipleChoiceOption[];
   /** Allow selecting multiple options. Answer becomes string[]. Default false */
   multiple?: boolean;
+  /**
+   * Layout for option images (only meaningful when at least one option
+   * has `image` set).
+   * - "horizontal" (default): image to the left of the label
+   * - "vertical": image above the label, centered
+   */
+  imageAlignment?: "horizontal" | "vertical";
 }
 
 export type Question =
@@ -151,6 +179,14 @@ export interface QuestsConfig {
   saveDebounceMs?: number;
   /** Auto-focus the input on each step. Default: true. Set false in preview/embedded contexts that shouldn't steal focus. */
   autoFocus?: boolean;
+  /**
+   * Where to render the step counter ("1 / 5") and progress bar.
+   * - "top" (default): inline at the top of the card, above the question
+   * - "bottom": inline in the footer next to the Next button — useful
+   *   for compact / above-the-fold layouts where you want the question
+   *   to sit as high as possible.
+   */
+  progressPosition?: "top" | "bottom";
 }
 
 export interface ResolvedQuestsConfig {
@@ -171,6 +207,7 @@ export interface ResolvedQuestsConfig {
   autoAdvance: boolean;
   saveDebounceMs: number;
   autoFocus: boolean;
+  progressPosition: "top" | "bottom";
 }
 
 /** Initial payload sent to create the response */

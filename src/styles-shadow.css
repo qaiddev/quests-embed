@@ -66,6 +66,19 @@ button {
 :where(.qaid-q-root.qaid-q-inline) .qaid-q-card {
   box-shadow: none;
   border: 1px solid light-dark(#e5e7eb, #374151);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Set up the inline root as a flex column so the card flex: 1 above
+ * lets it fill a constrained-height container — content overflows the
+ * card body (which scrolls), not the host. With no parent height the
+ * chain falls back to content-sized behaviour. */
+:where(.qaid-q-root.qaid-q-inline) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* ==================== Header ==================== */
@@ -79,14 +92,14 @@ button {
 }
 
 .qaid-q-title {
-  font-size: 1.125rem;
+  font-size: 1.125em;
   font-weight: 700;
   margin: 0;
   color: light-dark(#1f2937, #f9fafb);
 }
 
 .qaid-q-step-counter {
-  font-size: 0.875rem;
+  font-size: 0.875em;
   color: light-dark(#6b7280, #9ca3af);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -128,6 +141,15 @@ button {
   margin-bottom: 1.25rem;
 }
 
+/* Inline variant — used when `progressPosition: "bottom"` so the bar
+ * sits in the footer next to the Next button. Drops the bottom margin
+ * and lets it stretch to fill remaining footer width. */
+.qaid-q-progress--inline {
+  flex: 1;
+  min-width: 60px;
+  margin-bottom: 0;
+}
+
 .qaid-q-progress-fill {
   position: absolute;
   inset: 0 auto 0 0;
@@ -158,7 +180,7 @@ button {
 }
 
 .qaid-q-label {
-  font-size: 1.125rem;
+  font-size: 1.125em;
   font-weight: 600;
   margin: 0;
   color: light-dark(#1f2937, #f9fafb);
@@ -171,17 +193,23 @@ button {
 }
 
 .qaid-q-description {
-  font-size: 0.875rem;
+  font-size: 0.875em;
   color: light-dark(#6b7280, #9ca3af);
   margin: 0;
   line-height: 1.4;
 }
 
 .qaid-q-error {
-  font-size: 0.8125rem;
+  font-size: 0.8125em;
   color: var(--qaid-negative, #ef4444);
   margin: 0;
-  min-height: 1.1em;
+}
+
+/* Collapse the error row entirely when there's no message. The
+ * element stays in the DOM (so aria-live can announce text without a
+ * remount), it just doesn't reserve space. */
+.qaid-q-error:empty {
+  display: none;
 }
 
 /* ==================== Inputs (shared) ==================== */
@@ -193,7 +221,7 @@ button {
   border: 1px solid light-dark(#d1d5db, #374151);
   border-radius: 0.625rem;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 1em;
   background: light-dark(#ffffff, #111827);
   color: light-dark(#1f2937, #f9fafb);
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -231,7 +259,7 @@ button {
   top: 50%;
   transform: translateY(-50%);
   color: light-dark(#6b7280, #9ca3af);
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: 500;
   pointer-events: none;
 }
@@ -250,7 +278,7 @@ button {
 }
 
 .qaid-q-range-value {
-  font-size: 2rem;
+  font-size: 2em;
   font-weight: 700;
   text-align: center;
   font-variant-numeric: tabular-nums;
@@ -258,7 +286,7 @@ button {
 }
 
 .qaid-q-range-value .qaid-q-range-unit {
-  font-size: 1rem;
+  font-size: 0.5em;
   font-weight: 500;
   color: light-dark(#6b7280, #9ca3af);
   margin-left: 0.25rem;
@@ -308,7 +336,7 @@ button {
 .qaid-q-range-bounds {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8125rem;
+  font-size: 0.8125em;
   color: light-dark(#6b7280, #9ca3af);
   font-variant-numeric: tabular-nums;
 }
@@ -330,7 +358,7 @@ button {
   border-radius: 0.625rem;
   background: light-dark(#ffffff, #111827);
   text-align: left;
-  font-size: 1rem;
+  font-size: 1em;
   color: light-dark(#1f2937, #f9fafb);
   cursor: pointer;
   transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
@@ -407,13 +435,90 @@ button {
   gap: 0.125rem;
 }
 
+/* ==================== Multiple choice with images ====================
+ * Each option may have a square image. Two layouts, picked at the
+ * question level via `imageAlignment`:
+ *  - horizontal (default): image to the left of the label, options stay
+ *    stacked vertically as usual
+ *  - vertical: image above the label, options laid out as a grid so
+ *    each card stands on its own */
+
+.qaid-q-option-image {
+  display: block;
+  width: 48px;
+  height: 48px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  background: light-dark(#f3f4f6, #374151);
+  flex-shrink: 0;
+}
+
+.qaid-q-options--image-horizontal .qaid-q-option-body {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.qaid-q-options--image-horizontal .qaid-q-option-body
+  > :not(.qaid-q-option-image) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.qaid-q-options--image-vertical {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.5rem;
+}
+
+.qaid-q-options--image-vertical .qaid-q-option {
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  padding: 0.75rem;
+  gap: 0.5rem;
+}
+
+.qaid-q-options--image-vertical .qaid-q-option-body {
+  align-items: center;
+  text-align: center;
+}
+
+.qaid-q-options--image-vertical .qaid-q-option-image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+.qaid-q-options--image-vertical .qaid-q-option-marker {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  margin-top: 0;
+}
+
+.qaid-q-options--image-vertical .qaid-q-option {
+  position: relative;
+}
+
+.qaid-q-options--image-vertical .qaid-q-option-key {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  align-self: auto;
+}
+
 .qaid-q-option-label {
   font-weight: 500;
   line-height: 1.3;
 }
 
 .qaid-q-option-desc {
-  font-size: 0.8125rem;
+  font-size: 0.8125em;
   color: light-dark(#6b7280, #9ca3af);
   line-height: 1.4;
 }
@@ -421,7 +526,7 @@ button {
 .qaid-q-option-key {
   flex-shrink: 0;
   align-self: center;
-  font-size: 0.7rem;
+  font-size: 0.7em;
   font-weight: 600;
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
@@ -440,6 +545,14 @@ button {
   margin-top: 1.25rem;
 }
 
+/* Inline-progress footer keeps the same flex row but lets the progress
+ * bar stretch in the middle. Children are: [back] [progress bar fills]
+ * [saving] [stepCounter] [next]. */
+.qaid-q-footer--inline-progress {
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
 .qaid-q-footer-left {
   display: flex;
   gap: 0.5rem;
@@ -453,7 +566,7 @@ button {
 .qaid-q-btn {
   padding: 0.625rem 1.125rem;
   border-radius: 0.5rem;
-  font-size: 0.9375rem;
+  font-size: 0.9375em;
   font-weight: 500;
   border: 1px solid transparent;
   cursor: pointer;
@@ -494,7 +607,7 @@ button {
 }
 
 .qaid-q-hint {
-  font-size: 0.75rem;
+  font-size: 0.75em;
   color: light-dark(#6b7280, #9ca3af);
 }
 
@@ -505,7 +618,7 @@ button {
   background: light-dark(#f3f4f6, #374151);
   border: 1px solid light-dark(#e5e7eb, #4b5563);
   font-family: inherit;
-  font-size: 0.7rem;
+  font-size: 0.7em;
   font-weight: 600;
   color: light-dark(#374151, #e5e7eb);
 }
@@ -534,7 +647,7 @@ button {
 }
 
 .qaid-q-done-title {
-  font-size: 1.25rem;
+  font-size: 1.25em;
   font-weight: 700;
   margin: 0;
 }
@@ -550,7 +663,7 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.75rem;
+  font-size: 0.75em;
   color: light-dark(#6b7280, #9ca3af);
   opacity: 0;
   transition: opacity 0.2s;

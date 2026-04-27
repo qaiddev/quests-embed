@@ -32,4 +32,5 @@
  */
 import { QaidQuests } from "./embed";
 export { QaidQuests };
-export type { QuestsConfig, ResolvedQuestsConfig, Questionnaire, Question, TextQuestion, CurrencyQuestion, RangeQuestion, DateQuestion, MultipleChoiceQuestion, MultipleChoiceOption, Answers, AnswerValue, CreateResponsePayload, CreateResponseResult, UpdateAnswerPayload, SubmitPayload, } from "./types";
+export { getVisibleQuestions, evaluateRule } from "./visibility";
+export type { QuestsConfig, ResolvedQuestsConfig, Questionnaire, Question, TextQuestion, CurrencyQuestion, RangeQuestion, DateQuestion, MultipleChoiceQuestion, MultipleChoiceOption, Answers, AnswerValue, VisibilityRule, CreateResponsePayload, CreateResponseResult, UpdateAnswerPayload, SubmitPayload, } from "./types";
