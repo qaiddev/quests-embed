@@ -1,11 +1,11 @@
-const w = '*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}.qaid-q-root{font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:light-dark(#1f2937,#f9fafb)}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:light-dark(#ffffff,#1f2937);color:light-dark(#1f2937,#f9fafb);border-radius:1rem;box-shadow:0 25px 50px -12px light-dark(rgba(0,0,0,.25),rgba(0,0,0,.6));padding:1.5rem;overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid light-dark(#e5e7eb,#374151);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:light-dark(#1f2937,#f9fafb)}.qaid-q-step-counter{font-size:.875em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:light-dark(#6b7280,#9ca3af);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:light-dark(#f3f4f6,#374151);color:light-dark(#1f2937,#f9fafb)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:light-dark(#e5e7eb,#374151);border-radius:9999px;overflow:hidden;margin-bottom:1.25rem}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-positive, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto}.qaid-q-step{display:flex;flex-direction:column;gap:.75rem;animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:light-dark(#1f2937,#f9fafb);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-negative, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:light-dark(#6b7280,#9ca3af);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-negative, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:.75rem .875rem;border:1px solid light-dark(#d1d5db,#374151);border-radius:.625rem;font-family:inherit;font-size:1em;background:light-dark(#ffffff,#111827);color:light-dark(#1f2937,#f9fafb);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:light-dark(#9ca3af,#6b7280)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:light-dark(#6b7280,#9ca3af);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-positive, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:light-dark(#6b7280,#9ca3af);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:light-dark(#e5e7eb,#374151);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:.75rem .875rem;border:1px solid light-dark(#e5e7eb,#374151);border-radius:.625rem;background:light-dark(#ffffff,#111827);text-align:left;font-size:1em;color:light-dark(#1f2937,#f9fafb);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:light-dark(#9ca3af,#4b5563);background:light-dark(#f9fafb,#1f2937)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-positive, #10b981);background:color-mix(in srgb,var(--qaid-positive, #10b981) 10%,transparent)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid light-dark(#d1d5db,#4b5563);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:light-dark(#ffffff,#111827);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-positive, #10b981);background:var(--qaid-positive, #10b981)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:light-dark(#ffffff,#1f2937)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.625rem;height:.625rem;border-radius:0;background:transparent;border-right:2px solid light-dark(#ffffff,#1f2937);border-bottom:2px solid light-dark(#ffffff,#1f2937);transform:rotate(45deg) translate(-1px,-2px)}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:light-dark(#f3f4f6,#374151);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:light-dark(#6b7280,#9ca3af);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:1.25rem}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:.625rem 1.125rem;border-radius:.5rem;font-size:.9375em;font-weight:500;border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:transparent;border-color:light-dark(#d1d5db,#4b5563);color:light-dark(#374151,#d1d5db)}.qaid-q-btn-secondary:hover{background:light-dark(#f3f4f6,#374151)}.qaid-q-btn-primary{background:var(--qaid-positive, #10b981);color:var(--qaid-positive-text, #ffffff);border-color:transparent}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-hint{font-size:.75em;color:light-dark(#6b7280,#9ca3af)}.qaid-q-hint kbd{display:inline-block;padding:.05rem .35rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);border:1px solid light-dark(#e5e7eb,#4b5563);font-family:inherit;font-size:.7em;font-weight:600;color:light-dark(#374151,#e5e7eb)}.qaid-q-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.5rem;padding:1.5rem 0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-positive, #10b981) 18%,transparent);color:var(--qaid-positive, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:light-dark(#6b7280,#9ca3af);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:light-dark(#6b7280,#9ca3af);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-positive, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}';
+const w = '*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}.qaid-q-root{font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:light-dark(#1f2937,#f9fafb)}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:light-dark(#ffffff,#1f2937);color:light-dark(#1f2937,#f9fafb);border-radius:1rem;box-shadow:0 25px 50px -12px light-dark(rgba(0,0,0,.25),rgba(0,0,0,.6));padding:1.5rem;overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid light-dark(#e5e7eb,#374151);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:light-dark(#1f2937,#f9fafb)}.qaid-q-step-counter{font-size:.875em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:light-dark(#6b7280,#9ca3af);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:light-dark(#f3f4f6,#374151);color:light-dark(#1f2937,#f9fafb)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:light-dark(#e5e7eb,#374151);border-radius:9999px;overflow:hidden;margin-bottom:1.25rem}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-positive, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto}.qaid-q-step{display:flex;flex-direction:column;gap:.75rem;animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-no-motion .qaid-q-step,.qaid-q-no-motion.qaid-q-root{animation:none!important}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:light-dark(#1f2937,#f9fafb);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-negative, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:light-dark(#6b7280,#9ca3af);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-negative, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:.75rem .875rem;border:1px solid light-dark(#d1d5db,#374151);border-radius:.625rem;font-family:inherit;font-size:1em;background:light-dark(#ffffff,#111827);color:light-dark(#1f2937,#f9fafb);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:light-dark(#9ca3af,#6b7280)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:light-dark(#6b7280,#9ca3af);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-positive, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:light-dark(#6b7280,#9ca3af);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:light-dark(#e5e7eb,#374151);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:.75rem .875rem;border:1px solid light-dark(#e5e7eb,#374151);border-radius:.625rem;background:light-dark(#ffffff,#111827);text-align:left;font-size:1em;color:light-dark(#1f2937,#f9fafb);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:light-dark(#9ca3af,#4b5563);background:light-dark(#f9fafb,#1f2937)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-positive, #10b981);background:color-mix(in srgb,var(--qaid-positive, #10b981) 10%,transparent)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid light-dark(#d1d5db,#4b5563);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:light-dark(#ffffff,#111827);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-positive, #10b981);background:var(--qaid-positive, #10b981)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:light-dark(#ffffff,#1f2937)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.625rem;height:.625rem;border-radius:0;background:transparent;border-right:2px solid light-dark(#ffffff,#1f2937);border-bottom:2px solid light-dark(#ffffff,#1f2937);transform:rotate(45deg) translate(-1px,-2px)}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:light-dark(#f3f4f6,#374151);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:light-dark(#6b7280,#9ca3af);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:1.25rem}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:.625rem 1.125rem;border-radius:.5rem;font-size:.9375em;font-weight:500;border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:transparent;border-color:light-dark(#d1d5db,#4b5563);color:light-dark(#374151,#d1d5db)}.qaid-q-btn-secondary:hover{background:light-dark(#f3f4f6,#374151)}.qaid-q-btn-primary{background:var(--qaid-positive, #10b981);color:var(--qaid-positive-text, #ffffff);border-color:transparent}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-hint{font-size:.75em;color:light-dark(#6b7280,#9ca3af)}.qaid-q-hint kbd{display:inline-block;padding:.05rem .35rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);border:1px solid light-dark(#e5e7eb,#4b5563);font-family:inherit;font-size:.7em;font-weight:600;color:light-dark(#374151,#e5e7eb)}.qaid-q-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.5rem;padding:1.5rem 0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-positive, #10b981) 18%,transparent);color:var(--qaid-positive, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:light-dark(#6b7280,#9ca3af);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:light-dark(#6b7280,#9ca3af);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-positive, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}';
 function C(t, e, i) {
-  const [a, n, o] = [t, e, i].map((r) => (r = r / 255, r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)));
-  return 0.2126 * a + 0.7152 * n + 0.0722 * o;
+  const [a, n, s] = [t, e, i].map((r) => (r = r / 255, r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)));
+  return 0.2126 * a + 0.7152 * n + 0.0722 * s;
 }
 function S(t) {
   if (t.startsWith("#")) {
-    const i = t.slice(1), a = i.length === 3 ? i.split("").map((o) => o + o).join("") : i, n = parseInt(a, 16);
+    const i = t.slice(1), a = i.length === 3 ? i.split("").map((s) => s + s).join("") : i, n = parseInt(a, 16);
     return { r: n >> 16 & 255, g: n >> 8 & 255, b: n & 255 };
   }
   const e = t.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
@@ -21,7 +21,7 @@ function N(t = {}) {
     negativeColor: i = "#ef4444",
     markerColor: a = "#6366f1",
     modalWidth: n = 480,
-    backdropOpacity: o = 0.4,
+    backdropOpacity: s = 0.4,
     fontFamily: r = "system-ui, -apple-system, sans-serif",
     fontSize: h = 16
   } = t;
@@ -32,7 +32,7 @@ function N(t = {}) {
     "--qaid-marker": a,
     "--qaid-marker-text": x(a),
     "--qaid-modal-width": `${n}px`,
-    "--qaid-backdrop-opacity": String(o),
+    "--qaid-backdrop-opacity": String(s),
     "--qaid-font-family": r,
     "--qaid-font-size": `${h}px`
   };
@@ -115,26 +115,26 @@ function T(t, e) {
   a.className = "qaid-q-currency-prefix", a.textContent = D(t.currency ?? "USD", t.locale), i.appendChild(a);
   const n = document.createElement("input");
   return n.className = "qaid-q-input", n.type = "number", n.inputMode = "decimal", n.step = "0.01", typeof t.min == "number" && (n.min = String(t.min)), typeof t.max == "number" && (n.max = String(t.max)), t.placeholder && (n.placeholder = t.placeholder), typeof e.initialValue == "number" ? n.value = String(e.initialValue) : typeof e.initialValue == "string" && e.initialValue !== "" && (n.value = e.initialValue), n.setAttribute("aria-label", t.label), n.addEventListener("input", () => {
-    const o = n.value;
-    if (o === "")
+    const s = n.value;
+    if (s === "")
       e.onChange(null);
     else {
-      const r = Number(o);
+      const r = Number(s);
       e.onChange(Number.isNaN(r) ? null : r);
     }
-  }), n.addEventListener("keydown", (o) => {
-    o.key === "Enter" && !o.isComposing && (o.preventDefault(), e.onSubmit());
+  }), n.addEventListener("keydown", (s) => {
+    s.key === "Enter" && !s.isComposing && (s.preventDefault(), e.onSubmit());
   }), i.appendChild(n), {
     element: i,
     focus: () => n.focus(),
     getValue: () => {
       if (n.value === "") return null;
-      const o = Number(n.value);
-      return Number.isNaN(o) ? null : o;
+      const s = Number(n.value);
+      return Number.isNaN(s) ? null : s;
     },
     isValid: () => {
-      const o = n.value === "" ? null : Number(n.value);
-      return !(t.required && (o === null || Number.isNaN(o)) || o !== null && !Number.isNaN(o) && (typeof t.min == "number" && o < t.min || typeof t.max == "number" && o > t.max));
+      const s = n.value === "" ? null : Number(n.value);
+      return !(t.required && (s === null || Number.isNaN(s)) || s !== null && !Number.isNaN(s) && (typeof t.min == "number" && s < t.min || typeof t.max == "number" && s > t.max));
     }
   };
 }
@@ -145,7 +145,7 @@ function D(t, e) {
       currency: t,
       currencyDisplay: "narrowSymbol",
       maximumFractionDigits: 0
-    }).formatToParts(0).find((o) => o.type === "currency")?.value ?? t;
+    }).formatToParts(0).find((s) => s.type === "currency")?.value ?? t;
   } catch {
     return t;
   }
@@ -157,18 +157,18 @@ function P(t, e) {
   a.className = "qaid-q-range-value";
   const n = document.createElement("span");
   if (a.appendChild(n), t.unit) {
-    const s = document.createElement("span");
-    s.className = "qaid-q-range-unit", s.textContent = t.unit, a.appendChild(s);
+    const o = document.createElement("span");
+    o.className = "qaid-q-range-unit", o.textContent = t.unit, a.appendChild(o);
   }
-  const o = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, r = document.createElement("input");
-  r.className = "qaid-q-range", r.type = "range", r.min = String(t.min), r.max = String(t.max), r.step = String(t.step ?? 1), r.value = String(o), r.setAttribute("aria-label", t.label), r.setAttribute("aria-valuemin", String(t.min)), r.setAttribute("aria-valuemax", String(t.max));
+  const s = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, r = document.createElement("input");
+  r.className = "qaid-q-range", r.type = "range", r.min = String(t.min), r.max = String(t.max), r.step = String(t.step ?? 1), r.value = String(s), r.setAttribute("aria-label", t.label), r.setAttribute("aria-valuemin", String(t.min)), r.setAttribute("aria-valuemax", String(t.max));
   const h = () => {
     n.textContent = r.value, r.setAttribute("aria-valuenow", r.value);
   };
   h(), r.addEventListener("input", () => {
     h(), e.onChange(Number(r.value));
-  }), r.addEventListener("keydown", (s) => {
-    s.key === "Enter" && (s.preventDefault(), e.onSubmit());
+  }), r.addEventListener("keydown", (o) => {
+    o.key === "Enter" && (o.preventDefault(), e.onSubmit());
   });
   const p = document.createElement("div");
   p.className = "qaid-q-range-bounds";
@@ -196,27 +196,27 @@ function H(t, e) {
   };
 }
 function O(t, e) {
-  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", o = t.options.some((s) => !!s.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
-  i.className = `qaid-q-options${o}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label);
+  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", s = t.options.some((o) => !!o.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
+  i.className = `qaid-q-options${s}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label);
   const r = /* @__PURE__ */ new Set();
   if (t.multiple && Array.isArray(e.initialValue))
-    for (const s of e.initialValue) r.add(s);
+    for (const o of e.initialValue) r.add(o);
   else !t.multiple && typeof e.initialValue == "string" && r.add(e.initialValue);
   const h = [];
-  t.options.forEach((s, c) => {
+  t.options.forEach((o, c) => {
     const l = document.createElement("button");
-    l.type = "button", l.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, l.dataset.value = s.value, l.setAttribute("role", t.multiple ? "checkbox" : "radio"), l.setAttribute("aria-checked", r.has(s.value) ? "true" : "false"), r.has(s.value) && l.classList.add("qaid-q-selected");
+    l.type = "button", l.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, l.dataset.value = o.value, l.setAttribute("role", t.multiple ? "checkbox" : "radio"), l.setAttribute("aria-checked", r.has(o.value) ? "true" : "false"), r.has(o.value) && l.classList.add("qaid-q-selected");
     const m = document.createElement("span");
     m.className = "qaid-q-option-marker", m.setAttribute("aria-hidden", "true");
     const q = document.createElement("span");
-    if (q.className = "qaid-q-option-body", s.image) {
+    if (q.className = "qaid-q-option-body", o.image) {
       const d = document.createElement("img");
-      d.className = "qaid-q-option-image", d.src = s.image, d.alt = "", d.loading = "lazy", d.decoding = "async", q.appendChild(d);
+      d.className = "qaid-q-option-image", d.src = o.image, d.alt = "", d.loading = "lazy", d.decoding = "async", q.appendChild(d);
     }
     const u = document.createElement("span");
-    if (u.className = "qaid-q-option-label", u.textContent = s.label, q.appendChild(u), s.description) {
+    if (u.className = "qaid-q-option-label", u.textContent = o.label, q.appendChild(u), o.description) {
       const d = document.createElement("span");
-      d.className = "qaid-q-option-desc", d.textContent = s.description, q.appendChild(d);
+      d.className = "qaid-q-option-desc", d.textContent = o.description, q.appendChild(d);
     }
     if (l.appendChild(m), l.appendChild(q), c < 9) {
       const d = document.createElement("span");
@@ -233,18 +233,18 @@ function O(t, e) {
       }
       !t.multiple && d.key === "Enter" && r.size > 0 && (d.preventDefault(), e.onSubmit());
     }), h.push(l), i.appendChild(l);
-  }), i.addEventListener("keydown", (s) => {
-    const c = s.key;
+  }), i.addEventListener("keydown", (o) => {
+    const c = o.key;
     if (c.length === 1 && c >= "1" && c <= "9") {
       const l = parseInt(c, 10) - 1;
-      l < h.length && (s.preventDefault(), f(l), p(l));
+      l < h.length && (o.preventDefault(), f(l), p(l));
     }
   });
-  function p(s) {
-    h[s]?.focus();
+  function p(o) {
+    h[o]?.focus();
   }
-  function f(s) {
-    const c = t.options[s].value;
+  function f(o) {
+    const c = t.options[o].value;
     t.multiple ? r.has(c) ? r.delete(c) : r.add(c) : (r.clear(), r.add(c)), h.forEach((l) => {
       const m = l.dataset.value, q = r.has(m);
       l.classList.toggle("qaid-q-selected", q), l.setAttribute("aria-checked", q ? "true" : "false");
@@ -252,8 +252,8 @@ function O(t, e) {
   }
   function g() {
     if (t.multiple) return Array.from(r);
-    const s = r.values().next();
-    return s.done ? null : s.value;
+    const o = r.values().next();
+    return o.done ? null : o.value;
   }
   return {
     element: i,
@@ -295,8 +295,8 @@ function Q() {
     return crypto.randomUUID();
   }
 }
-const U = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', R = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
-class j {
+const U = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', j = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+class R {
   config;
   questionnaire = null;
   inlineQuestionnaire;
@@ -361,6 +361,7 @@ class j {
       autoAdvance: e.autoAdvance ?? !1,
       saveDebounceMs: e.saveDebounceMs ?? 500,
       autoFocus: e.autoFocus ?? !0,
+      animate: e.animate ?? !0,
       // Don't default here — we want to fall through to the
       // questionnaire's `progressPosition` when the host didn't
       // explicitly set one. effectiveProgressPosition() handles the
@@ -419,7 +420,11 @@ class j {
       const a = document.createElement("style");
       a.textContent = this.config.css, this.shadowRoot.appendChild(a);
     }
-    if (this.rootEl = document.createElement("div"), this.rootEl.className = `qaid-q-root${this.isUserContainer ? " qaid-q-inline" : ""}`, A(this.rootEl, this.cssVars), this.isUserContainer)
+    if (this.rootEl = document.createElement("div"), this.rootEl.className = [
+      "qaid-q-root",
+      this.isUserContainer ? "qaid-q-inline" : "",
+      this.config.animate ? "" : "qaid-q-no-motion"
+    ].filter(Boolean).join(" "), A(this.rootEl, this.cssVars), this.isUserContainer)
       this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", this.rootEl.appendChild(this.cardEl);
     else {
       this.backdropEl = document.createElement("div"), this.backdropEl.className = "qaid-q-backdrop", this.backdropEl.addEventListener("click", () => this.close()), this.rootEl.appendChild(this.backdropEl);
@@ -448,7 +453,7 @@ class j {
   renderHeader() {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
-    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", a = !!this.questionnaire.hideTitle, n = !!this.questionnaire.title && !a, o = !!this.questionnaire.description && !a, r = !this.isUserContainer, h = r || !i && !e;
+    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", a = !!this.questionnaire.hideTitle, n = !!this.questionnaire.title && !a, s = !!this.questionnaire.description && !a, r = !this.isUserContainer, h = r || !i && !e;
     this.savingEl = document.createElement("div"), this.savingEl.className = "qaid-q-saving";
     const p = document.createElement("span");
     p.className = "qaid-q-saving-dot";
@@ -456,8 +461,8 @@ class j {
     f.textContent = "Saving…", this.savingEl.appendChild(p), this.savingEl.appendChild(f), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
     const g = n || h;
     if (g) {
-      const s = document.createElement("div");
-      s.className = "qaid-q-header";
+      const o = document.createElement("div");
+      o.className = "qaid-q-header";
       const c = document.createElement("div");
       n && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, c.appendChild(this.titleEl));
       const l = document.createElement("div");
@@ -465,11 +470,11 @@ class j {
         const m = document.createElement("button");
         m.type = "button", m.className = "qaid-q-close", m.setAttribute("aria-label", "Close form"), m.innerHTML = U, m.addEventListener("click", () => this.close()), l.appendChild(m);
       }
-      s.appendChild(c), s.appendChild(l), this.cardEl.appendChild(s);
+      o.appendChild(c), o.appendChild(l), this.cardEl.appendChild(o);
     }
-    if (o) {
-      const s = document.createElement("p");
-      s.className = "qaid-q-description", s.textContent = this.questionnaire.description, s.style.marginTop = g ? "-0.5rem" : "0", s.style.marginBottom = "0.75rem", this.cardEl.appendChild(s);
+    if (s) {
+      const o = document.createElement("p");
+      o.className = "qaid-q-description", o.textContent = this.questionnaire.description, o.style.marginTop = g ? "-0.5rem" : "0", o.style.marginBottom = "0.75rem", this.cardEl.appendChild(o);
     }
     !i && !e && this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl);
   }
@@ -491,12 +496,12 @@ class j {
     }
     const n = document.createElement("div");
     n.className = "qaid-q-step", n.setAttribute("role", "group"), n.setAttribute("aria-labelledby", `qaid-q-label-${i}`);
-    const o = document.createElement("label");
-    if (o.id = `qaid-q-label-${i}`, o.className = "qaid-q-label", o.textContent = a.label, a.required) {
+    const s = document.createElement("label");
+    if (s.id = `qaid-q-label-${i}`, s.className = "qaid-q-label", s.textContent = a.label, a.required) {
       const u = document.createElement("span");
-      u.className = "qaid-q-required", u.textContent = "*", u.setAttribute("aria-label", "required"), o.appendChild(u);
+      u.className = "qaid-q-required", u.textContent = "*", u.setAttribute("aria-label", "required"), s.appendChild(u);
     }
-    if (n.appendChild(o), a.description) {
+    if (n.appendChild(s), a.description) {
       const u = document.createElement("p");
       u.className = "qaid-q-description", u.textContent = a.description, n.appendChild(u);
     }
@@ -513,11 +518,11 @@ class j {
       autoAdvance: this.config.autoAdvance
     });
     this.currentInput = f, n.appendChild(f.element), n.appendChild(r), this.bodyEl.replaceChildren(n), this.footerEl.replaceChildren();
-    const s = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = i > 0 ? (() => {
+    const o = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = i > 0 ? (() => {
       const u = document.createElement("button");
       return u.type = "button", u.className = "qaid-q-btn qaid-q-btn-secondary", u.textContent = this.questionnaire.backLabel ?? "Back", u.addEventListener("click", () => this.back()), u;
     })() : null, l = document.createElement("button");
-    if (l.type = "button", l.className = "qaid-q-btn qaid-q-btn-primary", l.textContent = p ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", l.addEventListener("click", () => this.advance(a, r)), s)
+    if (l.type = "button", l.className = "qaid-q-btn qaid-q-btn-primary", l.textContent = p ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", l.addEventListener("click", () => this.advance(a, r)), o)
       this.footerEl.classList.add("qaid-q-footer--inline-progress"), c && this.footerEl.appendChild(c), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(l);
     else {
       this.footerEl.classList.remove("qaid-q-footer--inline-progress");
@@ -537,7 +542,7 @@ class j {
     const e = document.createElement("div");
     e.className = "qaid-q-done";
     const i = document.createElement("div");
-    i.className = "qaid-q-done-icon", i.innerHTML = R, e.appendChild(i);
+    i.className = "qaid-q-done-icon", i.innerHTML = j, e.appendChild(i);
     const a = document.createElement("h3");
     if (a.className = "qaid-q-done-title", a.textContent = this.questionnaire.thankYouTitle ?? "Thank you!", e.appendChild(a), this.questionnaire.thankYouMessage) {
       const n = document.createElement("p");
@@ -706,7 +711,7 @@ function M(t) {
 function k(t) {
   return document.querySelector(t)?.textContent?.trim() ?? "";
 }
-function $() {
+function K() {
   const t = document.querySelector(
     'script[type="application/json"][data-quests-config]'
   );
@@ -720,16 +725,16 @@ function $() {
     return null;
   }
 }
-function K(t) {
+function $(t) {
   const e = t.getAttribute("data-endpoint");
   if (!e) return null;
-  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), o = t.getAttribute("data-zindex"), r = t.getAttribute("data-positive-color"), h = t.getAttribute("data-negative-color"), p = t.getAttribute("data-marker-color"), f = t.getAttribute("data-modal-width"), g = t.getAttribute("data-backdrop-opacity"), s = t.getAttribute("data-font-family"), c = t.getAttribute("data-font-size"), l = t.getAttribute("data-css-selector"), m = t.getAttribute("data-auto-advance"), q = t.getAttribute("data-save-debounce-ms");
+  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), s = t.getAttribute("data-zindex"), r = t.getAttribute("data-positive-color"), h = t.getAttribute("data-negative-color"), p = t.getAttribute("data-marker-color"), f = t.getAttribute("data-modal-width"), g = t.getAttribute("data-backdrop-opacity"), o = t.getAttribute("data-font-family"), c = t.getAttribute("data-font-size"), l = t.getAttribute("data-css-selector"), m = t.getAttribute("data-auto-advance"), q = t.getAttribute("data-save-debounce-ms");
   return {
     endpoint: e,
     configUrl: i ?? void 0,
     apiKey: a ?? void 0,
     container: n ?? void 0,
-    zIndex: o ? parseInt(o, 10) : void 0,
+    zIndex: s ? parseInt(s, 10) : void 0,
     colors: {
       positive: r ?? void 0,
       negative: h ?? void 0,
@@ -737,7 +742,7 @@ function K(t) {
     },
     modalWidth: f ? parseInt(f, 10) : void 0,
     backdropOpacity: g ? parseFloat(g) : void 0,
-    fontFamily: s ?? void 0,
+    fontFamily: o ?? void 0,
     fontSize: c ? parseInt(c, 10) : void 0,
     css: l ? k(l) : void 0,
     autoAdvance: m === "true" ? !0 : void 0,
@@ -746,13 +751,13 @@ function K(t) {
 }
 if (typeof document < "u") {
   const t = () => {
-    const e = document.currentScript, i = $(), a = e ? K(e) : null, n = i ?? a;
-    n?.endpoint && (n.configUrl || n.questionnaire) && new j(n);
+    const e = document.currentScript, i = K(), a = e ? $(e) : null, n = i ?? a;
+    n?.endpoint && (n.configUrl || n.questionnaire) && new R(n);
   };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", t) : t();
 }
 export {
-  j as QaidQuests,
+  R as QaidQuests,
   y as evaluateRule,
   F as getVisibleQuestions
 };

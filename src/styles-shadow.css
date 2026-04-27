@@ -179,6 +179,15 @@ button {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* `animate: false` (e.g. dashboard preview) — kill the entry animations
+ * so the form doesn't flash up on every re-mount. The progress-fill
+ * width transition + saving-dot pulse are kept; they're status signals,
+ * not motion the user is staring at. */
+.qaid-q-no-motion .qaid-q-step,
+.qaid-q-no-motion.qaid-q-root {
+  animation: none !important;
+}
+
 .qaid-q-label {
   font-size: 1.125em;
   font-weight: 600;

@@ -221,7 +221,13 @@ export class QaidQuests {
     }
 
     this.rootEl = document.createElement("div");
-    this.rootEl.className = `qaid-q-root${this.isUserContainer ? " qaid-q-inline" : ""}`;
+    this.rootEl.className = [
+      "qaid-q-root",
+      this.isUserContainer ? "qaid-q-inline" : "",
+      this.config.animate ? "" : "qaid-q-no-motion",
+    ]
+      .filter(Boolean)
+      .join(" ");
     applyCssVars(this.rootEl, this.cssVars);
 
     if (!this.isUserContainer) {
