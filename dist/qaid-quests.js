@@ -1,64 +1,64 @@
-const k = '*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}.qaid-q-root{font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:light-dark(#1f2937,#f9fafb)}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:light-dark(#ffffff,#1f2937);color:light-dark(#1f2937,#f9fafb);border-radius:1rem;box-shadow:0 25px 50px -12px light-dark(rgba(0,0,0,.25),rgba(0,0,0,.6));padding:1.5rem;overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid light-dark(#e5e7eb,#374151);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:light-dark(#1f2937,#f9fafb)}.qaid-q-step-counter{font-size:.875em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:light-dark(#6b7280,#9ca3af);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:light-dark(#f3f4f6,#374151);color:light-dark(#1f2937,#f9fafb)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:light-dark(#e5e7eb,#374151);border-radius:9999px;overflow:hidden;margin-bottom:1.25rem}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-positive, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto}.qaid-q-step{display:flex;flex-direction:column;gap:.75rem;animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:light-dark(#1f2937,#f9fafb);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-negative, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:light-dark(#6b7280,#9ca3af);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-negative, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:.75rem .875rem;border:1px solid light-dark(#d1d5db,#374151);border-radius:.625rem;font-family:inherit;font-size:1em;background:light-dark(#ffffff,#111827);color:light-dark(#1f2937,#f9fafb);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:light-dark(#9ca3af,#6b7280)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:light-dark(#6b7280,#9ca3af);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-positive, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:light-dark(#6b7280,#9ca3af);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:light-dark(#e5e7eb,#374151);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:.75rem .875rem;border:1px solid light-dark(#e5e7eb,#374151);border-radius:.625rem;background:light-dark(#ffffff,#111827);text-align:left;font-size:1em;color:light-dark(#1f2937,#f9fafb);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:light-dark(#9ca3af,#4b5563);background:light-dark(#f9fafb,#1f2937)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-positive, #10b981);background:color-mix(in srgb,var(--qaid-positive, #10b981) 10%,transparent)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid light-dark(#d1d5db,#4b5563);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:light-dark(#ffffff,#111827);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-positive, #10b981);background:var(--qaid-positive, #10b981)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:light-dark(#ffffff,#1f2937)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.625rem;height:.625rem;border-radius:0;background:transparent;border-right:2px solid light-dark(#ffffff,#1f2937);border-bottom:2px solid light-dark(#ffffff,#1f2937);transform:rotate(45deg) translate(-1px,-2px)}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:light-dark(#f3f4f6,#374151);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:light-dark(#6b7280,#9ca3af);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:1.25rem}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:.625rem 1.125rem;border-radius:.5rem;font-size:.9375em;font-weight:500;border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:transparent;border-color:light-dark(#d1d5db,#4b5563);color:light-dark(#374151,#d1d5db)}.qaid-q-btn-secondary:hover{background:light-dark(#f3f4f6,#374151)}.qaid-q-btn-primary{background:var(--qaid-positive, #10b981);color:var(--qaid-positive-text, #ffffff);border-color:transparent}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-hint{font-size:.75em;color:light-dark(#6b7280,#9ca3af)}.qaid-q-hint kbd{display:inline-block;padding:.05rem .35rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);border:1px solid light-dark(#e5e7eb,#4b5563);font-family:inherit;font-size:.7em;font-weight:600;color:light-dark(#374151,#e5e7eb)}.qaid-q-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.5rem;padding:1.5rem 0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-positive, #10b981) 18%,transparent);color:var(--qaid-positive, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:light-dark(#6b7280,#9ca3af);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:light-dark(#6b7280,#9ca3af);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-positive, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}';
-function w(t, e, i) {
-  const [a, n, s] = [t, e, i].map((r) => (r = r / 255, r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)));
-  return 0.2126 * a + 0.7152 * n + 0.0722 * s;
+const w = '*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}.qaid-q-root{font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:light-dark(#1f2937,#f9fafb)}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:light-dark(#ffffff,#1f2937);color:light-dark(#1f2937,#f9fafb);border-radius:1rem;box-shadow:0 25px 50px -12px light-dark(rgba(0,0,0,.25),rgba(0,0,0,.6));padding:1.5rem;overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid light-dark(#e5e7eb,#374151);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:light-dark(#1f2937,#f9fafb)}.qaid-q-step-counter{font-size:.875em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:light-dark(#6b7280,#9ca3af);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:light-dark(#f3f4f6,#374151);color:light-dark(#1f2937,#f9fafb)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:light-dark(#e5e7eb,#374151);border-radius:9999px;overflow:hidden;margin-bottom:1.25rem}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-positive, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto}.qaid-q-step{display:flex;flex-direction:column;gap:.75rem;animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:light-dark(#1f2937,#f9fafb);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-negative, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:light-dark(#6b7280,#9ca3af);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-negative, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:.75rem .875rem;border:1px solid light-dark(#d1d5db,#374151);border-radius:.625rem;font-family:inherit;font-size:1em;background:light-dark(#ffffff,#111827);color:light-dark(#1f2937,#f9fafb);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:light-dark(#9ca3af,#6b7280)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:light-dark(#6b7280,#9ca3af);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-positive, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:light-dark(#6b7280,#9ca3af);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:light-dark(#e5e7eb,#374151);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--qaid-positive, #10b981);border:3px solid light-dark(#ffffff,#1f2937);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:.75rem .875rem;border:1px solid light-dark(#e5e7eb,#374151);border-radius:.625rem;background:light-dark(#ffffff,#111827);text-align:left;font-size:1em;color:light-dark(#1f2937,#f9fafb);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:light-dark(#9ca3af,#4b5563);background:light-dark(#f9fafb,#1f2937)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-marker, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-positive, #10b981);background:color-mix(in srgb,var(--qaid-positive, #10b981) 10%,transparent)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid light-dark(#d1d5db,#4b5563);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:light-dark(#ffffff,#111827);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-positive, #10b981);background:var(--qaid-positive, #10b981)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:light-dark(#ffffff,#1f2937)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.625rem;height:.625rem;border-radius:0;background:transparent;border-right:2px solid light-dark(#ffffff,#1f2937);border-bottom:2px solid light-dark(#ffffff,#1f2937);transform:rotate(45deg) translate(-1px,-2px)}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:light-dark(#f3f4f6,#374151);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:light-dark(#6b7280,#9ca3af);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);color:light-dark(#6b7280,#9ca3af);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:1.25rem}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:.625rem 1.125rem;border-radius:.5rem;font-size:.9375em;font-weight:500;border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-marker, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:transparent;border-color:light-dark(#d1d5db,#4b5563);color:light-dark(#374151,#d1d5db)}.qaid-q-btn-secondary:hover{background:light-dark(#f3f4f6,#374151)}.qaid-q-btn-primary{background:var(--qaid-positive, #10b981);color:var(--qaid-positive-text, #ffffff);border-color:transparent}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-hint{font-size:.75em;color:light-dark(#6b7280,#9ca3af)}.qaid-q-hint kbd{display:inline-block;padding:.05rem .35rem;border-radius:.25rem;background:light-dark(#f3f4f6,#374151);border:1px solid light-dark(#e5e7eb,#4b5563);font-family:inherit;font-size:.7em;font-weight:600;color:light-dark(#374151,#e5e7eb)}.qaid-q-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.5rem;padding:1.5rem 0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-positive, #10b981) 18%,transparent);color:var(--qaid-positive, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:light-dark(#6b7280,#9ca3af);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:light-dark(#6b7280,#9ca3af);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-positive, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}';
+function C(t, e, i) {
+  const [a, n, o] = [t, e, i].map((r) => (r = r / 255, r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)));
+  return 0.2126 * a + 0.7152 * n + 0.0722 * o;
 }
-function C(t) {
+function S(t) {
   if (t.startsWith("#")) {
-    const i = t.slice(1), a = i.length === 3 ? i.split("").map((s) => s + s).join("") : i, n = parseInt(a, 16);
+    const i = t.slice(1), a = i.length === 3 ? i.split("").map((o) => o + o).join("") : i, n = parseInt(a, 16);
     return { r: n >> 16 & 255, g: n >> 8 & 255, b: n & 255 };
   }
   const e = t.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
   return e ? { r: parseInt(e[1]), g: parseInt(e[2]), b: parseInt(e[3]) } : null;
 }
-function y(t) {
-  const e = C(t);
-  return e && w(e.r, e.g, e.b) > 0.4 ? "black" : "white";
+function x(t) {
+  const e = S(t);
+  return e && C(e.r, e.g, e.b) > 0.4 ? "black" : "white";
 }
-function S(t = {}) {
+function N(t = {}) {
   const {
     positiveColor: e = "#10b981",
     negativeColor: i = "#ef4444",
     markerColor: a = "#6366f1",
     modalWidth: n = 480,
-    backdropOpacity: s = 0.4,
+    backdropOpacity: o = 0.4,
     fontFamily: r = "system-ui, -apple-system, sans-serif",
-    fontSize: p = 16
+    fontSize: h = 16
   } = t;
   return {
     "--qaid-positive": e,
-    "--qaid-positive-text": y(e),
+    "--qaid-positive-text": x(e),
     "--qaid-negative": i,
     "--qaid-marker": a,
-    "--qaid-marker-text": y(a),
+    "--qaid-marker-text": x(a),
     "--qaid-modal-width": `${n}px`,
-    "--qaid-backdrop-opacity": String(s),
+    "--qaid-backdrop-opacity": String(o),
     "--qaid-font-family": r,
-    "--qaid-font-size": `${p}px`
+    "--qaid-font-size": `${h}px`
   };
 }
-function N(t, e) {
+function A(t, e) {
   for (const [i, a] of Object.entries(e))
     t.style.setProperty(i, a);
 }
-function A() {
-  return k;
+function I() {
+  return w;
 }
-function I(t) {
+function L(t) {
   switch (t.question.type) {
     case "text":
-      return L(t.question, t);
+      return z(t.question, t);
     case "currency":
-      return V(t.question, t);
+      return T(t.question, t);
     case "range":
-      return D(t.question, t);
+      return P(t.question, t);
     case "date":
       return H(t.question, t);
     case "multiple-choice":
       return O(t.question, t);
   }
 }
-function L(t, e) {
+function z(t, e) {
   const i = typeof e.initialValue == "string" ? e.initialValue : "";
   let a;
   if (t.multiline) {
@@ -66,7 +66,7 @@ function L(t, e) {
     n.className = "qaid-q-textarea", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), a = n;
   } else {
     const n = document.createElement("input");
-    n.className = "qaid-q-input", n.type = t.inputType ?? "text", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), n.setAttribute("autocomplete", z(t.inputType)), a = n;
+    n.className = "qaid-q-input", n.type = t.inputType ?? "text", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), n.setAttribute("autocomplete", V(t.inputType)), a = n;
   }
   return a.setAttribute("aria-label", t.label), a.addEventListener("input", () => {
     e.onChange(a.value);
@@ -96,7 +96,7 @@ function L(t, e) {
     }
   };
 }
-function z(t) {
+function V(t) {
   switch (t) {
     case "email":
       return "email";
@@ -108,74 +108,74 @@ function z(t) {
       return "off";
   }
 }
-function V(t, e) {
+function T(t, e) {
   const i = document.createElement("div");
   i.className = "qaid-q-currency";
   const a = document.createElement("span");
-  a.className = "qaid-q-currency-prefix", a.textContent = T(t.currency ?? "USD", t.locale), i.appendChild(a);
+  a.className = "qaid-q-currency-prefix", a.textContent = D(t.currency ?? "USD", t.locale), i.appendChild(a);
   const n = document.createElement("input");
   return n.className = "qaid-q-input", n.type = "number", n.inputMode = "decimal", n.step = "0.01", typeof t.min == "number" && (n.min = String(t.min)), typeof t.max == "number" && (n.max = String(t.max)), t.placeholder && (n.placeholder = t.placeholder), typeof e.initialValue == "number" ? n.value = String(e.initialValue) : typeof e.initialValue == "string" && e.initialValue !== "" && (n.value = e.initialValue), n.setAttribute("aria-label", t.label), n.addEventListener("input", () => {
-    const s = n.value;
-    if (s === "")
+    const o = n.value;
+    if (o === "")
       e.onChange(null);
     else {
-      const r = Number(s);
+      const r = Number(o);
       e.onChange(Number.isNaN(r) ? null : r);
     }
-  }), n.addEventListener("keydown", (s) => {
-    s.key === "Enter" && !s.isComposing && (s.preventDefault(), e.onSubmit());
+  }), n.addEventListener("keydown", (o) => {
+    o.key === "Enter" && !o.isComposing && (o.preventDefault(), e.onSubmit());
   }), i.appendChild(n), {
     element: i,
     focus: () => n.focus(),
     getValue: () => {
       if (n.value === "") return null;
-      const s = Number(n.value);
-      return Number.isNaN(s) ? null : s;
+      const o = Number(n.value);
+      return Number.isNaN(o) ? null : o;
     },
     isValid: () => {
-      const s = n.value === "" ? null : Number(n.value);
-      return !(t.required && (s === null || Number.isNaN(s)) || s !== null && !Number.isNaN(s) && (typeof t.min == "number" && s < t.min || typeof t.max == "number" && s > t.max));
+      const o = n.value === "" ? null : Number(n.value);
+      return !(t.required && (o === null || Number.isNaN(o)) || o !== null && !Number.isNaN(o) && (typeof t.min == "number" && o < t.min || typeof t.max == "number" && o > t.max));
     }
   };
 }
-function T(t, e) {
+function D(t, e) {
   try {
     return new Intl.NumberFormat(e, {
       style: "currency",
       currency: t,
       currencyDisplay: "narrowSymbol",
       maximumFractionDigits: 0
-    }).formatToParts(0).find((s) => s.type === "currency")?.value ?? t;
+    }).formatToParts(0).find((o) => o.type === "currency")?.value ?? t;
   } catch {
     return t;
   }
 }
-function D(t, e) {
+function P(t, e) {
   const i = document.createElement("div");
   i.className = "qaid-q-range-wrap";
   const a = document.createElement("div");
   a.className = "qaid-q-range-value";
   const n = document.createElement("span");
   if (a.appendChild(n), t.unit) {
-    const o = document.createElement("span");
-    o.className = "qaid-q-range-unit", o.textContent = t.unit, a.appendChild(o);
+    const s = document.createElement("span");
+    s.className = "qaid-q-range-unit", s.textContent = t.unit, a.appendChild(s);
   }
-  const s = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, r = document.createElement("input");
-  r.className = "qaid-q-range", r.type = "range", r.min = String(t.min), r.max = String(t.max), r.step = String(t.step ?? 1), r.value = String(s), r.setAttribute("aria-label", t.label), r.setAttribute("aria-valuemin", String(t.min)), r.setAttribute("aria-valuemax", String(t.max));
-  const p = () => {
+  const o = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, r = document.createElement("input");
+  r.className = "qaid-q-range", r.type = "range", r.min = String(t.min), r.max = String(t.max), r.step = String(t.step ?? 1), r.value = String(o), r.setAttribute("aria-label", t.label), r.setAttribute("aria-valuemin", String(t.min)), r.setAttribute("aria-valuemax", String(t.max));
+  const h = () => {
     n.textContent = r.value, r.setAttribute("aria-valuenow", r.value);
   };
-  p(), r.addEventListener("input", () => {
-    p(), e.onChange(Number(r.value));
-  }), r.addEventListener("keydown", (o) => {
-    o.key === "Enter" && (o.preventDefault(), e.onSubmit());
+  h(), r.addEventListener("input", () => {
+    h(), e.onChange(Number(r.value));
+  }), r.addEventListener("keydown", (s) => {
+    s.key === "Enter" && (s.preventDefault(), e.onSubmit());
   });
-  const h = document.createElement("div");
-  h.className = "qaid-q-range-bounds";
+  const p = document.createElement("div");
+  p.className = "qaid-q-range-bounds";
   const f = document.createElement("span");
   f.textContent = `${t.min}${t.unit ?? ""}`;
-  const m = document.createElement("span");
-  return m.textContent = `${t.max}${t.unit ?? ""}`, h.appendChild(f), h.appendChild(m), i.appendChild(a), i.appendChild(r), i.appendChild(h), queueMicrotask(() => e.onChange(Number(r.value))), {
+  const g = document.createElement("span");
+  return g.textContent = `${t.max}${t.unit ?? ""}`, p.appendChild(f), p.appendChild(g), i.appendChild(a), i.appendChild(r), i.appendChild(p), queueMicrotask(() => e.onChange(Number(r.value))), {
     element: i,
     focus: () => r.focus(),
     getValue: () => Number(r.value),
@@ -196,106 +196,106 @@ function H(t, e) {
   };
 }
 function O(t, e) {
-  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", s = t.options.some((o) => !!o.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
-  i.className = `qaid-q-options${s}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label);
+  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", o = t.options.some((s) => !!s.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
+  i.className = `qaid-q-options${o}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label);
   const r = /* @__PURE__ */ new Set();
   if (t.multiple && Array.isArray(e.initialValue))
-    for (const o of e.initialValue) r.add(o);
+    for (const s of e.initialValue) r.add(s);
   else !t.multiple && typeof e.initialValue == "string" && r.add(e.initialValue);
-  const p = [];
-  t.options.forEach((o, c) => {
-    const u = document.createElement("button");
-    u.type = "button", u.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, u.dataset.value = o.value, u.setAttribute("role", t.multiple ? "checkbox" : "radio"), u.setAttribute("aria-checked", r.has(o.value) ? "true" : "false"), r.has(o.value) && u.classList.add("qaid-q-selected");
-    const g = document.createElement("span");
-    g.className = "qaid-q-option-marker", g.setAttribute("aria-hidden", "true");
-    const l = document.createElement("span");
-    if (l.className = "qaid-q-option-body", o.image) {
+  const h = [];
+  t.options.forEach((s, c) => {
+    const l = document.createElement("button");
+    l.type = "button", l.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, l.dataset.value = s.value, l.setAttribute("role", t.multiple ? "checkbox" : "radio"), l.setAttribute("aria-checked", r.has(s.value) ? "true" : "false"), r.has(s.value) && l.classList.add("qaid-q-selected");
+    const m = document.createElement("span");
+    m.className = "qaid-q-option-marker", m.setAttribute("aria-hidden", "true");
+    const q = document.createElement("span");
+    if (q.className = "qaid-q-option-body", s.image) {
       const d = document.createElement("img");
-      d.className = "qaid-q-option-image", d.src = o.image, d.alt = "", d.loading = "lazy", d.decoding = "async", l.appendChild(d);
+      d.className = "qaid-q-option-image", d.src = s.image, d.alt = "", d.loading = "lazy", d.decoding = "async", q.appendChild(d);
     }
-    const b = document.createElement("span");
-    if (b.className = "qaid-q-option-label", b.textContent = o.label, l.appendChild(b), o.description) {
+    const u = document.createElement("span");
+    if (u.className = "qaid-q-option-label", u.textContent = s.label, q.appendChild(u), s.description) {
       const d = document.createElement("span");
-      d.className = "qaid-q-option-desc", d.textContent = o.description, l.appendChild(d);
+      d.className = "qaid-q-option-desc", d.textContent = s.description, q.appendChild(d);
     }
-    if (u.appendChild(g), u.appendChild(l), c < 9) {
+    if (l.appendChild(m), l.appendChild(q), c < 9) {
       const d = document.createElement("span");
-      d.className = "qaid-q-option-key", d.textContent = String(c + 1), d.setAttribute("aria-hidden", "true"), u.appendChild(d);
+      d.className = "qaid-q-option-key", d.textContent = String(c + 1), d.setAttribute("aria-hidden", "true"), l.appendChild(d);
     }
-    u.addEventListener("click", () => f(c)), u.addEventListener("keydown", (d) => {
+    l.addEventListener("click", () => f(c)), l.addEventListener("keydown", (d) => {
       if (d.key === "ArrowDown" || d.key === "ArrowRight") {
-        d.preventDefault(), h((c + 1) % p.length);
+        d.preventDefault(), p((c + 1) % h.length);
         return;
       }
       if (d.key === "ArrowUp" || d.key === "ArrowLeft") {
-        d.preventDefault(), h((c - 1 + p.length) % p.length);
+        d.preventDefault(), p((c - 1 + h.length) % h.length);
         return;
       }
       !t.multiple && d.key === "Enter" && r.size > 0 && (d.preventDefault(), e.onSubmit());
-    }), p.push(u), i.appendChild(u);
-  }), i.addEventListener("keydown", (o) => {
-    const c = o.key;
+    }), h.push(l), i.appendChild(l);
+  }), i.addEventListener("keydown", (s) => {
+    const c = s.key;
     if (c.length === 1 && c >= "1" && c <= "9") {
-      const u = parseInt(c, 10) - 1;
-      u < p.length && (o.preventDefault(), f(u), h(u));
+      const l = parseInt(c, 10) - 1;
+      l < h.length && (s.preventDefault(), f(l), p(l));
     }
   });
-  function h(o) {
-    p[o]?.focus();
+  function p(s) {
+    h[s]?.focus();
   }
-  function f(o) {
-    const c = t.options[o].value;
-    t.multiple ? r.has(c) ? r.delete(c) : r.add(c) : (r.clear(), r.add(c)), p.forEach((u) => {
-      const g = u.dataset.value, l = r.has(g);
-      u.classList.toggle("qaid-q-selected", l), u.setAttribute("aria-checked", l ? "true" : "false");
-    }), e.onChange(m()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
+  function f(s) {
+    const c = t.options[s].value;
+    t.multiple ? r.has(c) ? r.delete(c) : r.add(c) : (r.clear(), r.add(c)), h.forEach((l) => {
+      const m = l.dataset.value, q = r.has(m);
+      l.classList.toggle("qaid-q-selected", q), l.setAttribute("aria-checked", q ? "true" : "false");
+    }), e.onChange(g()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
   }
-  function m() {
+  function g() {
     if (t.multiple) return Array.from(r);
-    const o = r.values().next();
-    return o.done ? null : o.value;
+    const s = r.values().next();
+    return s.done ? null : s.value;
   }
   return {
     element: i,
     focus: () => {
-      (p.find((c) => c.classList.contains("qaid-q-selected")) ?? p[0])?.focus();
+      (h.find((c) => c.classList.contains("qaid-q-selected")) ?? h[0])?.focus();
     },
-    getValue: () => m(),
+    getValue: () => g(),
     isValid: () => t.required ? r.size > 0 : !0
   };
 }
 function F(t, e) {
   return t.questions.filter(
-    (i) => i.visibleIf ? v(i.visibleIf, e) : !0
+    (i) => i.visibleIf ? y(i.visibleIf, e) : !0
   );
 }
-function v(t, e) {
+function y(t, e) {
   if ("allOf" in t) {
     for (const n of t.allOf)
-      if (!v(n, e)) return !1;
+      if (!y(n, e)) return !1;
     return !0;
   }
   if ("anyOf" in t) {
     for (const n of t.anyOf)
-      if (v(n, e)) return !0;
+      if (y(n, e)) return !0;
     return !1;
   }
   const i = e[t.questionId], a = i != null && !(typeof i == "string" && i.trim() === "") && !(Array.isArray(i) && i.length === 0);
-  return "answered" in t ? t.answered ? a : !a : a ? "equals" in t ? q(i, t.equals) : "notEquals" in t ? !q(i, t.notEquals) : "in" in t ? t.in.some((n) => q(i, n)) : !1 : !1;
+  return "answered" in t ? t.answered ? a : !a : a ? "equals" in t ? v(i, t.equals) : "notEquals" in t ? !v(i, t.notEquals) : "in" in t ? t.in.some((n) => v(i, n)) : !1 : !1;
 }
-function q(t, e) {
+function v(t, e) {
   return Array.isArray(t) ? t.some((i) => i === e) : t === e;
 }
-const x = "qaid_visitor_id";
-function P() {
+const E = "qaid_visitor_id";
+function Q() {
   try {
-    let t = localStorage.getItem(x);
-    return t || (t = crypto.randomUUID(), localStorage.setItem(x, t)), t;
+    let t = localStorage.getItem(E);
+    return t || (t = crypto.randomUUID(), localStorage.setItem(E, t)), t;
   } catch {
     return crypto.randomUUID();
   }
 }
-const Q = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', U = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+const U = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', R = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
 class j {
   config;
   questionnaire = null;
@@ -361,11 +361,15 @@ class j {
       autoAdvance: e.autoAdvance ?? !1,
       saveDebounceMs: e.saveDebounceMs ?? 500,
       autoFocus: e.autoFocus ?? !0,
-      progressPosition: e.progressPosition ?? "top"
-    }, this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = P(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
+      // Don't default here — we want to fall through to the
+      // questionnaire's `progressPosition` when the host didn't
+      // explicitly set one. effectiveProgressPosition() handles the
+      // final fallback to "top".
+      progressPosition: e.progressPosition
+    }, this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = Q(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
   }
   async init() {
-    this.cssVars = S({
+    this.cssVars = N({
       positiveColor: this.config.colors.positive,
       negativeColor: this.config.colors.negative,
       markerColor: this.config.colors.marker,
@@ -411,11 +415,11 @@ class j {
     const e = this.config.container ? document.querySelector(this.config.container) : null;
     e ? (this.shadowHost.style.display = "block", this.shadowHost.style.height = "100%", this.shadowHost.style.minHeight = "0", e.appendChild(this.shadowHost), this.isUserContainer = !0) : (this.shadowHost.style.position = "fixed", this.shadowHost.style.inset = "0", this.shadowHost.style.zIndex = String(this.config.zIndex), this.shadowHost.style.pointerEvents = "none", document.body.appendChild(this.shadowHost)), this.shadowRoot = this.shadowHost.attachShadow({ mode: "open" });
     const i = document.createElement("style");
-    if (i.textContent = A(), this.shadowRoot.appendChild(i), this.config.css) {
+    if (i.textContent = I(), this.shadowRoot.appendChild(i), this.config.css) {
       const a = document.createElement("style");
       a.textContent = this.config.css, this.shadowRoot.appendChild(a);
     }
-    if (this.rootEl = document.createElement("div"), this.rootEl.className = `qaid-q-root${this.isUserContainer ? " qaid-q-inline" : ""}`, N(this.rootEl, this.cssVars), this.isUserContainer)
+    if (this.rootEl = document.createElement("div"), this.rootEl.className = `qaid-q-root${this.isUserContainer ? " qaid-q-inline" : ""}`, A(this.rootEl, this.cssVars), this.isUserContainer)
       this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", this.rootEl.appendChild(this.cardEl);
     else {
       this.backdropEl = document.createElement("div"), this.backdropEl.className = "qaid-q-backdrop", this.backdropEl.addEventListener("click", () => this.close()), this.rootEl.appendChild(this.backdropEl);
@@ -438,33 +442,36 @@ class j {
     const a = document.createElement("p");
     a.className = "qaid-q-description", a.textContent = e instanceof Error ? e.message : String(e), this.cardEl.appendChild(i), this.cardEl.appendChild(a);
   }
+  effectiveProgressPosition() {
+    return this.config.progressPosition ?? this.questionnaire?.progressPosition ?? "top";
+  }
   renderHeader() {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
-    const e = this.config.progressPosition === "bottom", i = !!this.questionnaire.title, a = !!this.questionnaire.description, n = !this.isUserContainer;
+    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", a = !!this.questionnaire.hideTitle, n = !!this.questionnaire.title && !a, o = !!this.questionnaire.description && !a, r = !this.isUserContainer, h = r || !i && !e;
     this.savingEl = document.createElement("div"), this.savingEl.className = "qaid-q-saving";
-    const s = document.createElement("span");
-    s.className = "qaid-q-saving-dot";
-    const r = document.createElement("span");
-    r.textContent = "Saving…", this.savingEl.appendChild(s), this.savingEl.appendChild(r), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = e ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
-    const p = i || n || !e;
-    if (p) {
-      const h = document.createElement("div");
-      h.className = "qaid-q-header";
-      const f = document.createElement("div");
-      i && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, f.appendChild(this.titleEl));
-      const m = document.createElement("div");
-      if (m.style.display = "flex", m.style.alignItems = "center", m.style.gap = "0.5rem", e || (m.appendChild(this.savingEl), m.appendChild(this.stepCounterEl)), n) {
-        const o = document.createElement("button");
-        o.type = "button", o.className = "qaid-q-close", o.setAttribute("aria-label", "Close form"), o.innerHTML = Q, o.addEventListener("click", () => this.close()), m.appendChild(o);
+    const p = document.createElement("span");
+    p.className = "qaid-q-saving-dot";
+    const f = document.createElement("span");
+    f.textContent = "Saving…", this.savingEl.appendChild(p), this.savingEl.appendChild(f), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
+    const g = n || h;
+    if (g) {
+      const s = document.createElement("div");
+      s.className = "qaid-q-header";
+      const c = document.createElement("div");
+      n && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, c.appendChild(this.titleEl));
+      const l = document.createElement("div");
+      if (l.style.display = "flex", l.style.alignItems = "center", l.style.gap = "0.5rem", i || (l.appendChild(this.savingEl), e || l.appendChild(this.stepCounterEl)), r) {
+        const m = document.createElement("button");
+        m.type = "button", m.className = "qaid-q-close", m.setAttribute("aria-label", "Close form"), m.innerHTML = U, m.addEventListener("click", () => this.close()), l.appendChild(m);
       }
-      h.appendChild(f), h.appendChild(m), this.cardEl.appendChild(h);
+      s.appendChild(c), s.appendChild(l), this.cardEl.appendChild(s);
     }
-    if (a) {
-      const h = document.createElement("p");
-      h.className = "qaid-q-description", h.textContent = this.questionnaire.description, h.style.marginTop = p ? "-0.5rem" : "0", h.style.marginBottom = "0.75rem", this.cardEl.appendChild(h);
+    if (o) {
+      const s = document.createElement("p");
+      s.className = "qaid-q-description", s.textContent = this.questionnaire.description, s.style.marginTop = g ? "-0.5rem" : "0", s.style.marginBottom = "0.75rem", this.cardEl.appendChild(s);
     }
-    e || this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl);
+    !i && !e && this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl);
   }
   // ------------------------------------------------------------------
   // Step rendering
@@ -479,50 +486,50 @@ class j {
     this.stepIndex >= e && (this.stepIndex = e - 1);
     const i = this.stepIndex, a = this.visibleQuestions[i];
     if (this.stepCounterEl && (this.stepCounterEl.textContent = `${i + 1} / ${e}`), this.progressFillEl) {
-      const l = (i + 1) / e * 100;
-      this.progressFillEl.style.width = `${l}%`;
+      const u = (i + 1) / e * 100;
+      this.progressFillEl.style.width = `${u}%`;
     }
     const n = document.createElement("div");
     n.className = "qaid-q-step", n.setAttribute("role", "group"), n.setAttribute("aria-labelledby", `qaid-q-label-${i}`);
-    const s = document.createElement("label");
-    if (s.id = `qaid-q-label-${i}`, s.className = "qaid-q-label", s.textContent = a.label, a.required) {
-      const l = document.createElement("span");
-      l.className = "qaid-q-required", l.textContent = "*", l.setAttribute("aria-label", "required"), s.appendChild(l);
+    const o = document.createElement("label");
+    if (o.id = `qaid-q-label-${i}`, o.className = "qaid-q-label", o.textContent = a.label, a.required) {
+      const u = document.createElement("span");
+      u.className = "qaid-q-required", u.textContent = "*", u.setAttribute("aria-label", "required"), o.appendChild(u);
     }
-    if (n.appendChild(s), a.description) {
-      const l = document.createElement("p");
-      l.className = "qaid-q-description", l.textContent = a.description, n.appendChild(l);
+    if (n.appendChild(o), a.description) {
+      const u = document.createElement("p");
+      u.className = "qaid-q-description", u.textContent = a.description, n.appendChild(u);
     }
     const r = document.createElement("p");
     r.className = "qaid-q-error", r.setAttribute("aria-live", "polite");
-    const p = this.answers[a.id] ?? null, h = i === e - 1, f = I({
+    const h = this.answers[a.id] ?? null, p = i === e - 1, f = L({
       question: a,
-      initialValue: p,
-      onChange: (l) => {
-        this.handleAnswerChange(a, l), r.textContent && (r.textContent = "");
+      initialValue: h,
+      onChange: (u) => {
+        this.handleAnswerChange(a, u), r.textContent && (r.textContent = "");
       },
       onSubmit: () => this.advance(a, r),
       onAutoAdvance: () => this.advance(a, r),
       autoAdvance: this.config.autoAdvance
     });
     this.currentInput = f, n.appendChild(f.element), n.appendChild(r), this.bodyEl.replaceChildren(n), this.footerEl.replaceChildren();
-    const m = this.config.progressPosition === "bottom", o = i > 0 ? (() => {
-      const l = document.createElement("button");
-      return l.type = "button", l.className = "qaid-q-btn qaid-q-btn-secondary", l.textContent = this.questionnaire.backLabel ?? "Back", l.addEventListener("click", () => this.back()), l;
-    })() : null, c = document.createElement("button");
-    if (c.type = "button", c.className = "qaid-q-btn qaid-q-btn-primary", c.textContent = h ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", c.addEventListener("click", () => this.advance(a, r)), m)
-      this.footerEl.classList.add("qaid-q-footer--inline-progress"), o && this.footerEl.appendChild(o), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(c);
+    const s = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = i > 0 ? (() => {
+      const u = document.createElement("button");
+      return u.type = "button", u.className = "qaid-q-btn qaid-q-btn-secondary", u.textContent = this.questionnaire.backLabel ?? "Back", u.addEventListener("click", () => this.back()), u;
+    })() : null, l = document.createElement("button");
+    if (l.type = "button", l.className = "qaid-q-btn qaid-q-btn-primary", l.textContent = p ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", l.addEventListener("click", () => this.advance(a, r)), s)
+      this.footerEl.classList.add("qaid-q-footer--inline-progress"), c && this.footerEl.appendChild(c), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(l);
     else {
       this.footerEl.classList.remove("qaid-q-footer--inline-progress");
-      const l = document.createElement("div");
-      l.className = "qaid-q-footer-left";
-      const b = document.createElement("div");
-      b.className = "qaid-q-footer-right", o && l.appendChild(o);
-      const d = document.createElement("span");
-      d.className = "qaid-q-hint", d.innerHTML = h ? "<kbd>Enter</kbd> to submit" : "<kbd>Enter</kbd> to continue", b.appendChild(d), b.appendChild(c), this.footerEl.appendChild(l), this.footerEl.appendChild(b);
+      const u = document.createElement("div");
+      u.className = "qaid-q-footer-left";
+      const d = document.createElement("div");
+      d.className = "qaid-q-footer-right", c && u.appendChild(c);
+      const b = document.createElement("span");
+      b.className = "qaid-q-hint", b.innerHTML = p ? "<kbd>Enter</kbd> to submit" : "<kbd>Enter</kbd> to continue", d.appendChild(b), d.appendChild(l), this.footerEl.appendChild(u), this.footerEl.appendChild(d);
     }
-    const u = !this.hasRenderedStep;
-    this.hasRenderedStep = !0, (!u || this.config.autoFocus) && requestAnimationFrame(() => f.focus());
+    const m = !this.hasRenderedStep;
+    this.hasRenderedStep = !0, (!m || this.config.autoFocus) && requestAnimationFrame(() => f.focus());
   }
   renderDone() {
     if (!this.cardEl || !this.questionnaire) return;
@@ -530,7 +537,7 @@ class j {
     const e = document.createElement("div");
     e.className = "qaid-q-done";
     const i = document.createElement("div");
-    i.className = "qaid-q-done-icon", i.innerHTML = U, e.appendChild(i);
+    i.className = "qaid-q-done-icon", i.innerHTML = R, e.appendChild(i);
     const a = document.createElement("h3");
     if (a.className = "qaid-q-done-title", a.textContent = this.questionnaire.thankYouTitle ?? "Thank you!", e.appendChild(a), this.questionnaire.thankYouMessage) {
       const n = document.createElement("p");
@@ -548,7 +555,7 @@ class j {
   advance(e, i) {
     if (!this.currentInput || !this.questionnaire) return;
     if (!this.currentInput.isValid()) {
-      i.textContent = R(e), this.currentInput.focus();
+      i.textContent = M(e), this.currentInput.focus();
       return;
     }
     if (this.handleAnswerChange(e, this.currentInput.getValue(), { immediate: !0 }), this.stepIndex === this.visibleQuestions.length - 1) {
@@ -682,7 +689,7 @@ class j {
     return i === -1 ? !1 : (i === this.stepIndex || (this.flushPendingSave(), this.stepIndex = i, this.renderStep()), !0);
   }
 }
-function R(t) {
+function M(t) {
   switch (t.type) {
     case "text":
       return t.minLength ? `Please enter at least ${t.minLength} characters.` : "This field is required.";
@@ -696,10 +703,10 @@ function R(t) {
       return "Please choose a value.";
   }
 }
-function E(t) {
+function k(t) {
   return document.querySelector(t)?.textContent?.trim() ?? "";
 }
-function M() {
+function $() {
   const t = document.querySelector(
     'script[type="application/json"][data-quests-config]'
   );
@@ -708,45 +715,45 @@ function M() {
   if (!e) return null;
   try {
     const i = JSON.parse(e);
-    return i.cssSelector && !i.css && (i.css = E(i.cssSelector), delete i.cssSelector), i;
+    return i.cssSelector && !i.css && (i.css = k(i.cssSelector), delete i.cssSelector), i;
   } catch {
     return null;
   }
 }
-function $(t) {
+function K(t) {
   const e = t.getAttribute("data-endpoint");
   if (!e) return null;
-  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), s = t.getAttribute("data-zindex"), r = t.getAttribute("data-positive-color"), p = t.getAttribute("data-negative-color"), h = t.getAttribute("data-marker-color"), f = t.getAttribute("data-modal-width"), m = t.getAttribute("data-backdrop-opacity"), o = t.getAttribute("data-font-family"), c = t.getAttribute("data-font-size"), u = t.getAttribute("data-css-selector"), g = t.getAttribute("data-auto-advance"), l = t.getAttribute("data-save-debounce-ms");
+  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), o = t.getAttribute("data-zindex"), r = t.getAttribute("data-positive-color"), h = t.getAttribute("data-negative-color"), p = t.getAttribute("data-marker-color"), f = t.getAttribute("data-modal-width"), g = t.getAttribute("data-backdrop-opacity"), s = t.getAttribute("data-font-family"), c = t.getAttribute("data-font-size"), l = t.getAttribute("data-css-selector"), m = t.getAttribute("data-auto-advance"), q = t.getAttribute("data-save-debounce-ms");
   return {
     endpoint: e,
     configUrl: i ?? void 0,
     apiKey: a ?? void 0,
     container: n ?? void 0,
-    zIndex: s ? parseInt(s, 10) : void 0,
+    zIndex: o ? parseInt(o, 10) : void 0,
     colors: {
       positive: r ?? void 0,
-      negative: p ?? void 0,
-      marker: h ?? void 0
+      negative: h ?? void 0,
+      marker: p ?? void 0
     },
     modalWidth: f ? parseInt(f, 10) : void 0,
-    backdropOpacity: m ? parseFloat(m) : void 0,
-    fontFamily: o ?? void 0,
+    backdropOpacity: g ? parseFloat(g) : void 0,
+    fontFamily: s ?? void 0,
     fontSize: c ? parseInt(c, 10) : void 0,
-    css: u ? E(u) : void 0,
-    autoAdvance: g === "true" ? !0 : void 0,
-    saveDebounceMs: l ? parseInt(l, 10) : void 0
+    css: l ? k(l) : void 0,
+    autoAdvance: m === "true" ? !0 : void 0,
+    saveDebounceMs: q ? parseInt(q, 10) : void 0
   };
 }
 if (typeof document < "u") {
   const t = () => {
-    const e = document.currentScript, i = M(), a = e ? $(e) : null, n = i ?? a;
+    const e = document.currentScript, i = $(), a = e ? K(e) : null, n = i ?? a;
     n?.endpoint && (n.configUrl || n.questionnaire) && new j(n);
   };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", t) : t();
 }
 export {
   j as QaidQuests,
-  v as evaluateRule,
+  y as evaluateRule,
   F as getVisibleQuestions
 };
 //# sourceMappingURL=qaid-quests.js.map

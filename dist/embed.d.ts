@@ -38,6 +38,7 @@ export declare class QaidQuests {
     private mountShell;
     private renderLoading;
     private renderError;
+    private effectiveProgressPosition;
     private renderHeader;
     private renderStep;
     private renderDone;

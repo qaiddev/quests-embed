@@ -123,6 +123,18 @@ export interface Questionnaire {
   title?: string;
   /** Optional description shown under the title */
   description?: string;
+  /** Hide the title row entirely, even if `title` is set */
+  hideTitle?: boolean;
+  /** Hide the progress bar + step counter entirely */
+  hideProgress?: boolean;
+  /**
+   * Where to render the step counter and progress bar. Same semantics
+   * as `QuestsConfig.progressPosition`. Set on the schema so authors
+   * can choose the layout from the dashboard without changing the
+   * embed config on the host page. Config-level `progressPosition`
+   * still wins when both are set.
+   */
+  progressPosition?: "top" | "bottom";
   /** Text shown when the form is finished. Default "Thank you!" */
   thankYouTitle?: string;
   /** Subtitle shown when the form is finished */
@@ -180,6 +192,13 @@ export interface QuestsConfig {
   /** Auto-focus the input on each step. Default: true. Set false in preview/embedded contexts that shouldn't steal focus. */
   autoFocus?: boolean;
   /**
+   * Whether to play the per-step slide-up entry animation. Default: true.
+   * Set false in the dashboard preview (or anywhere the embed gets
+   * re-mounted on every edit) so the form doesn't visibly flash on
+   * each rebuild.
+   */
+  animate?: boolean;
+  /**
    * Where to render the step counter ("1 / 5") and progress bar.
    * - "top" (default): inline at the top of the card, above the question
    * - "bottom": inline in the footer next to the Next button — useful
@@ -207,7 +226,13 @@ export interface ResolvedQuestsConfig {
   autoAdvance: boolean;
   saveDebounceMs: number;
   autoFocus: boolean;
-  progressPosition: "top" | "bottom";
+  animate: boolean;
+  /**
+   * Resolved progress position. `undefined` means "no config-level
+   * override" — the embed falls back to `Questionnaire.progressPosition`
+   * (then "top") when rendering.
+   */
+  progressPosition: "top" | "bottom" | undefined;
 }
 
 /** Initial payload sent to create the response */

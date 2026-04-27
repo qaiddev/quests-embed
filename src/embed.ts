@@ -102,7 +102,12 @@ export class QaidQuests {
       autoAdvance: config.autoAdvance ?? false,
       saveDebounceMs: config.saveDebounceMs ?? 500,
       autoFocus: config.autoFocus ?? true,
-      progressPosition: config.progressPosition ?? "top",
+      animate: config.animate ?? true,
+      // Don't default here — we want to fall through to the
+      // questionnaire's `progressPosition` when the host didn't
+      // explicitly set one. effectiveProgressPosition() handles the
+      // final fallback to "top".
+      progressPosition: config.progressPosition,
     };
 
     this.inlineQuestionnaire = config.questionnaire;
@@ -269,14 +274,39 @@ export class QaidQuests {
     this.cardEl.appendChild(msg);
   }
 
+  private effectiveProgressPosition(): "top" | "bottom" {
+    return (
+      this.config.progressPosition ??
+      this.questionnaire?.progressPosition ??
+      "top"
+    );
+  }
+
   private renderHeader(): void {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
 
-    const isBottom = this.config.progressPosition === "bottom";
-    const hasTitle = !!this.questionnaire.title;
-    const hasDescription = !!this.questionnaire.description;
+    // A single-question form has nothing meaningful to track, so we
+    // suppress the progress chrome whether or not the author asked for
+    // it explicitly via `hideProgress`. Branching forms with one
+    // *currently visible* question still show progress because more
+    // questions can appear after the gate is answered.
+    const hideProgress =
+      !!this.questionnaire.hideProgress ||
+      this.questionnaire.questions.length <= 1;
+    const isBottom =
+      !hideProgress && this.effectiveProgressPosition() === "bottom";
+    // `hideTitle` is the dashboard's "Hide Header" toggle — it hides
+    // both the title row and the description, since they live together
+    // in the shared header area.
+    const headerHidden = !!this.questionnaire.hideTitle;
+    const hasTitle = !!this.questionnaire.title && !headerHidden;
+    const hasDescription = !!this.questionnaire.description && !headerHidden;
     const hasCloseBtn = !this.isUserContainer;
+    // Only render content into the right-hand side of the header when
+    // we'd actually have something to put there.
+    const headerHasRightContent =
+      hasCloseBtn || (!isBottom && !hideProgress);
 
     // These three are created up front and reused across step renders.
     // In top mode they slot into the header / above the body; in bottom
@@ -303,8 +333,8 @@ export class QaidQuests {
 
     // Skip the header row entirely when there's nothing to show in it
     // — keeps the form flush at the top of inline embeds with no
-    // title/description and bottom-progress.
-    const showHeader = hasTitle || hasCloseBtn || !isBottom;
+    // title/description, hidden progress, or bottom-progress.
+    const showHeader = hasTitle || headerHasRightContent;
     if (showHeader) {
       const header = document.createElement("div");
       header.className = "qaid-q-header";
@@ -323,10 +353,11 @@ export class QaidQuests {
       right.style.gap = "0.5rem";
 
       // Saving + step counter live in the header in top mode. In bottom
-      // mode the footer owns them.
+      // mode the footer owns them. When progress is hidden, the step
+      // counter is suppressed but the saving indicator still surfaces.
       if (!isBottom) {
         right.appendChild(this.savingEl);
-        right.appendChild(this.stepCounterEl);
+        if (!hideProgress) right.appendChild(this.stepCounterEl);
       }
 
       if (hasCloseBtn) {
@@ -353,7 +384,7 @@ export class QaidQuests {
       this.cardEl.appendChild(desc);
     }
 
-    if (!isBottom) {
+    if (!isBottom && !hideProgress) {
       this.cardEl.appendChild(this.progressEl);
     }
 
@@ -449,7 +480,11 @@ export class QaidQuests {
 
     // Footer
     this.footerEl.replaceChildren();
-    const isBottomProgress = this.config.progressPosition === "bottom";
+    const hideProgress =
+      !!this.questionnaire.hideProgress ||
+      this.questionnaire.questions.length <= 1;
+    const isBottomProgress =
+      !hideProgress && this.effectiveProgressPosition() === "bottom";
 
     const back =
       idx > 0
