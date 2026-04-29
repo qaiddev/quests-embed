@@ -382,4 +382,307 @@ describe("QaidQuests", () => {
       expect(counter?.textContent).toBe("1 / 1");
     });
   });
+
+  describe("theming surface", () => {
+    function getRoot(): HTMLElement {
+      const host = document.querySelector("[data-qaid-quests]") as HTMLElement;
+      return host.shadowRoot!.querySelector(".qaid-q-root") as HTMLElement;
+    }
+
+    it("does not add a theme class when theme is omitted", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const root = getRoot();
+      expect(root.classList.contains("qaid-q-theme-light")).toBe(false);
+      expect(root.classList.contains("qaid-q-theme-dark")).toBe(false);
+    });
+
+    it("adds qaid-q-theme-light when theme: 'light'", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        theme: "light",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-theme-light")).toBe(true);
+    });
+
+    it("adds qaid-q-theme-dark when theme: 'dark'", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        theme: "dark",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-theme-dark")).toBe(true);
+    });
+
+    it("adds no theme class when theme: 'auto'", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        theme: "auto",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const root = getRoot();
+      expect(root.classList.contains("qaid-q-theme-light")).toBe(false);
+      expect(root.classList.contains("qaid-q-theme-dark")).toBe(false);
+    });
+
+    it("adds qaid-q-unstyled when unstyled: true", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        unstyled: true,
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-unstyled")).toBe(true);
+    });
+
+    it("does not add qaid-q-unstyled by default", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-unstyled")).toBe(false);
+    });
+
+    it("injects preset CSS into the shadow root for non-default presets", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        preset: "minimal",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const styleTags = Array.from(getShadow().querySelectorAll("style"));
+      const hasPresetCss = styleTags.some((s) =>
+        (s.textContent ?? "").includes("--qaid-q-card-radius: 0"),
+      );
+      expect(hasPresetCss).toBe(true);
+    });
+
+    it("injects pill preset tokens", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        preset: "pill",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const styleTags = Array.from(getShadow().querySelectorAll("style"));
+      const hasPillCss = styleTags.some((s) =>
+        (s.textContent ?? "").includes("--qaid-q-btn-radius: 9999px"),
+      );
+      expect(hasPillCss).toBe(true);
+    });
+
+    it("does not inject preset CSS for the default preset", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        preset: "default",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const styleTags = Array.from(getShadow().querySelectorAll("style"));
+      // Only the base shadow stylesheet should be present (no preset block,
+      // no host css). Any token-override block is the smoking gun.
+      const hasOverrides = styleTags.some((s) => {
+        const css = s.textContent ?? "";
+        // Base stylesheet contains token *definitions*; preset CSS contains
+        // overrides scoped to :where(.qaid-q-root) only.
+        return (
+          css.includes("--qaid-q-card-radius: 0") ||
+          css.includes("--qaid-q-btn-radius: 9999px")
+        );
+      });
+      expect(hasOverrides).toBe(false);
+    });
+
+    it("colors.accent flows through --qaid-q-accent on the root", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        colors: { accent: "#abcdef" },
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const root = getRoot();
+      expect(root.style.getPropertyValue("--qaid-q-accent")).toBe("#abcdef");
+    });
+  });
+
+  describe("themeUrl / themeDocument loading", () => {
+    function getRoot(): HTMLElement {
+      const host = document.querySelector("[data-qaid-quests]") as HTMLElement;
+      return host.shadowRoot!.querySelector(".qaid-q-root") as HTMLElement;
+    }
+
+    function getThemeStyle(): HTMLStyleElement | null {
+      return getShadow().querySelector(
+        "style[data-qaid-q-theme]",
+      ) as HTMLStyleElement | null;
+    }
+
+    /** Build a fetch stub that branches on URL substring. */
+    function stubFetch(handlers: Array<[string, () => Response | Promise<Response>]>) {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (input: RequestInfo) => {
+          const url = typeof input === "string" ? input : (input as Request).url;
+          for (const [match, fn] of handlers) {
+            if (url.includes(match)) return await fn();
+          }
+          return new Response(JSON.stringify({ id: "resp-1" }), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          });
+        }),
+      );
+    }
+
+    it("applies a theme fetched from themeUrl: classes, tokens, css", async () => {
+      stubFetch([
+        [
+          "/themes/abc",
+          () =>
+            new Response(
+              JSON.stringify({
+                preset: "minimal",
+                mode: "dark",
+                unstyled: false,
+                tokens: { "--qaid-q-card-radius": "0" },
+                css: ".qaid-q-card { outline: 1px solid red; }",
+              }),
+              { status: 200, headers: { "content-type": "application/json" } },
+            ),
+        ],
+      ]);
+
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        themeUrl: "/themes/abc",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+
+      // Mode class lands.
+      expect(getRoot().classList.contains("qaid-q-theme-dark")).toBe(true);
+
+      // The merged style block carries tokens + preset CSS + theme.css.
+      const style = getThemeStyle();
+      expect(style).toBeTruthy();
+      const css = style!.textContent ?? "";
+      expect(css).toContain("--qaid-q-card-radius: 0");
+      expect(css).toContain("outline: 1px solid red");
+    });
+
+    it("accepts a pre-fetched themeDocument without making a fetch", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        themeDocument: {
+          preset: "pill",
+          mode: "light",
+          unstyled: false,
+          tokens: { "--qaid-q-btn-radius": "9999px" },
+          css: "",
+        },
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+
+      expect(getRoot().classList.contains("qaid-q-theme-light")).toBe(true);
+      const css = getThemeStyle()?.textContent ?? "";
+      expect(css).toContain("--qaid-q-btn-radius: 9999px");
+    });
+
+    it("explicit QuestsConfig fields beat the theme document", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        // Host says: light + no preset.
+        theme: "light",
+        preset: "default",
+        themeDocument: {
+          preset: "minimal",
+          mode: "dark",
+          unstyled: false,
+          tokens: null,
+          css: "",
+        },
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+
+      // Host's "light" wins over theme's "dark".
+      const root = getRoot();
+      expect(root.classList.contains("qaid-q-theme-light")).toBe(true);
+      expect(root.classList.contains("qaid-q-theme-dark")).toBe(false);
+      // Host's "default" preset wins — no preset CSS injected.
+      const css = getThemeStyle()?.textContent ?? "";
+      expect(css).not.toContain("--qaid-q-card-radius: 0");
+    });
+
+    it("a failing themeUrl fetch is non-fatal — form still renders", async () => {
+      stubFetch([
+        [
+          "/themes/missing",
+          () => new Response("not found", { status: 404 }),
+        ],
+      ]);
+      // Silence the warn we expect.
+      const origWarn = console.warn;
+      console.warn = () => {};
+
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        themeUrl: "/themes/missing",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+
+      // No theme classes applied (default mode).
+      const root = getRoot();
+      expect(root.classList.contains("qaid-q-theme-light")).toBe(false);
+      expect(root.classList.contains("qaid-q-theme-dark")).toBe(false);
+
+      console.warn = origWarn;
+    });
+
+    it("host's css config is appended after the theme.css", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        themeDocument: {
+          preset: "default",
+          mode: "auto",
+          unstyled: false,
+          tokens: null,
+          css: ".from-theme { color: red; }",
+        },
+        css: ".from-host { color: blue; }",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const css = getThemeStyle()?.textContent ?? "";
+      const themeIdx = css.indexOf(".from-theme");
+      const hostIdx = css.indexOf(".from-host");
+      expect(themeIdx).toBeGreaterThan(-1);
+      expect(hostIdx).toBeGreaterThan(themeIdx);
+    });
+  });
 });

@@ -159,13 +159,26 @@ export interface QuestsConfig {
     container?: string;
     /** z-index for modal-mode embed. Default: 50 */
     zIndex?: number;
-    /** Custom theme colors — same names as thumbs-embed for reuse */
+    /**
+     * Custom theme colors — quest-only, decoupled from thumbs-embed so
+     * a host that runs both can theme them independently.
+     *
+     * The legacy keys `positive` / `negative` / `marker` are still
+     * accepted as aliases for `accent` / `error` / `focus` and will be
+     * removed in a future major.
+     */
     colors?: {
-        /** Primary accent (used for progress / focus / submit) */
+        /** Primary CTA, progress fill, selected option ring */
+        accent?: string;
+        /** Validation error text */
+        error?: string;
+        /** Focus ring on inputs/buttons */
+        focus?: string;
+        /** @deprecated alias for `accent` */
         positive?: string;
-        /** Error / destructive */
+        /** @deprecated alias for `error` */
         negative?: string;
-        /** Selection / highlight */
+        /** @deprecated alias for `focus` */
         marker?: string;
     };
     /** Modal width in pixels. Default: 480 */
@@ -199,6 +212,63 @@ export interface QuestsConfig {
      *   to sit as high as possible.
      */
     progressPosition?: "top" | "bottom";
+    /**
+     * Color-scheme override.
+     * - "auto" (default): follows `prefers-color-scheme` via `light-dark()`
+     * - "light" / "dark": force the matching mode regardless of the system
+     *   preference. Implemented as `qaid-q-theme-light` / `qaid-q-theme-dark`
+     *   classes on the root element.
+     */
+    theme?: "light" | "dark" | "auto";
+    /**
+     * When true, the embed adds `qaid-q-unstyled` to the root and the
+     * shadow stylesheet flattens its component defaults via `all: unset`.
+     * The host's `css` config string is then the only thing that paints.
+     * Off by default.
+     */
+    unstyled?: boolean;
+    /**
+     * Built-in theme preset. Each preset only overrides Tier 3 component
+     * tokens, so they stay forward-compatible.
+     * - "default": current look (no override)
+     * - "minimal": flat surfaces, hairline borders, no shadows, sharp corners
+     * - "pill": fully rounded option cards + buttons
+     * - "dense": tighter padding for above-the-fold layouts
+     */
+    preset?: "default" | "minimal" | "pill" | "dense";
+    /**
+     * URL of a public quest theme JSON document. The embed fetches this
+     * in parallel with the questionnaire and applies the theme's
+     * `preset` / `theme` / `unstyled` / `tokens` / `css`. Explicit fields
+     * on this config win over the theme's values; the theme fills the
+     * rest. A failure to load the theme is non-fatal — the embed renders
+     * with defaults.
+     *
+     * Themes are decoupled from quests on purpose: one theme can be
+     * reused across many quests. The host picks both at embed-init time.
+     */
+    themeUrl?: string;
+    /**
+     * Pre-fetched theme document — for hosts that want to fetch the
+     * theme on the server side and skip the runtime round-trip.
+     * Same precedence as `themeUrl` (explicit config wins).
+     */
+    themeDocument?: ResolvedQuestTheme;
+}
+/**
+ * Shape of a single quest-theme document, as served by the docs site
+ * at `/api/quest-themes/:id/public` and as accepted via
+ * `QuestsConfig.themeDocument`. Sparse — every field is optional so
+ * an author can ship a tokens-only theme (or a CSS-only theme).
+ */
+export interface ResolvedQuestTheme {
+    preset?: "default" | "minimal" | "pill" | "dense" | null;
+    mode?: "light" | "dark" | "auto" | null;
+    unstyled?: boolean | null;
+    /** Map of CSS variables to their values, e.g. `{ "--qaid-q-card-radius": "0" }`. */
+    tokens?: Record<string, string> | null;
+    /** Free-form CSS appended after preset CSS, before the host's `css`. */
+    css?: string | null;
 }
 export interface ResolvedQuestsConfig {
     endpoint: string;
@@ -206,9 +276,9 @@ export interface ResolvedQuestsConfig {
     container: string;
     zIndex: number;
     colors: {
-        positive: string;
-        negative: string;
-        marker: string;
+        accent: string;
+        error: string;
+        focus: string;
     };
     modalWidth: number;
     backdropOpacity: number;
@@ -225,6 +295,9 @@ export interface ResolvedQuestsConfig {
      * (then "top") when rendering.
      */
     progressPosition: "top" | "bottom" | undefined;
+    theme: "light" | "dark" | "auto";
+    unstyled: boolean;
+    preset: "default" | "minimal" | "pill" | "dense";
 }
 /** Initial payload sent to create the response */
 export interface CreateResponsePayload {

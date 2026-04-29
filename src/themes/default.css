@@ -1,0 +1,4 @@
+/* `default` preset — the no-op. Kept as an explicit empty rule so
+ * `getPresetCss('default')` still returns valid CSS and presets can be
+ * hot-swapped without conditional rendering. */
+:where(.qaid-q-root) {}

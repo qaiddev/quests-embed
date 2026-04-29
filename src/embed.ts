@@ -6,8 +6,9 @@ import type {
   Questionnaire,
   QuestsConfig,
   ResolvedQuestsConfig,
+  ResolvedQuestTheme,
 } from "./types";
-import { applyCssVars, buildCssVars, getEmbedStyles } from "./styles";
+import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleQuestions } from "./visibility";
 
@@ -83,16 +84,46 @@ export class QaidQuests {
 
   private cssVars: Record<string, string> = {};
 
+  // Track which theme-related fields the host explicitly set so the
+  // theme document can fill the rest. A `themeUrl` / `themeDocument`
+  // theme is layered between the embed's defaults and the host's
+  // explicit overrides, so the host always wins.
+  private hostThemeOverrides: {
+    preset: boolean;
+    mode: boolean;
+    unstyled: boolean;
+    css: boolean;
+  };
+  // Raw, host-provided values for the tokens we inline as inline-style
+  // CSS vars on rootEl. Anything `undefined` here is left out of the
+  // inline write so theme tokens (which arrive as `:where(...) { ... }`
+  // rules) can win the cascade.
+  private hostInlineVars: {
+    accentColor?: string;
+    errorColor?: string;
+    focusColor?: string;
+    modalWidth?: number;
+    backdropOpacity?: number;
+    fontFamily?: string;
+    fontSize?: number;
+  };
+  private themeUrl: string | undefined;
+  private themeDocument: ResolvedQuestTheme | undefined;
+  private hostCss: string;
+
   constructor(config: QuestsConfig) {
     this.config = {
       endpoint: config.endpoint,
       apiKey: config.apiKey ?? "",
       container: config.container ?? "",
       zIndex: config.zIndex ?? 50,
+      // Prefer the new quest-only keys; fall back to the deprecated
+      // thumbs-style keys (positive/negative/marker) so existing
+      // integrations keep rendering until they migrate.
       colors: {
-        positive: config.colors?.positive ?? "#10b981",
-        negative: config.colors?.negative ?? "#ef4444",
-        marker: config.colors?.marker ?? "#6366f1",
+        accent: config.colors?.accent ?? config.colors?.positive ?? "#10b981",
+        error: config.colors?.error ?? config.colors?.negative ?? "#ef4444",
+        focus: config.colors?.focus ?? config.colors?.marker ?? "#6366f1",
       },
       modalWidth: config.modalWidth ?? 480,
       backdropOpacity: config.backdropOpacity ?? 0.4,
@@ -108,7 +139,29 @@ export class QaidQuests {
       // explicitly set one. effectiveProgressPosition() handles the
       // final fallback to "top".
       progressPosition: config.progressPosition,
+      theme: config.theme ?? "auto",
+      unstyled: config.unstyled ?? false,
+      preset: config.preset ?? "default",
     };
+
+    this.hostThemeOverrides = {
+      preset: config.preset !== undefined,
+      mode: config.theme !== undefined,
+      unstyled: config.unstyled !== undefined,
+      css: config.css !== undefined,
+    };
+    this.hostInlineVars = {
+      accentColor: config.colors?.accent ?? config.colors?.positive,
+      errorColor: config.colors?.error ?? config.colors?.negative,
+      focusColor: config.colors?.focus ?? config.colors?.marker,
+      modalWidth: config.modalWidth,
+      backdropOpacity: config.backdropOpacity,
+      fontFamily: config.fontFamily,
+      fontSize: config.fontSize,
+    };
+    this.themeUrl = config.themeUrl;
+    this.themeDocument = config.themeDocument;
+    this.hostCss = config.css ?? "";
 
     this.inlineQuestionnaire = config.questionnaire;
     this.configUrl = config.configUrl;
@@ -119,25 +172,26 @@ export class QaidQuests {
   }
 
   private async init(): Promise<void> {
-    this.cssVars = buildCssVars({
-      positiveColor: this.config.colors.positive,
-      negativeColor: this.config.colors.negative,
-      markerColor: this.config.colors.marker,
-      modalWidth: this.config.modalWidth,
-      backdropOpacity: this.config.backdropOpacity,
-      fontFamily: this.config.fontFamily,
-      fontSize: this.config.fontSize,
-    });
+    // Inline only the vars the host explicitly passed, so theme
+    // documents can supply the rest via the cascade.
+    this.cssVars = buildCssVars(this.hostInlineVars);
 
     this.mountShell();
     this.renderLoading();
 
     try {
-      const q = await this.loadQuestionnaire();
+      // Fetch the questionnaire and the (optional) theme document in
+      // parallel so the theme never blocks the form. A failed theme
+      // fetch is non-fatal — we just render with defaults.
+      const [q, themeDoc] = await Promise.all([
+        this.loadQuestionnaire(),
+        this.loadTheme(),
+      ]);
       if (!q || !q.questions || q.questions.length === 0) {
         throw new Error("Questionnaire is empty");
       }
       this.questionnaire = q;
+      this.applyResolvedTheme(themeDoc);
       this.recomputeVisible();
       // Apply any goToStep request that came in before init finished.
       if (this.pendingGoToStep) {
@@ -156,6 +210,100 @@ export class QaidQuests {
     } catch (err) {
       this.state = "ERROR";
       this.renderError(err);
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Theme document loading + merging
+  // ------------------------------------------------------------------
+
+  private async loadTheme(): Promise<ResolvedQuestTheme | null> {
+    if (this.themeDocument) return this.themeDocument;
+    if (!this.themeUrl) return null;
+    try {
+      const res = await fetch(this.themeUrl, {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) {
+        console.warn(
+          `[quests-embed] theme fetch failed (${res.status}) — rendering with defaults`,
+        );
+        return null;
+      }
+      return (await res.json()) as ResolvedQuestTheme;
+    } catch (err) {
+      console.warn("[quests-embed] theme fetch error — rendering with defaults", err);
+      return null;
+    }
+  }
+
+  /**
+   * Merge a fetched theme document into the live config, then inject
+   * the resulting CSS layers + class toggles into the shadow root.
+   *
+   * Precedence (highest first):
+   *   1. Host's explicit `QuestsConfig` fields (preset/theme/unstyled/css)
+   *   2. Theme document fields (preset/mode/unstyled/tokens/css)
+   *   3. Embed defaults
+   *
+   * CSS layer order (later wins for same-specificity rules):
+   *   base stylesheet → theme.tokens block → preset CSS → theme.css → host css
+   */
+  private applyResolvedTheme(themeDoc: ResolvedQuestTheme | null): void {
+    if (!this.shadowRoot || !this.rootEl) return;
+
+    const finalPreset = this.hostThemeOverrides.preset
+      ? this.config.preset
+      : (themeDoc?.preset ?? this.config.preset);
+    const finalMode = this.hostThemeOverrides.mode
+      ? this.config.theme
+      : (themeDoc?.mode ?? this.config.theme);
+    const finalUnstyled = this.hostThemeOverrides.unstyled
+      ? this.config.unstyled
+      : (themeDoc?.unstyled ?? this.config.unstyled);
+
+    // Toggle the theme/unstyled classes on rootEl. We don't touch
+    // qaid-q-inline / qaid-q-no-motion which were set in mountShell.
+    this.rootEl.classList.toggle(
+      "qaid-q-theme-light",
+      finalMode === "light",
+    );
+    this.rootEl.classList.toggle(
+      "qaid-q-theme-dark",
+      finalMode === "dark",
+    );
+    this.rootEl.classList.toggle("qaid-q-unstyled", !!finalUnstyled);
+
+    // Build the merged stylesheet. Each layer is appended only when
+    // there's something to add so the shadow root stays clean.
+    const layers: string[] = [];
+
+    if (themeDoc?.tokens && Object.keys(themeDoc.tokens).length > 0) {
+      const body = Object.entries(themeDoc.tokens)
+        .filter(([, v]) => typeof v === "string" && v.trim() !== "")
+        .map(([k, v]) => `  ${k}: ${v};`)
+        .join("\n");
+      if (body) layers.push(`:where(.qaid-q-root) {\n${body}\n}`);
+    }
+
+    if (finalPreset && finalPreset !== "default") {
+      const presetCss = getPresetCss(finalPreset);
+      if (presetCss) layers.push(presetCss);
+    }
+
+    if (themeDoc?.css && themeDoc.css.trim() !== "") {
+      layers.push(themeDoc.css);
+    }
+
+    if (this.hostCss && this.hostCss.trim() !== "") {
+      layers.push(this.hostCss);
+    }
+
+    if (layers.length > 0) {
+      const themeStyle = document.createElement("style");
+      themeStyle.setAttribute("data-qaid-q-theme", "");
+      themeStyle.textContent = layers.join("\n\n");
+      this.shadowRoot.appendChild(themeStyle);
     }
   }
 
@@ -214,11 +362,11 @@ export class QaidQuests {
     baseStyle.textContent = getEmbedStyles();
     this.shadowRoot.appendChild(baseStyle);
 
-    if (this.config.css) {
-      const themeStyle = document.createElement("style");
-      themeStyle.textContent = this.config.css;
-      this.shadowRoot.appendChild(themeStyle);
-    }
+    // Theme-derived styling (preset CSS, tokens block, theme.css,
+    // host css) and theme/unstyled classes are deferred to
+    // applyResolvedTheme() — that runs after the parallel theme +
+    // questionnaire fetch resolves so a remote theme document can
+    // contribute. Until then we render with embed defaults.
 
     this.rootEl = document.createElement("div");
     this.rootEl.className = [
@@ -529,12 +677,6 @@ export class QaidQuests {
 
       if (back) left.appendChild(back);
 
-      const hint = document.createElement("span");
-      hint.className = "qaid-q-hint";
-      hint.innerHTML = isLast
-        ? `<kbd>Enter</kbd> to submit`
-        : `<kbd>Enter</kbd> to continue`;
-      right.appendChild(hint);
       right.appendChild(next);
 
       this.footerEl.appendChild(left);
@@ -820,6 +962,18 @@ export class QaidQuests {
   /** Read-only snapshot of current answers */
   public getAnswers(): Answers {
     return { ...this.answers };
+  }
+
+  /**
+   * Id of the question currently rendered, or `null` if the embed
+   * isn't on a question (still loading, on the thank-you screen, or
+   * unmounted). Useful for editor previews that want to restore the
+   * user's place after a forced re-mount.
+   */
+  public getCurrentQuestionId(): string | null {
+    if (this.state !== "READY") return null;
+    const q = this.visibleQuestions[this.stepIndex];
+    return q ? q.id : null;
   }
 
   /**

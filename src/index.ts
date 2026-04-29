@@ -102,6 +102,10 @@ function parseDataAttributes(
   const cssSelector = script.getAttribute("data-css-selector");
   const autoAdvance = script.getAttribute("data-auto-advance");
   const saveDebounceMs = script.getAttribute("data-save-debounce-ms");
+  const themeUrl = script.getAttribute("data-theme-url");
+  const preset = script.getAttribute("data-preset");
+  const themeMode = script.getAttribute("data-theme");
+  const unstyled = script.getAttribute("data-unstyled");
 
   return {
     endpoint,
@@ -121,6 +125,10 @@ function parseDataAttributes(
     css: cssSelector ? findCssFromSelector(cssSelector) : undefined,
     autoAdvance: autoAdvance === "true" ? true : undefined,
     saveDebounceMs: saveDebounceMs ? parseInt(saveDebounceMs, 10) : undefined,
+    themeUrl: themeUrl ?? undefined,
+    preset: preset ? (preset as "default" | "minimal" | "pill" | "dense") : undefined,
+    theme: themeMode ? (themeMode as "light" | "dark" | "auto") : undefined,
+    unstyled: unstyled === "true" ? true : undefined,
   };
 }
 

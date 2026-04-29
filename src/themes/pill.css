@@ -1,0 +1,14 @@
+/* `pill` preset — fully rounded option cards + buttons. Card itself
+ * stays moderately rounded so the modal still reads as a panel. */
+:where(.qaid-q-root) {
+  --qaid-q-card-radius: 1.5rem;
+
+  --qaid-q-btn-radius: 9999px;
+  --qaid-q-btn-padding-x: 1.5rem;
+
+  --qaid-q-option-radius: 9999px;
+  --qaid-q-option-padding: 0.75rem 1.125rem;
+
+  --qaid-q-input-radius: 9999px;
+  --qaid-q-input-padding: 0.75rem 1.125rem;
+}

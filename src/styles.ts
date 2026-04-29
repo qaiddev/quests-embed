@@ -1,19 +1,27 @@
 /**
  * CSS variable + style helpers for the questionnaire embed.
  *
- * Variable names match @qaiddev/thumbs-embed so a theme written for
- * one embed renders identically in the other:
- *   --qaid-positive, --qaid-negative, --qaid-marker
- *   --qaid-modal-width, --qaid-backdrop-opacity
- *   --qaid-font-family, --qaid-font-size
+ * Color vars are intentionally NAMESPACED away from @qaiddev/thumbs-embed
+ * so a host that uses both embeds can theme them independently:
+ *
+ *   Quests own:   --qaid-q-accent, --qaid-q-error, --qaid-q-focus
+ *   Shared:       --qaid-modal-width, --qaid-backdrop-opacity,
+ *                 --qaid-font-family, --qaid-font-size
+ *
+ * The legacy thumbs names (--qaid-positive / --qaid-negative /
+ * --qaid-marker) are NOT applied here anymore.
  */
 
 import shadowStyles from "./styles-shadow.css?inline";
+import { getPresetCss as getPresetCssImpl, type PresetName } from "./themes";
 
 export interface BuildCssVarsOptions {
-  positiveColor?: string;
-  negativeColor?: string;
-  markerColor?: string;
+  /** Primary CTA / progress fill / selected option ring */
+  accentColor?: string;
+  /** Validation error text */
+  errorColor?: string;
+  /** Focus ring */
+  focusColor?: string;
   modalWidth?: number;
   backdropOpacity?: number;
   fontFamily?: string;
@@ -54,28 +62,39 @@ function getContrastTextColor(bgColor: string): string {
   return getLuminance(rgb.r, rgb.g, rgb.b) > 0.4 ? "black" : "white";
 }
 
-export function buildCssVars(options: BuildCssVarsOptions = {}): Record<string, string> {
-  const {
-    positiveColor = "#10b981",
-    negativeColor = "#ef4444",
-    markerColor = "#6366f1",
-    modalWidth = 480,
-    backdropOpacity = 0.4,
-    fontFamily = "system-ui, -apple-system, sans-serif",
-    fontSize = 16,
-  } = options;
-
-  return {
-    "--qaid-positive": positiveColor,
-    "--qaid-positive-text": getContrastTextColor(positiveColor),
-    "--qaid-negative": negativeColor,
-    "--qaid-marker": markerColor,
-    "--qaid-marker-text": getContrastTextColor(markerColor),
-    "--qaid-modal-width": `${modalWidth}px`,
-    "--qaid-backdrop-opacity": String(backdropOpacity),
-    "--qaid-font-family": fontFamily,
-    "--qaid-font-size": `${fontSize}px`,
-  };
+export function buildCssVars(
+  options: BuildCssVarsOptions = {},
+): Record<string, string> {
+  // Only emit a var when the host explicitly passed a value. The
+  // stylesheet's `var(--token, <fallback>)` already handles unset
+  // values, and a theme document loaded via `themeUrl` writes its
+  // own `:where(.qaid-q-root)` block — inlining defaults here would
+  // beat that block on the cascade and silently override the theme.
+  const out: Record<string, string> = {};
+  if (options.accentColor !== undefined) {
+    out["--qaid-q-accent"] = options.accentColor;
+    out["--qaid-q-accent-text"] = getContrastTextColor(options.accentColor);
+  }
+  if (options.errorColor !== undefined) {
+    out["--qaid-q-error"] = options.errorColor;
+  }
+  if (options.focusColor !== undefined) {
+    out["--qaid-q-focus"] = options.focusColor;
+    out["--qaid-q-focus-text"] = getContrastTextColor(options.focusColor);
+  }
+  if (options.modalWidth !== undefined) {
+    out["--qaid-modal-width"] = `${options.modalWidth}px`;
+  }
+  if (options.backdropOpacity !== undefined) {
+    out["--qaid-backdrop-opacity"] = String(options.backdropOpacity);
+  }
+  if (options.fontFamily !== undefined) {
+    out["--qaid-font-family"] = options.fontFamily;
+  }
+  if (options.fontSize !== undefined) {
+    out["--qaid-font-size"] = `${options.fontSize}px`;
+  }
+  return out;
 }
 
 export function applyCssVars(el: HTMLElement, vars: Record<string, string>): void {
@@ -88,3 +107,10 @@ export function applyCssVars(el: HTMLElement, vars: Record<string, string>): voi
 export function getEmbedStyles(): string {
   return shadowStyles;
 }
+
+/** CSS for a built-in theme preset, or "" for unknown names. */
+export function getPresetCss(name: PresetName): string {
+  return getPresetCssImpl(name);
+}
+
+export type { PresetName };

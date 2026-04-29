@@ -32,8 +32,27 @@ export declare class QaidQuests {
     private currentInput;
     private boundKeyDown;
     private cssVars;
+    private hostThemeOverrides;
+    private hostInlineVars;
+    private themeUrl;
+    private themeDocument;
+    private hostCss;
     constructor(config: QuestsConfig);
     private init;
+    private loadTheme;
+    /**
+     * Merge a fetched theme document into the live config, then inject
+     * the resulting CSS layers + class toggles into the shadow root.
+     *
+     * Precedence (highest first):
+     *   1. Host's explicit `QuestsConfig` fields (preset/theme/unstyled/css)
+     *   2. Theme document fields (preset/mode/unstyled/tokens/css)
+     *   3. Embed defaults
+     *
+     * CSS layer order (later wins for same-specificity rules):
+     *   base stylesheet → theme.tokens block → preset CSS → theme.css → host css
+     */
+    private applyResolvedTheme;
     private loadQuestionnaire;
     private mountShell;
     private renderLoading;
@@ -59,6 +78,13 @@ export declare class QaidQuests {
     destroy(): void;
     /** Read-only snapshot of current answers */
     getAnswers(): Answers;
+    /**
+     * Id of the question currently rendered, or `null` if the embed
+     * isn't on a question (still loading, on the thank-you screen, or
+     * unmounted). Useful for editor previews that want to restore the
+     * user's place after a forced re-mount.
+     */
+    getCurrentQuestionId(): string | null;
     /**
      * Jump to the visible question with the given id. Returns true if
      * the question is currently visible (and the embed navigated to

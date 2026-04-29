@@ -1,6 +1,30 @@
 /* Shadow DOM styles for the questionnaire embed.
- * Reuses the same CSS variable names as @qaiddev/thumbs-embed
- * so themes work in both. */
+ *
+ * Theming surface (Phase 1):
+ *
+ *   Tier 1 — shared layout/typography (cross-embed):
+ *     --qaid-font-family, --qaid-font-size
+ *     --qaid-modal-width, --qaid-backdrop-opacity
+ *
+ *   Tier 2 — quest semantic colors:
+ *     --qaid-q-accent, --qaid-q-accent-text
+ *     --qaid-q-error
+ *     --qaid-q-focus, --qaid-q-focus-text
+ *
+ *   Tier 3 — quest component tokens (defaults below; per-mode values
+ *     in the .qaid-q-theme-light / .qaid-q-theme-dark blocks):
+ *     --qaid-q-card-bg / -fg / -border / -radius / -padding / -shadow
+ *     --qaid-q-btn-radius / -padding-y / -padding-x / -font-weight
+ *     --qaid-q-btn-primary-bg / -fg / -border
+ *     --qaid-q-btn-secondary-bg / -fg / -border / -hover-bg
+ *     --qaid-q-option-bg / -bg-selected / -bg-hover / -fg
+ *     --qaid-q-option-border / -border-selected / -border-hover
+ *     --qaid-q-option-radius / -padding
+ *     --qaid-q-marker-bg / -bg-selected / -border / -icon / -radius
+ *     --qaid-q-input-bg / -fg / -border / -radius / -padding / -placeholder
+ *     --qaid-q-gap / --qaid-q-section-gap
+ *     --qaid-q-muted-fg, --qaid-q-progress-track
+ */
 
 * {
   box-sizing: border-box;
@@ -11,10 +35,135 @@ button {
   font-family: inherit;
 }
 
+/* ==================== Default tokens (auto mode) ==================== */
+/* `:where()` keeps specificity at 0 so any preset / host CSS / explicit
+ * theme-light / theme-dark block trivially overrides these. */
+
+:where(.qaid-q-root) {
+  /* Card / surface */
+  --qaid-q-card-bg: light-dark(#ffffff, #1f2937);
+  --qaid-q-card-fg: light-dark(#1f2937, #f9fafb);
+  --qaid-q-card-border: light-dark(#e5e7eb, #374151);
+  --qaid-q-card-radius: 1rem;
+  --qaid-q-card-padding: 1.5rem;
+  --qaid-q-card-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.6));
+
+  /* Muted text + progress track shared across components */
+  --qaid-q-muted-fg: light-dark(#6b7280, #9ca3af);
+  --qaid-q-progress-track: light-dark(#e5e7eb, #374151);
+
+  /* Buttons */
+  --qaid-q-btn-radius: 0.5rem;
+  --qaid-q-btn-padding-y: 0.625rem;
+  --qaid-q-btn-padding-x: 1.125rem;
+  --qaid-q-btn-font-weight: 500;
+  --qaid-q-btn-primary-bg: var(--qaid-q-accent, #10b981);
+  --qaid-q-btn-primary-fg: var(--qaid-q-accent-text, #ffffff);
+  --qaid-q-btn-primary-border: transparent;
+  --qaid-q-btn-secondary-bg: transparent;
+  --qaid-q-btn-secondary-fg: light-dark(#374151, #d1d5db);
+  --qaid-q-btn-secondary-border: light-dark(#d1d5db, #4b5563);
+  --qaid-q-btn-secondary-hover-bg: light-dark(#f3f4f6, #374151);
+
+  /* Options / choice cards */
+  --qaid-q-option-bg: light-dark(#ffffff, #111827);
+  --qaid-q-option-bg-selected: color-mix(in srgb, var(--qaid-q-accent, #10b981) 10%, transparent);
+  --qaid-q-option-bg-hover: light-dark(#f9fafb, #1f2937);
+  --qaid-q-option-fg: light-dark(#1f2937, #f9fafb);
+  --qaid-q-option-border: light-dark(#e5e7eb, #374151);
+  --qaid-q-option-border-selected: var(--qaid-q-accent, #10b981);
+  --qaid-q-option-border-hover: light-dark(#9ca3af, #4b5563);
+  --qaid-q-option-radius: 0.625rem;
+  --qaid-q-option-padding: 0.75rem 0.875rem;
+
+  /* Marker (radio dot / checkbox) */
+  --qaid-q-marker-bg: light-dark(#ffffff, #111827);
+  --qaid-q-marker-bg-selected: var(--qaid-q-accent, #10b981);
+  --qaid-q-marker-border: light-dark(#d1d5db, #4b5563);
+  --qaid-q-marker-icon: light-dark(#ffffff, #1f2937);
+  --qaid-q-marker-radius: 50%;
+
+  /* Inputs */
+  --qaid-q-input-bg: light-dark(#ffffff, #111827);
+  --qaid-q-input-fg: light-dark(#1f2937, #f9fafb);
+  --qaid-q-input-border: light-dark(#d1d5db, #374151);
+  --qaid-q-input-radius: 0.625rem;
+  --qaid-q-input-padding: 0.75rem 0.875rem;
+  --qaid-q-input-placeholder: light-dark(#9ca3af, #6b7280);
+
+  /* Spacing */
+  --qaid-q-gap: 0.75rem;
+  --qaid-q-section-gap: 1.25rem;
+}
+
+/* Forced light mode — re-declares each token with the light value so
+ * `prefers-color-scheme: dark` can't pull it back. */
+:where(.qaid-q-root.qaid-q-theme-light) {
+  --qaid-q-card-bg: #ffffff;
+  --qaid-q-card-fg: #1f2937;
+  --qaid-q-card-border: #e5e7eb;
+  --qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --qaid-q-muted-fg: #6b7280;
+  --qaid-q-progress-track: #e5e7eb;
+  --qaid-q-btn-secondary-fg: #374151;
+  --qaid-q-btn-secondary-border: #d1d5db;
+  --qaid-q-btn-secondary-hover-bg: #f3f4f6;
+  --qaid-q-option-bg: #ffffff;
+  --qaid-q-option-bg-hover: #f9fafb;
+  --qaid-q-option-fg: #1f2937;
+  --qaid-q-option-border: #e5e7eb;
+  --qaid-q-option-border-hover: #9ca3af;
+  --qaid-q-marker-bg: #ffffff;
+  --qaid-q-marker-border: #d1d5db;
+  --qaid-q-marker-icon: #ffffff;
+  --qaid-q-input-bg: #ffffff;
+  --qaid-q-input-fg: #1f2937;
+  --qaid-q-input-border: #d1d5db;
+  --qaid-q-input-placeholder: #9ca3af;
+}
+
+/* Forced dark mode */
+:where(.qaid-q-root.qaid-q-theme-dark) {
+  --qaid-q-card-bg: #1f2937;
+  --qaid-q-card-fg: #f9fafb;
+  --qaid-q-card-border: #374151;
+  --qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  --qaid-q-muted-fg: #9ca3af;
+  --qaid-q-progress-track: #374151;
+  --qaid-q-btn-secondary-fg: #d1d5db;
+  --qaid-q-btn-secondary-border: #4b5563;
+  --qaid-q-btn-secondary-hover-bg: #374151;
+  --qaid-q-option-bg: #111827;
+  --qaid-q-option-bg-hover: #1f2937;
+  --qaid-q-option-fg: #f9fafb;
+  --qaid-q-option-border: #374151;
+  --qaid-q-option-border-hover: #4b5563;
+  --qaid-q-marker-bg: #111827;
+  --qaid-q-marker-border: #4b5563;
+  --qaid-q-marker-icon: #1f2937;
+  --qaid-q-input-bg: #111827;
+  --qaid-q-input-fg: #f9fafb;
+  --qaid-q-input-border: #374151;
+  --qaid-q-input-placeholder: #6b7280;
+}
+
 .qaid-q-root {
+  /* Activate light-dark() — without this it silently resolves to the
+   * light value regardless of the user's prefers-color-scheme. The
+   * forced theme-light/-dark classes use class selectors so this stays
+   * consistent: light-dark() is *only* consulted in auto mode. */
+  color-scheme: light dark;
   font-family: var(--qaid-font-family, system-ui, -apple-system, sans-serif);
   font-size: var(--qaid-font-size, 16px);
-  color: light-dark(#1f2937, #f9fafb);
+  color: var(--qaid-q-card-fg);
+}
+
+.qaid-q-root.qaid-q-theme-light {
+  color-scheme: light;
+}
+
+.qaid-q-root.qaid-q-theme-dark {
+  color-scheme: dark;
 }
 
 /* ==================== Modal mode ==================== */
@@ -49,11 +198,11 @@ button {
 /* ==================== Card ==================== */
 
 .qaid-q-card {
-  background: light-dark(#ffffff, #1f2937);
-  color: light-dark(#1f2937, #f9fafb);
-  border-radius: 1rem;
-  box-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.6));
-  padding: 1.5rem;
+  background: var(--qaid-q-card-bg);
+  color: var(--qaid-q-card-fg);
+  border-radius: var(--qaid-q-card-radius);
+  box-shadow: var(--qaid-q-card-shadow);
+  padding: var(--qaid-q-card-padding);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -65,7 +214,7 @@ button {
  * defaults with a plain `.qaid-q-card { ... }` rule. */
 :where(.qaid-q-root.qaid-q-inline) .qaid-q-card {
   box-shadow: none;
-  border: 1px solid light-dark(#e5e7eb, #374151);
+  border: 1px solid var(--qaid-q-card-border);
   flex: 1;
   min-height: 0;
 }
@@ -95,12 +244,12 @@ button {
   font-size: 1.125em;
   font-weight: 700;
   margin: 0;
-  color: light-dark(#1f2937, #f9fafb);
+  color: var(--qaid-q-card-fg);
 }
 
 .qaid-q-step-counter {
   font-size: 0.875em;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -112,7 +261,7 @@ button {
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -121,13 +270,13 @@ button {
 }
 
 .qaid-q-close:hover {
-  background: light-dark(#f3f4f6, #374151);
-  color: light-dark(#1f2937, #f9fafb);
+  background: var(--qaid-q-btn-secondary-hover-bg);
+  color: var(--qaid-q-card-fg);
 }
 
 .qaid-q-close:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-q-focus, #6366f1) 30%, transparent);
 }
 
 /* ==================== Progress bar ==================== */
@@ -135,10 +284,10 @@ button {
 .qaid-q-progress {
   position: relative;
   height: 4px;
-  background: light-dark(#e5e7eb, #374151);
+  background: var(--qaid-q-progress-track);
   border-radius: 9999px;
   overflow: hidden;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--qaid-q-section-gap);
 }
 
 /* Inline variant — used when `progressPosition: "bottom"` so the bar
@@ -153,7 +302,7 @@ button {
 .qaid-q-progress-fill {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--qaid-positive, #10b981);
+  background: var(--qaid-q-accent, #10b981);
   border-radius: 9999px;
   transition: width 0.3s ease;
   width: 0%;
@@ -170,7 +319,7 @@ button {
 .qaid-q-step {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--qaid-q-gap);
   animation: qaid-q-slide 0.22s ease-out;
 }
 
@@ -192,25 +341,25 @@ button {
   font-size: 1.125em;
   font-weight: 600;
   margin: 0;
-  color: light-dark(#1f2937, #f9fafb);
+  color: var(--qaid-q-card-fg);
   line-height: 1.35;
 }
 
 .qaid-q-label .qaid-q-required {
-  color: var(--qaid-negative, #ef4444);
+  color: var(--qaid-q-error, #ef4444);
   margin-left: 0.25rem;
 }
 
 .qaid-q-description {
   font-size: 0.875em;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   margin: 0;
   line-height: 1.4;
 }
 
 .qaid-q-error {
   font-size: 0.8125em;
-  color: var(--qaid-negative, #ef4444);
+  color: var(--qaid-q-error, #ef4444);
   margin: 0;
 }
 
@@ -226,13 +375,13 @@ button {
 .qaid-q-input,
 .qaid-q-textarea {
   width: 100%;
-  padding: 0.75rem 0.875rem;
-  border: 1px solid light-dark(#d1d5db, #374151);
-  border-radius: 0.625rem;
+  padding: var(--qaid-q-input-padding);
+  border: 1px solid var(--qaid-q-input-border);
+  border-radius: var(--qaid-q-input-radius);
   font-family: inherit;
   font-size: 1em;
-  background: light-dark(#ffffff, #111827);
-  color: light-dark(#1f2937, #f9fafb);
+  background: var(--qaid-q-input-bg);
+  color: var(--qaid-q-input-fg);
   transition: border-color 0.15s, box-shadow 0.15s;
   -webkit-appearance: none;
   appearance: none;
@@ -247,13 +396,13 @@ button {
 .qaid-q-input:focus,
 .qaid-q-textarea:focus {
   outline: none;
-  border-color: var(--qaid-marker, #6366f1);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 20%, transparent);
+  border-color: var(--qaid-q-focus, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-q-focus, #6366f1) 20%, transparent);
 }
 
 .qaid-q-input::placeholder,
 .qaid-q-textarea::placeholder {
-  color: light-dark(#9ca3af, #6b7280);
+  color: var(--qaid-q-input-placeholder);
 }
 
 /* ==================== Currency ==================== */
@@ -267,7 +416,7 @@ button {
   left: 0.875rem;
   top: 50%;
   transform: translateY(-50%);
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   font-size: 1em;
   font-weight: 500;
   pointer-events: none;
@@ -291,13 +440,13 @@ button {
   font-weight: 700;
   text-align: center;
   font-variant-numeric: tabular-nums;
-  color: var(--qaid-positive, #10b981);
+  color: var(--qaid-q-accent, #10b981);
 }
 
 .qaid-q-range-value .qaid-q-range-unit {
   font-size: 0.5em;
   font-weight: 500;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   margin-left: 0.25rem;
 }
 
@@ -307,7 +456,7 @@ button {
   appearance: none;
   height: 6px;
   border-radius: 9999px;
-  background: light-dark(#e5e7eb, #374151);
+  background: var(--qaid-q-progress-track);
   outline: none;
 }
 
@@ -317,8 +466,8 @@ button {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--qaid-positive, #10b981);
-  border: 3px solid light-dark(#ffffff, #1f2937);
+  background: var(--qaid-q-accent, #10b981);
+  border: 3px solid var(--qaid-q-card-bg);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: transform 0.1s;
@@ -328,25 +477,25 @@ button {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--qaid-positive, #10b981);
-  border: 3px solid light-dark(#ffffff, #1f2937);
+  background: var(--qaid-q-accent, #10b981);
+  border: 3px solid var(--qaid-q-card-bg);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 
 .qaid-q-range:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--qaid-q-focus, #6366f1) 30%, transparent);
 }
 
 .qaid-q-range:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--qaid-q-focus, #6366f1) 30%, transparent);
 }
 
 .qaid-q-range-bounds {
   display: flex;
   justify-content: space-between;
   font-size: 0.8125em;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   font-variant-numeric: tabular-nums;
 }
 
@@ -362,13 +511,13 @@ button {
   display: flex;
   align-items: flex-start;
   gap: 0.625rem;
-  padding: 0.75rem 0.875rem;
-  border: 1px solid light-dark(#e5e7eb, #374151);
-  border-radius: 0.625rem;
-  background: light-dark(#ffffff, #111827);
+  padding: var(--qaid-q-option-padding);
+  border: 1px solid var(--qaid-q-option-border);
+  border-radius: var(--qaid-q-option-radius);
+  background: var(--qaid-q-option-bg);
   text-align: left;
   font-size: 1em;
-  color: light-dark(#1f2937, #f9fafb);
+  color: var(--qaid-q-option-fg);
   cursor: pointer;
   transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
   -webkit-appearance: none;
@@ -377,32 +526,32 @@ button {
 }
 
 .qaid-q-option:hover {
-  border-color: light-dark(#9ca3af, #4b5563);
-  background: light-dark(#f9fafb, #1f2937);
+  border-color: var(--qaid-q-option-border-hover);
+  background: var(--qaid-q-option-bg-hover);
 }
 
 .qaid-q-option:focus-visible {
   outline: none;
-  border-color: var(--qaid-marker, #6366f1);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 25%, transparent);
+  border-color: var(--qaid-q-focus, #6366f1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-q-focus, #6366f1) 25%, transparent);
 }
 
 .qaid-q-option.qaid-q-selected {
-  border-color: var(--qaid-positive, #10b981);
-  background: color-mix(in srgb, var(--qaid-positive, #10b981) 10%, transparent);
+  border-color: var(--qaid-q-option-border-selected);
+  background: var(--qaid-q-option-bg-selected);
 }
 
 .qaid-q-option-marker {
   flex-shrink: 0;
   width: 1.25rem;
   height: 1.25rem;
-  border: 2px solid light-dark(#d1d5db, #4b5563);
-  border-radius: 50%;
+  border: 2px solid var(--qaid-q-marker-border);
+  border-radius: var(--qaid-q-marker-radius);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-top: 0.125rem;
-  background: light-dark(#ffffff, #111827);
+  background: var(--qaid-q-marker-bg);
   transition: border-color 0.12s, background 0.12s;
 }
 
@@ -411,8 +560,8 @@ button {
 }
 
 .qaid-q-option.qaid-q-selected .qaid-q-option-marker {
-  border-color: var(--qaid-positive, #10b981);
-  background: var(--qaid-positive, #10b981);
+  border-color: var(--qaid-q-marker-bg-selected);
+  background: var(--qaid-q-marker-bg-selected);
 }
 
 .qaid-q-option.qaid-q-selected .qaid-q-option-marker::after {
@@ -421,19 +570,28 @@ button {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: light-dark(#ffffff, #1f2937);
+  background: var(--qaid-q-marker-icon);
 }
 
 .qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker::after {
+  /* SVG-mask checkmark — draws inside the marker box at a fixed
+   * proportion regardless of marker size, so it never clips like the
+   * old rotated-square-with-two-borders trick did. */
   content: "";
   display: block;
-  width: 0.625rem;
-  height: 0.625rem;
+  width: 70%;
+  height: 70%;
   border-radius: 0;
-  background: transparent;
-  border-right: 2px solid light-dark(#ffffff, #1f2937);
-  border-bottom: 2px solid light-dark(#ffffff, #1f2937);
-  transform: rotate(45deg) translate(-1px, -2px);
+  background: var(--qaid-q-marker-icon);
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  transform: none;
 }
 
 .qaid-q-option-body {
@@ -459,7 +617,7 @@ button {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 0.375rem;
-  background: light-dark(#f3f4f6, #374151);
+  background: var(--qaid-q-progress-track);
   flex-shrink: 0;
 }
 
@@ -528,7 +686,7 @@ button {
 
 .qaid-q-option-desc {
   font-size: 0.8125em;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   line-height: 1.4;
 }
 
@@ -539,8 +697,8 @@ button {
   font-weight: 600;
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
-  background: light-dark(#f3f4f6, #374151);
-  color: light-dark(#6b7280, #9ca3af);
+  background: var(--qaid-q-progress-track);
+  color: var(--qaid-q-muted-fg);
   font-variant-numeric: tabular-nums;
 }
 
@@ -551,7 +709,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-top: 1.25rem;
+  margin-top: var(--qaid-q-section-gap);
 }
 
 /* Inline-progress footer keeps the same flex row but lets the progress
@@ -573,10 +731,10 @@ button {
 }
 
 .qaid-q-btn {
-  padding: 0.625rem 1.125rem;
-  border-radius: 0.5rem;
-  font-size: 0.9375em;
-  font-weight: 500;
+  padding: var(--qaid-q-btn-padding-y) var(--qaid-q-btn-padding-x);
+  border-radius: var(--qaid-q-btn-radius);
+  font-size: var(--qaid-q-btn-font-size, 0.9375em);
+  font-weight: var(--qaid-q-btn-font-weight);
   border: 1px solid transparent;
   cursor: pointer;
   transition: filter 0.15s, background 0.15s, color 0.15s;
@@ -586,23 +744,23 @@ button {
 
 .qaid-q-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-marker, #6366f1) 30%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--qaid-q-focus, #6366f1) 30%, transparent);
 }
 
 .qaid-q-btn-secondary {
-  background: transparent;
-  border-color: light-dark(#d1d5db, #4b5563);
-  color: light-dark(#374151, #d1d5db);
+  background: var(--qaid-q-btn-secondary-bg);
+  border-color: var(--qaid-q-btn-secondary-border);
+  color: var(--qaid-q-btn-secondary-fg);
 }
 
 .qaid-q-btn-secondary:hover {
-  background: light-dark(#f3f4f6, #374151);
+  background: var(--qaid-q-btn-secondary-hover-bg);
 }
 
 .qaid-q-btn-primary {
-  background: var(--qaid-positive, #10b981);
-  color: var(--qaid-positive-text, #ffffff);
-  border-color: transparent;
+  background: var(--qaid-q-btn-primary-bg);
+  color: var(--qaid-q-btn-primary-fg);
+  border-color: var(--qaid-q-btn-primary-border);
 }
 
 .qaid-q-btn-primary:hover {
@@ -615,40 +773,26 @@ button {
   filter: none;
 }
 
-.qaid-q-hint {
-  font-size: 0.75em;
-  color: light-dark(#6b7280, #9ca3af);
-}
-
-.qaid-q-hint kbd {
-  display: inline-block;
-  padding: 0.05rem 0.35rem;
-  border-radius: 0.25rem;
-  background: light-dark(#f3f4f6, #374151);
-  border: 1px solid light-dark(#e5e7eb, #4b5563);
-  font-family: inherit;
-  font-size: 0.7em;
-  font-weight: 600;
-  color: light-dark(#374151, #e5e7eb);
-}
-
 /* ==================== Done state ==================== */
 
 .qaid-q-done {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 0.5rem;
   padding: 1.5rem 0;
+  flex: 1;
+  min-height: 0;
 }
 
 .qaid-q-done-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--qaid-positive, #10b981) 18%, transparent);
-  color: var(--qaid-positive, #10b981);
+  background: color-mix(in srgb, var(--qaid-q-accent, #10b981) 18%, transparent);
+  color: var(--qaid-q-accent, #10b981);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -662,7 +806,7 @@ button {
 }
 
 .qaid-q-done-message {
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   margin: 0;
 }
 
@@ -673,7 +817,7 @@ button {
   align-items: center;
   gap: 0.375rem;
   font-size: 0.75em;
-  color: light-dark(#6b7280, #9ca3af);
+  color: var(--qaid-q-muted-fg);
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -686,11 +830,53 @@ button {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--qaid-positive, #10b981);
+  background: var(--qaid-q-accent, #10b981);
   animation: qaid-q-pulse 1.2s ease-in-out infinite;
 }
 
 @keyframes qaid-q-pulse {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }
+}
+
+/* ==================== Unstyled mode ==================== */
+/* Strip every component default. The host-supplied `css` config string
+ * is then the only thing that paints — pair with the documented class
+ * names (.qaid-q-card, .qaid-q-option, .qaid-q-btn, etc) to take full
+ * control. `:where()` keeps specificity at 0 so the host's own rules
+ * trivially override us. `display: revert` keeps the layout box working
+ * after `all: unset`. */
+:where(.qaid-q-root.qaid-q-unstyled) :where(.qaid-q-card,
+  .qaid-q-header,
+  .qaid-q-title,
+  .qaid-q-description,
+  .qaid-q-step,
+  .qaid-q-label,
+  .qaid-q-options,
+  .qaid-q-option,
+  .qaid-q-option-marker,
+  .qaid-q-option-body,
+  .qaid-q-option-label,
+  .qaid-q-option-desc,
+  .qaid-q-input,
+  .qaid-q-textarea,
+  .qaid-q-currency,
+  .qaid-q-currency-prefix,
+  .qaid-q-range,
+  .qaid-q-range-wrap,
+  .qaid-q-range-value,
+  .qaid-q-btn,
+  .qaid-q-footer,
+  .qaid-q-progress,
+  .qaid-q-progress-fill,
+  .qaid-q-step-counter,
+  .qaid-q-error,
+  .qaid-q-saving,
+  .qaid-q-done,
+  .qaid-q-done-icon,
+  .qaid-q-done-title,
+  .qaid-q-done-message) {
+  all: unset;
+  display: revert;
+  box-sizing: border-box;
 }

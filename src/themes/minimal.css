@@ -1,0 +1,14 @@
+/* `minimal` preset — flat surfaces, hairline borders, no shadows,
+ * sharp corners. Targets only Tier 3 tokens so the underlying
+ * components don't care which preset is active. */
+:where(.qaid-q-root) {
+  --qaid-q-card-radius: 0;
+  --qaid-q-card-shadow: none;
+
+  --qaid-q-btn-radius: 0;
+
+  --qaid-q-option-radius: 0;
+  --qaid-q-option-bg-selected: transparent;
+
+  --qaid-q-input-radius: 0;
+}

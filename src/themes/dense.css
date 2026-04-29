@@ -1,0 +1,14 @@
+/* `dense` preset — tighter padding for above-the-fold layouts. */
+:where(.qaid-q-root) {
+  --qaid-q-card-padding: 1rem;
+
+  --qaid-q-btn-padding-y: 0.5rem;
+  --qaid-q-btn-padding-x: 0.875rem;
+
+  --qaid-q-option-padding: 0.5rem 0.625rem;
+
+  --qaid-q-input-padding: 0.5rem 0.625rem;
+
+  --qaid-q-gap: 0.5rem;
+  --qaid-q-section-gap: 0.875rem;
+}
