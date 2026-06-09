@@ -1,5 +1,8 @@
 # @qaiddev/quests-embed
 
+[![npm version](https://img.shields.io/npm/v/@qaiddev/quests-embed)](https://www.npmjs.com/package/@qaiddev/quests-embed)
+[![coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fqaiddev%2Fquests-embed%2Fprod%2Fcoverage-badge.json)](https://github.com/qaiddev/quests-embed)
+
 A zero-dependency, lightweight questionnaire embed that renders step-by-step forms from a JSON definition. Drop it inline on a page or open it as a modal — answers are autosaved as the user types and submitted to your API endpoint or the [QAid.dev hosted dashboard](https://qaid.dev).
 
 ## Install
