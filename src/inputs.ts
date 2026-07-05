@@ -25,6 +25,50 @@ export interface QuestionInput {
   focus(): void;
   getValue(): AnswerValue;
   isValid(): boolean;
+  /**
+   * Mark the control invalid: sets aria-invalid="true" and links the
+   * error text (identified by `errorId`) via aria-describedby so a
+   * screen reader reads the error as the field's description. Do not
+   * rely on colour alone (WCAG 3.3.1 / 1.3.1 / 4.1.2).
+   */
+  setInvalid(errorId: string): void;
+  /** Clear aria-invalid and unlink the error text once the field is corrected. */
+  clearInvalid(): void;
+}
+
+/**
+ * Wire aria-invalid + aria-describedby error association onto a control.
+ * setInvalid(id) marks it invalid and appends the error id to
+ * aria-describedby (preserving any existing tokens); clearInvalid()
+ * removes aria-invalid and only the token it added.
+ */
+function createInvalidState(
+  control: HTMLElement,
+): Pick<QuestionInput, "setInvalid" | "clearInvalid"> {
+  let linkedId: string | null = null;
+  return {
+    setInvalid(errorId: string): void {
+      control.setAttribute("aria-invalid", "true");
+      const ids = (control.getAttribute("aria-describedby") ?? "")
+        .split(/\s+/)
+        .filter(Boolean);
+      if (!ids.includes(errorId)) ids.push(errorId);
+      control.setAttribute("aria-describedby", ids.join(" "));
+      linkedId = errorId;
+    },
+    clearInvalid(): void {
+      control.removeAttribute("aria-invalid");
+      if (linkedId) {
+        const ids = (control.getAttribute("aria-describedby") ?? "")
+          .split(/\s+/)
+          .filter(Boolean)
+          .filter((id) => id !== linkedId);
+        if (ids.length) control.setAttribute("aria-describedby", ids.join(" "));
+        else control.removeAttribute("aria-describedby");
+        linkedId = null;
+      }
+    },
+  };
 }
 
 export interface QuestionInputOptions {
@@ -89,6 +133,7 @@ function createTextInput(
   }
 
   el.setAttribute("aria-label", q.label);
+  if (q.required) el.setAttribute("aria-required", "true");
 
   el.addEventListener("input", () => {
     opts.onChange(el.value);
@@ -130,6 +175,7 @@ function createTextInput(
       if (q.minLength && v.length < q.minLength) return false;
       return true;
     },
+    ...createInvalidState(el),
   };
 }
 
@@ -175,6 +221,7 @@ function createCurrencyInput(
   else if (typeof opts.initialValue === "string" && opts.initialValue !== "")
     input.value = opts.initialValue;
   input.setAttribute("aria-label", q.label);
+  if (q.required) input.setAttribute("aria-required", "true");
 
   input.addEventListener("input", () => {
     const raw = input.value;
@@ -212,6 +259,7 @@ function createCurrencyInput(
       }
       return true;
     },
+    ...createInvalidState(input),
   };
 }
 
@@ -313,6 +361,7 @@ function createRangeInput(
     focus: () => input.focus(),
     getValue: () => Number(input.value),
     isValid: () => true,
+    ...createInvalidState(input),
   };
 }
 
@@ -328,6 +377,7 @@ function createDateInput(q: DateQuestion, opts: QuestionInputOptions): QuestionI
   if (q.max) input.max = q.max;
   if (typeof opts.initialValue === "string") input.value = opts.initialValue;
   input.setAttribute("aria-label", q.label);
+  if (q.required) input.setAttribute("aria-required", "true");
 
   input.addEventListener("input", () => {
     opts.onChange(input.value || null);
@@ -348,6 +398,7 @@ function createDateInput(q: DateQuestion, opts: QuestionInputOptions): QuestionI
       if (!q.required) return true;
       return input.value !== "";
     },
+    ...createInvalidState(input),
   };
 }
 
@@ -370,6 +421,7 @@ function createMultipleChoiceInput(
   wrap.className = `qaid-q-options${layoutClass}`;
   wrap.setAttribute("role", q.multiple ? "group" : "radiogroup");
   wrap.setAttribute("aria-label", q.label);
+  if (q.required) wrap.setAttribute("aria-required", "true");
 
   // Normalize initial selection to a Set for both modes
   const selected = new Set<string>();
@@ -516,5 +568,6 @@ function createMultipleChoiceInput(
       if (!q.required) return true;
       return selected.size > 0;
     },
+    ...createInvalidState(wrap),
   };
 }

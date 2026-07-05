@@ -1,96 +1,113 @@
-const C = `*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}:where(.qaid-q-root){--qaid-q-card-bg: light-dark(#ffffff, #1f2937);--qaid-q-card-fg: light-dark(#1f2937, #f9fafb);--qaid-q-card-border: light-dark(#e5e7eb, #374151);--qaid-q-card-radius: 1rem;--qaid-q-card-padding: 1.5rem;--qaid-q-card-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, .25), rgba(0, 0, 0, .6));--qaid-q-muted-fg: light-dark(#6b7280, #9ca3af);--qaid-q-progress-track: light-dark(#e5e7eb, #374151);--qaid-q-btn-radius: .5rem;--qaid-q-btn-padding-y: .625rem;--qaid-q-btn-padding-x: 1.125rem;--qaid-q-btn-font-weight: 500;--qaid-q-btn-primary-bg: var(--qaid-q-accent, #10b981);--qaid-q-btn-primary-fg: var(--qaid-q-accent-text, #ffffff);--qaid-q-btn-primary-border: transparent;--qaid-q-btn-secondary-bg: transparent;--qaid-q-btn-secondary-fg: light-dark(#374151, #d1d5db);--qaid-q-btn-secondary-border: light-dark(#d1d5db, #4b5563);--qaid-q-btn-secondary-hover-bg: light-dark(#f3f4f6, #374151);--qaid-q-option-bg: light-dark(#ffffff, #111827);--qaid-q-option-bg-selected: color-mix(in srgb, var(--qaid-q-accent, #10b981) 10%, transparent);--qaid-q-option-bg-hover: light-dark(#f9fafb, #1f2937);--qaid-q-option-fg: light-dark(#1f2937, #f9fafb);--qaid-q-option-border: light-dark(#e5e7eb, #374151);--qaid-q-option-border-selected: var(--qaid-q-accent, #10b981);--qaid-q-option-border-hover: light-dark(#9ca3af, #4b5563);--qaid-q-option-radius: .625rem;--qaid-q-option-padding: .75rem .875rem;--qaid-q-marker-bg: light-dark(#ffffff, #111827);--qaid-q-marker-bg-selected: var(--qaid-q-accent, #10b981);--qaid-q-marker-border: light-dark(#d1d5db, #4b5563);--qaid-q-marker-icon: light-dark(#ffffff, #1f2937);--qaid-q-marker-radius: 50%;--qaid-q-input-bg: light-dark(#ffffff, #111827);--qaid-q-input-fg: light-dark(#1f2937, #f9fafb);--qaid-q-input-border: light-dark(#d1d5db, #374151);--qaid-q-input-radius: .625rem;--qaid-q-input-padding: .75rem .875rem;--qaid-q-input-placeholder: light-dark(#9ca3af, #6b7280);--qaid-q-gap: .75rem;--qaid-q-section-gap: 1.25rem}:where(.qaid-q-root.qaid-q-theme-light){--qaid-q-card-bg: #ffffff;--qaid-q-card-fg: #1f2937;--qaid-q-card-border: #e5e7eb;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);--qaid-q-muted-fg: #6b7280;--qaid-q-progress-track: #e5e7eb;--qaid-q-btn-secondary-fg: #374151;--qaid-q-btn-secondary-border: #d1d5db;--qaid-q-btn-secondary-hover-bg: #f3f4f6;--qaid-q-option-bg: #ffffff;--qaid-q-option-bg-hover: #f9fafb;--qaid-q-option-fg: #1f2937;--qaid-q-option-border: #e5e7eb;--qaid-q-option-border-hover: #9ca3af;--qaid-q-marker-bg: #ffffff;--qaid-q-marker-border: #d1d5db;--qaid-q-marker-icon: #ffffff;--qaid-q-input-bg: #ffffff;--qaid-q-input-fg: #1f2937;--qaid-q-input-border: #d1d5db;--qaid-q-input-placeholder: #9ca3af}:where(.qaid-q-root.qaid-q-theme-dark){--qaid-q-card-bg: #1f2937;--qaid-q-card-fg: #f9fafb;--qaid-q-card-border: #374151;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .6);--qaid-q-muted-fg: #9ca3af;--qaid-q-progress-track: #374151;--qaid-q-btn-secondary-fg: #d1d5db;--qaid-q-btn-secondary-border: #4b5563;--qaid-q-btn-secondary-hover-bg: #374151;--qaid-q-option-bg: #111827;--qaid-q-option-bg-hover: #1f2937;--qaid-q-option-fg: #f9fafb;--qaid-q-option-border: #374151;--qaid-q-option-border-hover: #4b5563;--qaid-q-marker-bg: #111827;--qaid-q-marker-border: #4b5563;--qaid-q-marker-icon: #1f2937;--qaid-q-input-bg: #111827;--qaid-q-input-fg: #f9fafb;--qaid-q-input-border: #374151;--qaid-q-input-placeholder: #6b7280}.qaid-q-root{color-scheme:light dark;font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:var(--qaid-q-card-fg)}.qaid-q-root.qaid-q-theme-light{color-scheme:light}.qaid-q-root.qaid-q-theme-dark{color-scheme:dark}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:var(--qaid-q-card-bg);color:var(--qaid-q-card-fg);border-radius:var(--qaid-q-card-radius);box-shadow:var(--qaid-q-card-shadow);padding:var(--qaid-q-card-padding);overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid var(--qaid-q-card-border);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:var(--qaid-q-card-fg)}.qaid-q-step-counter{font-size:.875em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:var(--qaid-q-muted-fg);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:var(--qaid-q-btn-secondary-hover-bg);color:var(--qaid-q-card-fg)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:var(--qaid-q-progress-track);border-radius:9999px;overflow:hidden;margin-bottom:var(--qaid-q-section-gap)}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-q-accent, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto}.qaid-q-step{display:flex;flex-direction:column;gap:var(--qaid-q-gap);animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-no-motion .qaid-q-step,.qaid-q-no-motion.qaid-q-root{animation:none!important}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:var(--qaid-q-card-fg);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-q-error, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:var(--qaid-q-muted-fg);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-q-error, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:var(--qaid-q-input-padding);border:1px solid var(--qaid-q-input-border);border-radius:var(--qaid-q-input-radius);font-family:inherit;font-size:1em;background:var(--qaid-q-input-bg);color:var(--qaid-q-input-fg);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:var(--qaid-q-input-placeholder)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:var(--qaid-q-muted-fg);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-q-accent, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:var(--qaid-q-muted-fg);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:var(--qaid-q-progress-track);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:var(--qaid-q-option-padding);border:1px solid var(--qaid-q-option-border);border-radius:var(--qaid-q-option-radius);background:var(--qaid-q-option-bg);text-align:left;font-size:1em;color:var(--qaid-q-option-fg);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:var(--qaid-q-option-border-hover);background:var(--qaid-q-option-bg-hover)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-q-option-border-selected);background:var(--qaid-q-option-bg-selected)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid var(--qaid-q-marker-border);border-radius:var(--qaid-q-marker-radius);display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:var(--qaid-q-marker-bg);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-q-marker-bg-selected);background:var(--qaid-q-marker-bg-selected)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:var(--qaid-q-marker-icon)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:70%;height:70%;border-radius:0;background:var(--qaid-q-marker-icon);-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;transform:none}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:var(--qaid-q-progress-track);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:var(--qaid-q-muted-fg);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:var(--qaid-q-progress-track);color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:var(--qaid-q-section-gap)}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:var(--qaid-q-btn-padding-y) var(--qaid-q-btn-padding-x);border-radius:var(--qaid-q-btn-radius);font-size:var(--qaid-q-btn-font-size, .9375em);font-weight:var(--qaid-q-btn-font-weight);border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:var(--qaid-q-btn-secondary-bg);border-color:var(--qaid-q-btn-secondary-border);color:var(--qaid-q-btn-secondary-fg)}.qaid-q-btn-secondary:hover{background:var(--qaid-q-btn-secondary-hover-bg)}.qaid-q-btn-primary{background:var(--qaid-q-btn-primary-bg);color:var(--qaid-q-btn-primary-fg);border-color:var(--qaid-q-btn-primary-border)}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-done{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem;padding:1.5rem 0;flex:1;min-height:0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-q-accent, #10b981) 18%,transparent);color:var(--qaid-q-accent, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:var(--qaid-q-muted-fg);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:var(--qaid-q-muted-fg);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-q-accent, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}:where(.qaid-q-root.qaid-q-unstyled) :where(.qaid-q-card,.qaid-q-header,.qaid-q-title,.qaid-q-description,.qaid-q-step,.qaid-q-label,.qaid-q-options,.qaid-q-option,.qaid-q-option-marker,.qaid-q-option-body,.qaid-q-option-label,.qaid-q-option-desc,.qaid-q-input,.qaid-q-textarea,.qaid-q-currency,.qaid-q-currency-prefix,.qaid-q-range,.qaid-q-range-wrap,.qaid-q-range-value,.qaid-q-btn,.qaid-q-footer,.qaid-q-progress,.qaid-q-progress-fill,.qaid-q-step-counter,.qaid-q-error,.qaid-q-saving,.qaid-q-done,.qaid-q-done-icon,.qaid-q-done-title,.qaid-q-done-message){all:unset;display:revert;box-sizing:border-box}`;
-const S = ":where(.qaid-q-root){--qaid-q-card-radius: 0;--qaid-q-card-shadow: none;--qaid-q-btn-radius: 0;--qaid-q-option-radius: 0;--qaid-q-option-bg-selected: transparent;--qaid-q-input-radius: 0}", A = ":where(.qaid-q-root){--qaid-q-card-radius: 1.5rem;--qaid-q-btn-radius: 9999px;--qaid-q-btn-padding-x: 1.5rem;--qaid-q-option-radius: 9999px;--qaid-q-option-padding: .75rem 1.125rem;--qaid-q-input-radius: 9999px;--qaid-q-input-padding: .75rem 1.125rem}", I = ":where(.qaid-q-root){--qaid-q-card-padding: 1rem;--qaid-q-btn-padding-y: .5rem;--qaid-q-btn-padding-x: .875rem;--qaid-q-option-padding: .5rem .625rem;--qaid-q-input-padding: .5rem .625rem;--qaid-q-gap: .5rem;--qaid-q-section-gap: .875rem}", N = {
+const T = `*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}:where(.qaid-q-root){--qaid-q-card-bg: light-dark(#ffffff, #1f2937);--qaid-q-card-fg: light-dark(#1f2937, #f9fafb);--qaid-q-card-border: light-dark(#e5e7eb, #374151);--qaid-q-card-radius: 1rem;--qaid-q-card-padding: 1.5rem;--qaid-q-card-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, .25), rgba(0, 0, 0, .6));--qaid-q-muted-fg: light-dark(#6b7280, #9ca3af);--qaid-q-progress-track: light-dark(#e5e7eb, #374151);--qaid-q-btn-radius: .5rem;--qaid-q-btn-padding-y: .625rem;--qaid-q-btn-padding-x: 1.125rem;--qaid-q-btn-font-weight: 500;--qaid-q-btn-primary-bg: var(--qaid-q-accent, #10b981);--qaid-q-btn-primary-fg: var(--qaid-q-accent-text, #ffffff);--qaid-q-btn-primary-border: transparent;--qaid-q-btn-secondary-bg: transparent;--qaid-q-btn-secondary-fg: light-dark(#374151, #d1d5db);--qaid-q-btn-secondary-border: light-dark(#d1d5db, #4b5563);--qaid-q-btn-secondary-hover-bg: light-dark(#f3f4f6, #374151);--qaid-q-option-bg: light-dark(#ffffff, #111827);--qaid-q-option-bg-selected: color-mix(in srgb, var(--qaid-q-accent, #10b981) 10%, transparent);--qaid-q-option-bg-hover: light-dark(#f9fafb, #1f2937);--qaid-q-option-fg: light-dark(#1f2937, #f9fafb);--qaid-q-option-border: light-dark(#e5e7eb, #374151);--qaid-q-option-border-selected: var(--qaid-q-accent, #10b981);--qaid-q-option-border-hover: light-dark(#9ca3af, #4b5563);--qaid-q-option-radius: .625rem;--qaid-q-option-padding: .75rem .875rem;--qaid-q-marker-bg: light-dark(#ffffff, #111827);--qaid-q-marker-bg-selected: var(--qaid-q-accent, #10b981);--qaid-q-marker-border: light-dark(#d1d5db, #4b5563);--qaid-q-marker-icon: light-dark(#ffffff, #1f2937);--qaid-q-marker-radius: 50%;--qaid-q-input-bg: light-dark(#ffffff, #111827);--qaid-q-input-fg: light-dark(#1f2937, #f9fafb);--qaid-q-input-border: light-dark(#d1d5db, #374151);--qaid-q-input-radius: .625rem;--qaid-q-input-padding: .75rem .875rem;--qaid-q-input-placeholder: light-dark(#9ca3af, #6b7280);--qaid-q-gap: .75rem;--qaid-q-section-gap: 1.25rem}:where(.qaid-q-root.qaid-q-theme-light){--qaid-q-card-bg: #ffffff;--qaid-q-card-fg: #1f2937;--qaid-q-card-border: #e5e7eb;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);--qaid-q-muted-fg: #6b7280;--qaid-q-progress-track: #e5e7eb;--qaid-q-btn-secondary-fg: #374151;--qaid-q-btn-secondary-border: #d1d5db;--qaid-q-btn-secondary-hover-bg: #f3f4f6;--qaid-q-option-bg: #ffffff;--qaid-q-option-bg-hover: #f9fafb;--qaid-q-option-fg: #1f2937;--qaid-q-option-border: #e5e7eb;--qaid-q-option-border-hover: #9ca3af;--qaid-q-marker-bg: #ffffff;--qaid-q-marker-border: #d1d5db;--qaid-q-marker-icon: #ffffff;--qaid-q-input-bg: #ffffff;--qaid-q-input-fg: #1f2937;--qaid-q-input-border: #d1d5db;--qaid-q-input-placeholder: #9ca3af}:where(.qaid-q-root.qaid-q-theme-dark){--qaid-q-card-bg: #1f2937;--qaid-q-card-fg: #f9fafb;--qaid-q-card-border: #374151;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .6);--qaid-q-muted-fg: #9ca3af;--qaid-q-progress-track: #374151;--qaid-q-btn-secondary-fg: #d1d5db;--qaid-q-btn-secondary-border: #4b5563;--qaid-q-btn-secondary-hover-bg: #374151;--qaid-q-option-bg: #111827;--qaid-q-option-bg-hover: #1f2937;--qaid-q-option-fg: #f9fafb;--qaid-q-option-border: #374151;--qaid-q-option-border-hover: #4b5563;--qaid-q-marker-bg: #111827;--qaid-q-marker-border: #4b5563;--qaid-q-marker-icon: #1f2937;--qaid-q-input-bg: #111827;--qaid-q-input-fg: #f9fafb;--qaid-q-input-border: #374151;--qaid-q-input-placeholder: #6b7280}.qaid-q-root{color-scheme:light dark;font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:var(--qaid-q-card-fg)}.qaid-q-root.qaid-q-theme-light{color-scheme:light}.qaid-q-root.qaid-q-theme-dark{color-scheme:dark}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:var(--qaid-q-card-bg);color:var(--qaid-q-card-fg);border-radius:var(--qaid-q-card-radius);box-shadow:var(--qaid-q-card-shadow);padding:var(--qaid-q-card-padding);overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid var(--qaid-q-card-border);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:var(--qaid-q-card-fg)}.qaid-q-step-counter{font-size:.875em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:var(--qaid-q-muted-fg);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:var(--qaid-q-btn-secondary-hover-bg);color:var(--qaid-q-card-fg)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:var(--qaid-q-progress-track);border-radius:9999px;overflow:hidden;margin-bottom:var(--qaid-q-section-gap)}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-q-accent, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto}.qaid-q-step{display:flex;flex-direction:column;gap:var(--qaid-q-gap);animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-no-motion .qaid-q-step,.qaid-q-no-motion.qaid-q-root{animation:none!important}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:var(--qaid-q-card-fg);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-q-error, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:var(--qaid-q-muted-fg);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-q-error, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:var(--qaid-q-input-padding);border:1px solid var(--qaid-q-input-border);border-radius:var(--qaid-q-input-radius);font-family:inherit;font-size:1em;background:var(--qaid-q-input-bg);color:var(--qaid-q-input-fg);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:var(--qaid-q-input-placeholder)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:var(--qaid-q-muted-fg);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-q-accent, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:var(--qaid-q-muted-fg);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:var(--qaid-q-progress-track);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:var(--qaid-q-option-padding);border:1px solid var(--qaid-q-option-border);border-radius:var(--qaid-q-option-radius);background:var(--qaid-q-option-bg);text-align:left;font-size:1em;color:var(--qaid-q-option-fg);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:var(--qaid-q-option-border-hover);background:var(--qaid-q-option-bg-hover)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-q-option-border-selected);background:var(--qaid-q-option-bg-selected)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid var(--qaid-q-marker-border);border-radius:var(--qaid-q-marker-radius);display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:var(--qaid-q-marker-bg);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-q-marker-bg-selected);background:var(--qaid-q-marker-bg-selected)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:var(--qaid-q-marker-icon)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:70%;height:70%;border-radius:0;background:var(--qaid-q-marker-icon);-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;transform:none}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:var(--qaid-q-progress-track);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:var(--qaid-q-muted-fg);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:var(--qaid-q-progress-track);color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:var(--qaid-q-section-gap)}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:var(--qaid-q-btn-padding-y) var(--qaid-q-btn-padding-x);border-radius:var(--qaid-q-btn-radius);font-size:var(--qaid-q-btn-font-size, .9375em);font-weight:var(--qaid-q-btn-font-weight);border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:var(--qaid-q-btn-secondary-bg);border-color:var(--qaid-q-btn-secondary-border);color:var(--qaid-q-btn-secondary-fg)}.qaid-q-btn-secondary:hover{background:var(--qaid-q-btn-secondary-hover-bg)}.qaid-q-btn-primary{background:var(--qaid-q-btn-primary-bg);color:var(--qaid-q-btn-primary-fg);border-color:var(--qaid-q-btn-primary-border)}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-done{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem;padding:1.5rem 0;flex:1;min-height:0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-q-accent, #10b981) 18%,transparent);color:var(--qaid-q-accent, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:var(--qaid-q-muted-fg);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:var(--qaid-q-muted-fg);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-q-accent, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}:where(.qaid-q-root.qaid-q-unstyled) :where(.qaid-q-card,.qaid-q-header,.qaid-q-title,.qaid-q-description,.qaid-q-step,.qaid-q-label,.qaid-q-options,.qaid-q-option,.qaid-q-option-marker,.qaid-q-option-body,.qaid-q-option-label,.qaid-q-option-desc,.qaid-q-input,.qaid-q-textarea,.qaid-q-currency,.qaid-q-currency-prefix,.qaid-q-range,.qaid-q-range-wrap,.qaid-q-range-value,.qaid-q-btn,.qaid-q-footer,.qaid-q-progress,.qaid-q-progress-fill,.qaid-q-step-counter,.qaid-q-error,.qaid-q-saving,.qaid-q-done,.qaid-q-done-icon,.qaid-q-done-title,.qaid-q-done-message){all:unset;display:revert;box-sizing:border-box}.qaid-q-input:focus-visible,.qaid-q-textarea:focus-visible,.qaid-q-option:focus-visible,.qaid-q-btn:focus-visible,.qaid-q-close:focus-visible,.qaid-q-range:focus-visible{outline:2px solid transparent;outline-offset:2px}@media(prefers-reduced-motion:reduce){.qaid-q-root *,.qaid-q-root *:before,.qaid-q-root *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.qaid-q-range::-webkit-slider-thumb{transition:none!important}.qaid-q-range::-moz-range-thumb{transition:none!important}}@media(forced-colors:active){.qaid-q-input:focus-visible,.qaid-q-textarea:focus-visible,.qaid-q-option:focus-visible,.qaid-q-btn:focus-visible,.qaid-q-close:focus-visible,.qaid-q-range:focus-visible{outline:2px solid Highlight;outline-offset:2px}.qaid-q-card{border:1px solid CanvasText}.qaid-q-input,.qaid-q-textarea,.qaid-q-option{border-color:CanvasText}.qaid-q-option.qaid-q-selected{border-color:Highlight}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{forced-color-adjust:none;background:Highlight;border-color:Highlight}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{background:HighlightText}.qaid-q-progress{forced-color-adjust:none;background:Canvas;border:1px solid CanvasText}.qaid-q-progress-fill{forced-color-adjust:none;background:Highlight}}`;
+const L = ":where(.qaid-q-root){--qaid-q-card-radius: 0;--qaid-q-card-shadow: none;--qaid-q-btn-radius: 0;--qaid-q-option-radius: 0;--qaid-q-option-bg-selected: transparent;--qaid-q-input-radius: 0}", z = ":where(.qaid-q-root){--qaid-q-card-radius: 1.5rem;--qaid-q-btn-radius: 9999px;--qaid-q-btn-padding-x: 1.5rem;--qaid-q-option-radius: 9999px;--qaid-q-option-padding: .75rem 1.125rem;--qaid-q-input-radius: 9999px;--qaid-q-input-padding: .75rem 1.125rem}", D = ":where(.qaid-q-root){--qaid-q-card-padding: 1rem;--qaid-q-btn-padding-y: .5rem;--qaid-q-btn-padding-x: .875rem;--qaid-q-option-padding: .5rem .625rem;--qaid-q-input-padding: .5rem .625rem;--qaid-q-gap: .5rem;--qaid-q-section-gap: .875rem}", V = {
   default: "",
-  minimal: S,
-  pill: A,
-  dense: I
+  minimal: L,
+  pill: z,
+  dense: D
 };
-function L(t) {
-  return N[t] ?? "";
+function H(t) {
+  return V[t] ?? "";
 }
-function T(t, e, i) {
-  const [n, a, o] = [t, e, i].map((r) => (r = r / 255, r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)));
-  return 0.2126 * n + 0.7152 * a + 0.0722 * o;
+function R(t, e, i) {
+  const [a, n, o] = [t, e, i].map((r) => (r = r / 255, r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)));
+  return 0.2126 * a + 0.7152 * n + 0.0722 * o;
 }
-function z(t) {
+function O(t) {
   if (t.startsWith("#")) {
-    const i = t.slice(1), n = i.length === 3 ? i.split("").map((o) => o + o).join("") : i, a = parseInt(n, 16);
-    return { r: a >> 16 & 255, g: a >> 8 & 255, b: a & 255 };
+    const i = t.slice(1), a = i.length === 3 ? i.split("").map((o) => o + o).join("") : i, n = parseInt(a, 16);
+    return { r: n >> 16 & 255, g: n >> 8 & 255, b: n & 255 };
   }
   const e = t.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
   return e ? { r: parseInt(e[1]), g: parseInt(e[2]), b: parseInt(e[3]) } : null;
 }
-function x(t) {
-  const e = z(t);
-  return e && T(e.r, e.g, e.b) > 0.4 ? "black" : "white";
+function w(t) {
+  const e = O(t);
+  return e && R(e.r, e.g, e.b) > 0.4 ? "black" : "white";
 }
-function V(t = {}) {
+function P(t = {}) {
   const e = {};
-  return t.accentColor !== void 0 && (e["--qaid-q-accent"] = t.accentColor, e["--qaid-q-accent-text"] = x(t.accentColor)), t.errorColor !== void 0 && (e["--qaid-q-error"] = t.errorColor), t.focusColor !== void 0 && (e["--qaid-q-focus"] = t.focusColor, e["--qaid-q-focus-text"] = x(t.focusColor)), t.modalWidth !== void 0 && (e["--qaid-modal-width"] = `${t.modalWidth}px`), t.backdropOpacity !== void 0 && (e["--qaid-backdrop-opacity"] = String(t.backdropOpacity)), t.fontFamily !== void 0 && (e["--qaid-font-family"] = t.fontFamily), t.fontSize !== void 0 && (e["--qaid-font-size"] = `${t.fontSize}px`), e;
-}
-function P(t, e) {
-  for (const [i, n] of Object.entries(e))
-    t.style.setProperty(i, n);
-}
-function D() {
-  return C;
-}
-function O(t) {
-  return L(t);
-}
-function H(t) {
-  switch (t.question.type) {
-    case "text":
-      return j(t.question, t);
-    case "currency":
-      return R(t.question, t);
-    case "range":
-      return Q(t.question, t);
-    case "date":
-      return $(t.question, t);
-    case "multiple-choice":
-      return M(t.question, t);
-  }
+  return t.accentColor !== void 0 && (e["--qaid-q-accent"] = t.accentColor, e["--qaid-q-accent-text"] = w(t.accentColor)), t.errorColor !== void 0 && (e["--qaid-q-error"] = t.errorColor), t.focusColor !== void 0 && (e["--qaid-q-focus"] = t.focusColor, e["--qaid-q-focus-text"] = w(t.focusColor)), t.modalWidth !== void 0 && (e["--qaid-modal-width"] = `${t.modalWidth}px`), t.backdropOpacity !== void 0 && (e["--qaid-backdrop-opacity"] = String(t.backdropOpacity)), t.fontFamily !== void 0 && (e["--qaid-font-family"] = t.fontFamily), t.fontSize !== void 0 && (e["--qaid-font-size"] = `${t.fontSize}px`), e;
 }
 function j(t, e) {
-  const i = typeof e.initialValue == "string" ? e.initialValue : "";
-  let n;
-  if (t.multiline) {
-    const a = document.createElement("textarea");
-    a.className = "qaid-q-textarea", a.value = i, t.placeholder && (a.placeholder = t.placeholder), t.maxLength && (a.maxLength = t.maxLength), n = a;
-  } else {
-    const a = document.createElement("input");
-    a.className = "qaid-q-input", a.type = t.inputType ?? "text", a.value = i, t.placeholder && (a.placeholder = t.placeholder), t.maxLength && (a.maxLength = t.maxLength), a.setAttribute("autocomplete", U(t.inputType)), n = a;
-  }
-  return n.setAttribute("aria-label", t.label), n.addEventListener("input", () => {
-    e.onChange(n.value);
-  }), n.addEventListener("keydown", ((a) => {
-    if (a.key === "Enter") {
-      if (t.multiline) {
-        (a.metaKey || a.ctrlKey) && (a.preventDefault(), e.onSubmit());
-        return;
-      }
-      a.isComposing || (a.preventDefault(), e.onSubmit());
-    }
-  })), {
-    element: n,
-    focus: () => {
-      n.focus();
-      const a = n.value.length;
-      try {
-        n.setSelectionRange(a, a);
-      } catch {
-      }
+  for (const [i, a] of Object.entries(e))
+    t.style.setProperty(i, a);
+}
+function U() {
+  return T;
+}
+function $(t) {
+  return H(t);
+}
+function b(t) {
+  let e = null;
+  return {
+    setInvalid(i) {
+      t.setAttribute("aria-invalid", "true");
+      const a = (t.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
+      a.includes(i) || a.push(i), t.setAttribute("aria-describedby", a.join(" ")), e = i;
     },
-    getValue: () => n.value,
-    isValid: () => {
-      if (!t.required) return !0;
-      const a = n.value.trim();
-      return !(a.length === 0 || t.minLength && a.length < t.minLength);
+    clearInvalid() {
+      if (t.removeAttribute("aria-invalid"), e) {
+        const i = (t.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean).filter((a) => a !== e);
+        i.length ? t.setAttribute("aria-describedby", i.join(" ")) : t.removeAttribute("aria-describedby"), e = null;
+      }
     }
   };
 }
-function U(t) {
+function F(t) {
+  switch (t.question.type) {
+    case "text":
+      return M(t.question, t);
+    case "currency":
+      return K(t.question, t);
+    case "range":
+      return Y(t.question, t);
+    case "date":
+      return W(t.question, t);
+    case "multiple-choice":
+      return _(t.question, t);
+  }
+}
+function M(t, e) {
+  const i = typeof e.initialValue == "string" ? e.initialValue : "";
+  let a;
+  if (t.multiline) {
+    const n = document.createElement("textarea");
+    n.className = "qaid-q-textarea", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), a = n;
+  } else {
+    const n = document.createElement("input");
+    n.className = "qaid-q-input", n.type = t.inputType ?? "text", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), n.setAttribute("autocomplete", Q(t.inputType)), a = n;
+  }
+  return a.setAttribute("aria-label", t.label), t.required && a.setAttribute("aria-required", "true"), a.addEventListener("input", () => {
+    e.onChange(a.value);
+  }), a.addEventListener("keydown", ((n) => {
+    if (n.key === "Enter") {
+      if (t.multiline) {
+        (n.metaKey || n.ctrlKey) && (n.preventDefault(), e.onSubmit());
+        return;
+      }
+      n.isComposing || (n.preventDefault(), e.onSubmit());
+    }
+  })), {
+    element: a,
+    focus: () => {
+      a.focus();
+      const n = a.value.length;
+      try {
+        a.setSelectionRange(n, n);
+      } catch {
+      }
+    },
+    getValue: () => a.value,
+    isValid: () => {
+      if (!t.required) return !0;
+      const n = a.value.trim();
+      return !(n.length === 0 || t.minLength && n.length < t.minLength);
+    },
+    ...b(a)
+  };
+}
+function Q(t) {
   switch (t) {
     case "email":
       return "email";
@@ -102,37 +119,38 @@ function U(t) {
       return "off";
   }
 }
-function R(t, e) {
+function K(t, e) {
   const i = document.createElement("div");
   i.className = "qaid-q-currency";
-  const n = document.createElement("span");
-  n.className = "qaid-q-currency-prefix", n.textContent = F(t.currency ?? "USD", t.locale), i.appendChild(n);
-  const a = document.createElement("input");
-  return a.className = "qaid-q-input", a.type = "number", a.inputMode = "decimal", a.step = "0.01", typeof t.min == "number" && (a.min = String(t.min)), typeof t.max == "number" && (a.max = String(t.max)), t.placeholder && (a.placeholder = t.placeholder), typeof e.initialValue == "number" ? a.value = String(e.initialValue) : typeof e.initialValue == "string" && e.initialValue !== "" && (a.value = e.initialValue), a.setAttribute("aria-label", t.label), a.addEventListener("input", () => {
-    const o = a.value;
+  const a = document.createElement("span");
+  a.className = "qaid-q-currency-prefix", a.textContent = B(t.currency ?? "USD", t.locale), i.appendChild(a);
+  const n = document.createElement("input");
+  return n.className = "qaid-q-input", n.type = "number", n.inputMode = "decimal", n.step = "0.01", typeof t.min == "number" && (n.min = String(t.min)), typeof t.max == "number" && (n.max = String(t.max)), t.placeholder && (n.placeholder = t.placeholder), typeof e.initialValue == "number" ? n.value = String(e.initialValue) : typeof e.initialValue == "string" && e.initialValue !== "" && (n.value = e.initialValue), n.setAttribute("aria-label", t.label), t.required && n.setAttribute("aria-required", "true"), n.addEventListener("input", () => {
+    const o = n.value;
     if (o === "")
       e.onChange(null);
     else {
       const r = Number(o);
       e.onChange(Number.isNaN(r) ? null : r);
     }
-  }), a.addEventListener("keydown", (o) => {
+  }), n.addEventListener("keydown", (o) => {
     o.key === "Enter" && !o.isComposing && (o.preventDefault(), e.onSubmit());
-  }), i.appendChild(a), {
+  }), i.appendChild(n), {
     element: i,
-    focus: () => a.focus(),
+    focus: () => n.focus(),
     getValue: () => {
-      if (a.value === "") return null;
-      const o = Number(a.value);
+      if (n.value === "") return null;
+      const o = Number(n.value);
       return Number.isNaN(o) ? null : o;
     },
     isValid: () => {
-      const o = a.value === "" ? null : Number(a.value);
+      const o = n.value === "" ? null : Number(n.value);
       return !(t.required && (o === null || Number.isNaN(o)) || o !== null && !Number.isNaN(o) && (typeof t.min == "number" && o < t.min || typeof t.max == "number" && o > t.max));
-    }
+    },
+    ...b(n)
   };
 }
-function F(t, e) {
+function B(t, e) {
   try {
     return new Intl.NumberFormat(e, {
       style: "currency",
@@ -144,107 +162,109 @@ function F(t, e) {
     return t;
   }
 }
-function Q(t, e) {
+function Y(t, e) {
   const i = document.createElement("div");
   i.className = "qaid-q-range-wrap";
-  const n = document.createElement("div");
-  n.className = "qaid-q-range-value";
-  const a = document.createElement("span");
-  if (n.appendChild(a), t.unit) {
+  const a = document.createElement("div");
+  a.className = "qaid-q-range-value";
+  const n = document.createElement("span");
+  if (a.appendChild(n), t.unit) {
     const s = document.createElement("span");
-    s.className = "qaid-q-range-unit", s.textContent = t.unit, n.appendChild(s);
+    s.className = "qaid-q-range-unit", s.textContent = t.unit, a.appendChild(s);
   }
   const o = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, r = document.createElement("input");
   r.className = "qaid-q-range", r.type = "range", r.min = String(t.min), r.max = String(t.max), r.step = String(t.step ?? 1), r.value = String(o), r.setAttribute("aria-label", t.label), r.setAttribute("aria-valuemin", String(t.min)), r.setAttribute("aria-valuemax", String(t.max));
-  const q = () => {
-    a.textContent = r.value, r.setAttribute("aria-valuenow", r.value);
+  const c = () => {
+    n.textContent = r.value, r.setAttribute("aria-valuenow", r.value);
   };
-  q(), r.addEventListener("input", () => {
-    q(), e.onChange(Number(r.value));
+  c(), r.addEventListener("input", () => {
+    c(), e.onChange(Number(r.value));
   }), r.addEventListener("keydown", (s) => {
     s.key === "Enter" && (s.preventDefault(), e.onSubmit());
   });
-  const h = document.createElement("div");
-  h.className = "qaid-q-range-bounds";
+  const q = document.createElement("div");
+  q.className = "qaid-q-range-bounds";
+  const p = document.createElement("span");
+  p.textContent = `${t.min}${t.unit ?? ""}`;
   const m = document.createElement("span");
-  m.textContent = `${t.min}${t.unit ?? ""}`;
-  const f = document.createElement("span");
-  return f.textContent = `${t.max}${t.unit ?? ""}`, h.appendChild(m), h.appendChild(f), i.appendChild(n), i.appendChild(r), i.appendChild(h), queueMicrotask(() => e.onChange(Number(r.value))), {
+  return m.textContent = `${t.max}${t.unit ?? ""}`, q.appendChild(p), q.appendChild(m), i.appendChild(a), i.appendChild(r), i.appendChild(q), queueMicrotask(() => e.onChange(Number(r.value))), {
     element: i,
     focus: () => r.focus(),
     getValue: () => Number(r.value),
-    isValid: () => !0
+    isValid: () => !0,
+    ...b(r)
   };
 }
-function $(t, e) {
+function W(t, e) {
   const i = document.createElement("input");
-  return i.className = "qaid-q-input", i.type = "date", t.min && (i.min = t.min), t.max && (i.max = t.max), typeof e.initialValue == "string" && (i.value = e.initialValue), i.setAttribute("aria-label", t.label), i.addEventListener("input", () => {
+  return i.className = "qaid-q-input", i.type = "date", t.min && (i.min = t.min), t.max && (i.max = t.max), typeof e.initialValue == "string" && (i.value = e.initialValue), i.setAttribute("aria-label", t.label), t.required && i.setAttribute("aria-required", "true"), i.addEventListener("input", () => {
     e.onChange(i.value || null);
-  }), i.addEventListener("keydown", (n) => {
-    n.key === "Enter" && !n.isComposing && (n.preventDefault(), e.onSubmit());
+  }), i.addEventListener("keydown", (a) => {
+    a.key === "Enter" && !a.isComposing && (a.preventDefault(), e.onSubmit());
   }), {
     element: i,
     focus: () => i.focus(),
     getValue: () => i.value || null,
-    isValid: () => t.required ? i.value !== "" : !0
+    isValid: () => t.required ? i.value !== "" : !0,
+    ...b(i)
   };
 }
-function M(t, e) {
-  const i = document.createElement("div"), n = t.imageAlignment ?? "horizontal", o = t.options.some((s) => !!s.image) ? n === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
-  i.className = `qaid-q-options${o}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label);
+function _(t, e) {
+  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", o = t.options.some((s) => !!s.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
+  i.className = `qaid-q-options${o}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label), t.required && i.setAttribute("aria-required", "true");
   const r = /* @__PURE__ */ new Set();
   if (t.multiple && Array.isArray(e.initialValue))
     for (const s of e.initialValue) r.add(s);
   else !t.multiple && typeof e.initialValue == "string" && r.add(e.initialValue);
-  const q = [];
-  t.options.forEach((s, c) => {
+  const c = [];
+  t.options.forEach((s, u) => {
     const d = document.createElement("button");
     d.type = "button", d.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, d.dataset.value = s.value, d.setAttribute("role", t.multiple ? "checkbox" : "radio"), d.setAttribute("aria-checked", r.has(s.value) ? "true" : "false"), r.has(s.value) && d.classList.add("qaid-q-selected");
-    const p = document.createElement("span");
-    p.className = "qaid-q-option-marker", p.setAttribute("aria-hidden", "true");
+    const f = document.createElement("span");
+    f.className = "qaid-q-option-marker", f.setAttribute("aria-hidden", "true");
     const g = document.createElement("span");
     if (g.className = "qaid-q-option-body", s.image) {
       const l = document.createElement("img");
       l.className = "qaid-q-option-image", l.src = s.image, l.alt = "", l.loading = "lazy", l.decoding = "async", g.appendChild(l);
     }
-    const u = document.createElement("span");
-    if (u.className = "qaid-q-option-label", u.textContent = s.label, g.appendChild(u), s.description) {
+    const h = document.createElement("span");
+    if (h.className = "qaid-q-option-label", h.textContent = s.label, g.appendChild(h), s.description) {
       const l = document.createElement("span");
       l.className = "qaid-q-option-desc", l.textContent = s.description, g.appendChild(l);
     }
-    if (d.appendChild(p), d.appendChild(g), c < 9) {
+    if (d.appendChild(f), d.appendChild(g), u < 9) {
       const l = document.createElement("span");
-      l.className = "qaid-q-option-key", l.textContent = String(c + 1), l.setAttribute("aria-hidden", "true"), d.appendChild(l);
+      l.className = "qaid-q-option-key", l.textContent = String(u + 1), l.setAttribute("aria-hidden", "true"), d.appendChild(l);
     }
-    d.addEventListener("click", () => m(c)), d.addEventListener("keydown", (l) => {
+    d.addEventListener("click", () => p(u)), d.addEventListener("keydown", (l) => {
       if (l.key === "ArrowDown" || l.key === "ArrowRight") {
-        l.preventDefault(), h((c + 1) % q.length);
+        l.preventDefault(), q((u + 1) % c.length);
         return;
       }
       if (l.key === "ArrowUp" || l.key === "ArrowLeft") {
-        l.preventDefault(), h((c - 1 + q.length) % q.length);
+        l.preventDefault(), q((u - 1 + c.length) % c.length);
         return;
       }
       !t.multiple && l.key === "Enter" && r.size > 0 && (l.preventDefault(), e.onSubmit());
-    }), q.push(d), i.appendChild(d);
+    }), c.push(d), i.appendChild(d);
   }), i.addEventListener("keydown", (s) => {
-    const c = s.key;
-    if (c.length === 1 && c >= "1" && c <= "9") {
-      const d = parseInt(c, 10) - 1;
-      d < q.length && (s.preventDefault(), m(d), h(d));
+    const u = s.key;
+    if (u.length === 1 && u >= "1" && u <= "9") {
+      const d = parseInt(u, 10) - 1;
+      d < c.length && (s.preventDefault(), p(d), q(d));
     }
   });
-  function h(s) {
-    q[s]?.focus();
+  function q(s) {
+    c[s]?.focus();
   }
-  function m(s) {
-    const c = t.options[s].value;
-    t.multiple ? r.has(c) ? r.delete(c) : r.add(c) : (r.clear(), r.add(c)), q.forEach((d) => {
-      const p = d.dataset.value, g = r.has(p);
+  function p(s) {
+    const u = t.options[s].value;
+    t.multiple ? r.has(u) ? r.delete(u) : r.add(u) : (r.clear(), r.add(u)), c.forEach((d) => {
+      const f = d.dataset.value, g = r.has(f);
       d.classList.toggle("qaid-q-selected", g), d.setAttribute("aria-checked", g ? "true" : "false");
-    }), e.onChange(f()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
+    }), e.onChange(m()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
   }
-  function f() {
+  function m() {
     if (t.multiple) return Array.from(r);
     const s = r.values().next();
     return s.done ? null : s.value;
@@ -252,45 +272,158 @@ function M(t, e) {
   return {
     element: i,
     focus: () => {
-      (q.find((c) => c.classList.contains("qaid-q-selected")) ?? q[0])?.focus();
+      (c.find((u) => u.classList.contains("qaid-q-selected")) ?? c[0])?.focus();
     },
-    getValue: () => f(),
-    isValid: () => t.required ? r.size > 0 : !0
+    getValue: () => m(),
+    isValid: () => t.required ? r.size > 0 : !0,
+    ...b(i)
   };
 }
-function K(t, e) {
+function G(t, e) {
   return t.questions.filter(
-    (i) => i.visibleIf ? v(i.visibleIf, e) : !0
+    (i) => i.visibleIf ? x(i.visibleIf, e) : !0
   );
 }
-function v(t, e) {
+function x(t, e) {
   if ("allOf" in t) {
-    for (const a of t.allOf)
-      if (!v(a, e)) return !1;
+    for (const n of t.allOf)
+      if (!x(n, e)) return !1;
     return !0;
   }
   if ("anyOf" in t) {
-    for (const a of t.anyOf)
-      if (v(a, e)) return !0;
+    for (const n of t.anyOf)
+      if (x(n, e)) return !0;
     return !1;
   }
-  const i = e[t.questionId], n = i != null && !(typeof i == "string" && i.trim() === "") && !(Array.isArray(i) && i.length === 0);
-  return "answered" in t ? t.answered ? n : !n : n ? "equals" in t ? b(i, t.equals) : "notEquals" in t ? !b(i, t.notEquals) : "in" in t ? t.in.some((a) => b(i, a)) : !1 : !1;
+  const i = e[t.questionId], a = i != null && !(typeof i == "string" && i.trim() === "") && !(Array.isArray(i) && i.length === 0);
+  return "answered" in t ? t.answered ? a : !a : a ? "equals" in t ? y(i, t.equals) : "notEquals" in t ? !y(i, t.notEquals) : "in" in t ? t.in.some((n) => y(i, n)) : !1 : !1;
 }
-function b(t, e) {
+function y(t, e) {
   return Array.isArray(t) ? t.some((i) => i === e) : t === e;
 }
-const E = "qaid_visitor_id";
-function B() {
+const k = "data-qaid-a11y-live", J = "position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;", X = [
+  "a[href]",
+  "button",
+  "input",
+  "textarea",
+  "select",
+  "[tabindex]"
+].join(",");
+function Z(t) {
+  return t.ownerDocument || document;
+}
+function ee(t, e) {
+  const i = e ? "assertive" : "polite", a = t.querySelector(
+    `[${k}="${i}"]`
+  );
+  if (a) return a;
+  const o = Z(t).createElement("div");
+  return o.setAttribute(k, i), o.setAttribute("role", e ? "alert" : "status"), o.setAttribute("aria-live", e ? "assertive" : "polite"), o.setAttribute("aria-atomic", "true"), o.style.cssText = J, t.appendChild(o), o;
+}
+function v(t, e, i = {}) {
+  const a = ee(t, !!i.assertive);
+  a.textContent = "", a.textContent = e;
+}
+function te(t) {
+  return t.hasAttribute("disabled") ? !0 : t.disabled === !0;
+}
+function ie(t) {
+  let e = t;
+  for (; e; ) {
+    if (e.hasAttribute("hidden")) return !0;
+    const i = e.style;
+    if (i && (i.display === "none" || i.visibility === "hidden" || i.visibility === "collapse"))
+      return !0;
+    e = e.parentElement;
+  }
+  return !1;
+}
+function C(t) {
+  return Array.from(
+    t.querySelectorAll(X)
+  ).filter((i) => !(i.getAttribute("tabindex") === "-1" || i instanceof HTMLInputElement && i.type === "hidden" || i instanceof HTMLAnchorElement && !i.getAttribute("href") || te(i) || ie(i)));
+}
+function S(t) {
+  let e = t.activeElement;
+  for (; e && e.shadowRoot && e.shadowRoot.activeElement; )
+    e = e.shadowRoot.activeElement;
+  return e instanceof HTMLElement ? e : null;
+}
+function ae(t) {
+  const e = t.ownerDocument || document;
+  let i = !1;
+  const a = (o) => {
+    if (o.key !== "Tab") return;
+    const r = C(t);
+    if (r.length === 0) {
+      o.preventDefault(), t.focus();
+      return;
+    }
+    const c = r[0], q = r[r.length - 1], p = S(e), m = p ? r.indexOf(p) !== -1 : !1;
+    o.shiftKey ? (!m || p === c) && (o.preventDefault(), q.focus()) : (!m || p === q) && (o.preventDefault(), c.focus());
+  };
+  t.addEventListener("keydown", a);
+  const n = C(t);
+  return n.length > 0 ? n[0].focus() : (t.hasAttribute("tabindex") || (t.setAttribute("tabindex", "-1"), i = !0), t.focus()), {
+    release() {
+      t.removeEventListener("keydown", a), i && (t.removeAttribute("tabindex"), i = !1);
+    }
+  };
+}
+function ne() {
+  return S(document);
+}
+function re(t) {
+  if (!(!t || typeof t.focus != "function"))
+    try {
+      t.focus();
+    } catch {
+    }
+}
+function oe(t, e = {}) {
+  t.setAttribute("role", "dialog"), t.setAttribute("aria-modal", "true"), e.labelledbyId && t.setAttribute("aria-labelledby", e.labelledbyId), e.describedbyId && t.setAttribute("aria-describedby", e.describedbyId), e.label && t.setAttribute("aria-label", e.label);
+}
+function se(t, e) {
+  let i = t;
+  for (; i && i !== e; ) {
+    const a = i.parentNode;
+    if (a === e) return i;
+    if (a && a.host) {
+      i = a.host;
+      continue;
+    }
+    if (!a) return null;
+    i = a;
+  }
+  return null;
+}
+function de(t) {
+  const i = (t.ownerDocument || document).body;
+  if (!i) return () => {
+  };
+  const a = se(t, i), n = [];
+  return Array.from(i.children).forEach((o) => {
+    if (!(o instanceof HTMLElement) || a && o === a) return;
+    const r = o.inert === !0, c = o.getAttribute("aria-hidden");
+    r && c === "true" || (o.inert = !0, o.setAttribute("aria-hidden", "true"), n.push({ el: o, prevInert: r, prevAriaHidden: c }));
+  }), function() {
+    for (; n.length; ) {
+      const r = n.pop();
+      r && (r.el.inert = r.prevInert, r.prevAriaHidden === null ? r.el.removeAttribute("aria-hidden") : r.el.setAttribute("aria-hidden", r.prevAriaHidden));
+    }
+  };
+}
+const A = "qaid_visitor_id";
+function le() {
   try {
-    let t = localStorage.getItem(E);
-    return t || (t = crypto.randomUUID(), localStorage.setItem(E, t)), t;
+    let t = localStorage.getItem(A);
+    return t || (t = crypto.randomUUID(), localStorage.setItem(A, t)), t;
   } catch {
     return crypto.randomUUID();
   }
 }
-const W = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', Y = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
-class G {
+const ce = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', ue = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+class he {
   config;
   questionnaire = null;
   inlineQuestionnaire;
@@ -335,6 +468,11 @@ class G {
   backdropEl = null;
   currentInput = null;
   boundKeyDown;
+  // Modal-mode a11y plumbing (never set in inline/container mode, which
+  // keeps normal page tab flow and never traps or restores focus).
+  savedOpener = null;
+  focusTrap = null;
+  inertRestore = null;
   cssVars = {};
   // Track which theme-related fields the host explicitly set so the
   // theme document can fill the rest. A `themeUrl` / `themeDocument`
@@ -393,10 +531,10 @@ class G {
       backdropOpacity: e.backdropOpacity,
       fontFamily: e.fontFamily,
       fontSize: e.fontSize
-    }, this.themeUrl = e.themeUrl, this.themeDocument = e.themeDocument, this.hostCss = e.css ?? "", this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = B(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
+    }, this.themeUrl = e.themeUrl, this.themeDocument = e.themeDocument, this.hostCss = e.css ?? "", this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = le(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
   }
   async init() {
-    this.cssVars = V(this.hostInlineVars), this.mountShell(), this.renderLoading();
+    this.cssVars = P(this.hostInlineVars), this.mountShell(), this.renderLoading();
     try {
       const [e, i] = await Promise.all([
         this.loadQuestionnaire(),
@@ -405,12 +543,12 @@ class G {
       if (!e || !e.questions || e.questions.length === 0)
         throw new Error("Questionnaire is empty");
       if (this.questionnaire = e, this.applyResolvedTheme(i), this.recomputeVisible(), this.pendingGoToStep) {
-        const n = this.visibleQuestions.findIndex(
-          (a) => a.id === this.pendingGoToStep
+        const a = this.visibleQuestions.findIndex(
+          (n) => n.id === this.pendingGoToStep
         );
-        n !== -1 && (this.stepIndex = n), this.pendingGoToStep = null;
+        a !== -1 && (this.stepIndex = a), this.pendingGoToStep = null;
       }
-      this.createResponse(), this.state = "READY", this.renderHeader(), this.renderStep();
+      this.createResponse(), this.state = "READY", this.renderHeader(), this.renderStep(), this.setupModalA11y();
     } catch (e) {
       this.state = "ERROR", this.renderError(e);
     }
@@ -446,24 +584,24 @@ class G {
    */
   applyResolvedTheme(e) {
     if (!this.shadowRoot || !this.rootEl) return;
-    const i = this.hostThemeOverrides.preset ? this.config.preset : e?.preset ?? this.config.preset, n = this.hostThemeOverrides.mode ? this.config.theme : e?.mode ?? this.config.theme, a = this.hostThemeOverrides.unstyled ? this.config.unstyled : e?.unstyled ?? this.config.unstyled;
+    const i = this.hostThemeOverrides.preset ? this.config.preset : e?.preset ?? this.config.preset, a = this.hostThemeOverrides.mode ? this.config.theme : e?.mode ?? this.config.theme, n = this.hostThemeOverrides.unstyled ? this.config.unstyled : e?.unstyled ?? this.config.unstyled;
     this.rootEl.classList.toggle(
       "qaid-q-theme-light",
-      n === "light"
+      a === "light"
     ), this.rootEl.classList.toggle(
       "qaid-q-theme-dark",
-      n === "dark"
-    ), this.rootEl.classList.toggle("qaid-q-unstyled", !!a);
+      a === "dark"
+    ), this.rootEl.classList.toggle("qaid-q-unstyled", !!n);
     const o = [];
     if (e?.tokens && Object.keys(e.tokens).length > 0) {
-      const r = Object.entries(e.tokens).filter(([, q]) => typeof q == "string" && q.trim() !== "").map(([q, h]) => `  ${q}: ${h};`).join(`
+      const r = Object.entries(e.tokens).filter(([, c]) => typeof c == "string" && c.trim() !== "").map(([c, q]) => `  ${c}: ${q};`).join(`
 `);
       r && o.push(`:where(.qaid-q-root) {
 ${r}
 }`);
     }
     if (i && i !== "default") {
-      const r = O(i);
+      const r = $(i);
       r && o.push(r);
     }
     if (e?.css && e.css.trim() !== "" && o.push(e.css), this.hostCss && this.hostCss.trim() !== "" && o.push(this.hostCss), o.length > 0) {
@@ -493,34 +631,36 @@ ${r}
   mountShell() {
     this.shadowHost = document.createElement("div"), this.shadowHost.setAttribute("data-qaid-quests", "");
     const e = this.config.container ? document.querySelector(this.config.container) : null;
-    e ? (this.shadowHost.style.display = "block", this.shadowHost.style.height = "100%", this.shadowHost.style.minHeight = "0", e.appendChild(this.shadowHost), this.isUserContainer = !0) : (this.shadowHost.style.position = "fixed", this.shadowHost.style.inset = "0", this.shadowHost.style.zIndex = String(this.config.zIndex), this.shadowHost.style.pointerEvents = "none", document.body.appendChild(this.shadowHost)), this.shadowRoot = this.shadowHost.attachShadow({ mode: "open" });
+    e ? (this.shadowHost.style.display = "block", this.shadowHost.style.height = "100%", this.shadowHost.style.minHeight = "0", e.appendChild(this.shadowHost), this.isUserContainer = !0) : (this.savedOpener = ne(), this.shadowHost.style.position = "fixed", this.shadowHost.style.inset = "0", this.shadowHost.style.zIndex = String(this.config.zIndex), this.shadowHost.style.pointerEvents = "none", document.body.appendChild(this.shadowHost)), this.shadowRoot = this.shadowHost.attachShadow({ mode: "open" });
     const i = document.createElement("style");
-    if (i.textContent = D(), this.shadowRoot.appendChild(i), this.rootEl = document.createElement("div"), this.rootEl.className = [
+    if (i.textContent = U(), this.shadowRoot.appendChild(i), this.rootEl = document.createElement("div"), this.rootEl.className = [
       "qaid-q-root",
       this.isUserContainer ? "qaid-q-inline" : "",
       this.config.animate ? "" : "qaid-q-no-motion"
-    ].filter(Boolean).join(" "), P(this.rootEl, this.cssVars), this.isUserContainer)
+    ].filter(Boolean).join(" "), j(this.rootEl, this.cssVars), this.isUserContainer)
       this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", this.rootEl.appendChild(this.cardEl);
     else {
       this.backdropEl = document.createElement("div"), this.backdropEl.className = "qaid-q-backdrop", this.backdropEl.addEventListener("click", () => this.close()), this.rootEl.appendChild(this.backdropEl);
-      const n = document.createElement("div");
-      n.className = "qaid-q-modal", this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", n.appendChild(this.cardEl), this.rootEl.appendChild(n);
+      const a = document.createElement("div");
+      a.className = "qaid-q-modal", this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", a.appendChild(this.cardEl), this.rootEl.appendChild(a);
     }
-    this.shadowRoot.appendChild(this.rootEl), !this.isUserContainer && this.shadowHost && (this.shadowHost.style.pointerEvents = "auto"), document.addEventListener("keydown", this.boundKeyDown);
+    this.shadowRoot.appendChild(this.rootEl), !this.isUserContainer && this.shadowHost && (this.shadowHost.style.pointerEvents = "auto"), !this.isUserContainer && this.cardEl && oe(this.cardEl), document.addEventListener("keydown", this.boundKeyDown);
   }
   renderLoading() {
     if (!this.cardEl) return;
     this.cardEl.replaceChildren();
     const e = document.createElement("p");
-    e.className = "qaid-q-description", e.textContent = "Loading…", this.cardEl.appendChild(e);
+    e.className = "qaid-q-description", e.textContent = "Loading…", this.cardEl.appendChild(e), this.shadowRoot && v(this.shadowRoot, "Loading");
   }
   renderError(e) {
     if (!this.cardEl) return;
     this.cardEl.replaceChildren();
     const i = document.createElement("h3");
     i.className = "qaid-q-title", i.textContent = "Couldn't load form";
-    const n = document.createElement("p");
-    n.className = "qaid-q-description", n.textContent = e instanceof Error ? e.message : String(e), this.cardEl.appendChild(i), this.cardEl.appendChild(n);
+    const a = e instanceof Error ? e.message : String(e), n = document.createElement("p");
+    n.className = "qaid-q-description", n.textContent = a, this.cardEl.appendChild(i), this.cardEl.appendChild(n), this.shadowRoot && v(this.shadowRoot, `Couldn't load form. ${a}`, {
+      assertive: !0
+    });
   }
   effectiveProgressPosition() {
     return this.config.progressPosition ?? this.questionnaire?.progressPosition ?? "top";
@@ -528,28 +668,31 @@ ${r}
   renderHeader() {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
-    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", n = !!this.questionnaire.hideTitle, a = !!this.questionnaire.title && !n, o = !!this.questionnaire.description && !n, r = !this.isUserContainer, q = r || !i && !e;
+    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", a = !!this.questionnaire.hideTitle, n = !!this.questionnaire.title && !a, o = !!this.questionnaire.description && !a, r = !this.isUserContainer, c = r || !i && !e;
     this.savingEl = document.createElement("div"), this.savingEl.className = "qaid-q-saving";
-    const h = document.createElement("span");
-    h.className = "qaid-q-saving-dot";
-    const m = document.createElement("span");
-    m.textContent = "Saving…", this.savingEl.appendChild(h), this.savingEl.appendChild(m), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
-    const f = a || q;
-    if (f) {
+    const q = document.createElement("span");
+    q.className = "qaid-q-saving-dot";
+    const p = document.createElement("span");
+    p.textContent = "Saving…", this.savingEl.appendChild(q), this.savingEl.appendChild(p), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
+    const m = n || c;
+    if (m) {
       const s = document.createElement("div");
       s.className = "qaid-q-header";
-      const c = document.createElement("div");
-      a && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, c.appendChild(this.titleEl));
+      const u = document.createElement("div");
+      n && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, u.appendChild(this.titleEl));
       const d = document.createElement("div");
       if (d.style.display = "flex", d.style.alignItems = "center", d.style.gap = "0.5rem", i || (d.appendChild(this.savingEl), e || d.appendChild(this.stepCounterEl)), r) {
-        const p = document.createElement("button");
-        p.type = "button", p.className = "qaid-q-close", p.setAttribute("aria-label", "Close form"), p.innerHTML = W, p.addEventListener("click", () => this.close()), d.appendChild(p);
+        const f = document.createElement("button");
+        f.type = "button", f.className = "qaid-q-close", f.setAttribute("aria-label", "Close form"), f.innerHTML = ce, f.addEventListener("click", () => this.close()), d.appendChild(f);
       }
-      s.appendChild(c), s.appendChild(d), this.cardEl.appendChild(s);
+      s.appendChild(u), s.appendChild(d), this.cardEl.appendChild(s);
     }
-    if (o) {
+    if (!this.isUserContainer && this.cardEl && (this.titleEl ? (this.titleEl.id = this.titleEl.id || "qaid-q-dialog-title", this.cardEl.setAttribute("aria-labelledby", this.titleEl.id), this.cardEl.removeAttribute("aria-label")) : (this.cardEl.removeAttribute("aria-labelledby"), this.cardEl.setAttribute(
+      "aria-label",
+      this.questionnaire.title ?? "Questionnaire"
+    ))), o) {
       const s = document.createElement("p");
-      s.className = "qaid-q-description", s.textContent = this.questionnaire.description, s.style.marginTop = f ? "-0.5rem" : "0", s.style.marginBottom = "0.75rem", this.cardEl.appendChild(s);
+      s.className = "qaid-q-description", s.textContent = this.questionnaire.description, s.style.marginTop = m ? "-0.5rem" : "0", s.style.marginBottom = "0.75rem", this.cardEl.appendChild(s);
     }
     !i && !e && this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl);
   }
@@ -564,50 +707,54 @@ ${r}
       return;
     }
     this.stepIndex >= e && (this.stepIndex = e - 1);
-    const i = this.stepIndex, n = this.visibleQuestions[i];
+    const i = this.stepIndex, a = this.visibleQuestions[i];
     if (this.stepCounterEl && (this.stepCounterEl.textContent = `${i + 1} / ${e}`), this.progressFillEl) {
-      const u = (i + 1) / e * 100;
-      this.progressFillEl.style.width = `${u}%`;
+      const h = (i + 1) / e * 100;
+      this.progressFillEl.style.width = `${h}%`;
     }
-    const a = document.createElement("div");
-    a.className = "qaid-q-step", a.setAttribute("role", "group"), a.setAttribute("aria-labelledby", `qaid-q-label-${i}`);
+    this.progressEl && (this.progressEl.setAttribute("role", "progressbar"), this.progressEl.setAttribute("aria-label", "Progress"), this.progressEl.setAttribute("aria-valuemin", "0"), this.progressEl.setAttribute("aria-valuemax", String(e)), this.progressEl.setAttribute("aria-valuenow", String(i + 1)), this.progressEl.setAttribute(
+      "aria-valuetext",
+      `Question ${i + 1} of ${e}`
+    )), this.shadowRoot && e > 1 && v(this.shadowRoot, `Step ${i + 1} of ${e}`);
+    const n = document.createElement("div");
+    n.className = "qaid-q-step", n.setAttribute("role", "group"), n.setAttribute("aria-labelledby", `qaid-q-label-${i}`);
     const o = document.createElement("label");
-    if (o.id = `qaid-q-label-${i}`, o.className = "qaid-q-label", o.textContent = n.label, n.required) {
-      const u = document.createElement("span");
-      u.className = "qaid-q-required", u.textContent = "*", u.setAttribute("aria-label", "required"), o.appendChild(u);
+    if (o.id = `qaid-q-label-${i}`, o.className = "qaid-q-label", o.textContent = a.label, a.required) {
+      const h = document.createElement("span");
+      h.className = "qaid-q-required", h.textContent = "*", h.setAttribute("aria-label", "required"), o.appendChild(h);
     }
-    if (a.appendChild(o), n.description) {
-      const u = document.createElement("p");
-      u.className = "qaid-q-description", u.textContent = n.description, a.appendChild(u);
+    if (n.appendChild(o), a.description) {
+      const h = document.createElement("p");
+      h.className = "qaid-q-description", h.textContent = a.description, n.appendChild(h);
     }
     const r = document.createElement("p");
-    r.className = "qaid-q-error", r.setAttribute("aria-live", "polite");
-    const q = this.answers[n.id] ?? null, h = i === e - 1, m = H({
-      question: n,
-      initialValue: q,
-      onChange: (u) => {
-        this.handleAnswerChange(n, u), r.textContent && (r.textContent = "");
+    r.className = "qaid-q-error", r.id = `qaid-q-error-${i}`, r.setAttribute("aria-live", "polite");
+    const c = this.answers[a.id] ?? null, q = i === e - 1, p = F({
+      question: a,
+      initialValue: c,
+      onChange: (h) => {
+        this.handleAnswerChange(a, h), r.textContent && (r.textContent = "", this.currentInput?.clearInvalid());
       },
-      onSubmit: () => this.advance(n, r),
-      onAutoAdvance: () => this.advance(n, r),
+      onSubmit: () => this.advance(a, r),
+      onAutoAdvance: () => this.advance(a, r),
       autoAdvance: this.config.autoAdvance
     });
-    this.currentInput = m, a.appendChild(m.element), a.appendChild(r), this.bodyEl.replaceChildren(a), this.footerEl.replaceChildren();
-    const s = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = i > 0 ? (() => {
-      const u = document.createElement("button");
-      return u.type = "button", u.className = "qaid-q-btn qaid-q-btn-secondary", u.textContent = this.questionnaire.backLabel ?? "Back", u.addEventListener("click", () => this.back()), u;
+    this.currentInput = p, n.appendChild(p.element), n.appendChild(r), this.bodyEl.replaceChildren(n), this.footerEl.replaceChildren();
+    const s = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", u = i > 0 ? (() => {
+      const h = document.createElement("button");
+      return h.type = "button", h.className = "qaid-q-btn qaid-q-btn-secondary", h.textContent = this.questionnaire.backLabel ?? "Back", h.addEventListener("click", () => this.back()), h;
     })() : null, d = document.createElement("button");
-    if (d.type = "button", d.className = "qaid-q-btn qaid-q-btn-primary", d.textContent = h ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", d.addEventListener("click", () => this.advance(n, r)), s)
-      this.footerEl.classList.add("qaid-q-footer--inline-progress"), c && this.footerEl.appendChild(c), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(d);
+    if (d.type = "button", d.className = "qaid-q-btn qaid-q-btn-primary", d.textContent = q ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", d.addEventListener("click", () => this.advance(a, r)), s)
+      this.footerEl.classList.add("qaid-q-footer--inline-progress"), u && this.footerEl.appendChild(u), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(d);
     else {
       this.footerEl.classList.remove("qaid-q-footer--inline-progress");
-      const u = document.createElement("div");
-      u.className = "qaid-q-footer-left";
+      const h = document.createElement("div");
+      h.className = "qaid-q-footer-left";
       const l = document.createElement("div");
-      l.className = "qaid-q-footer-right", c && u.appendChild(c), l.appendChild(d), this.footerEl.appendChild(u), this.footerEl.appendChild(l);
+      l.className = "qaid-q-footer-right", u && h.appendChild(u), l.appendChild(d), this.footerEl.appendChild(h), this.footerEl.appendChild(l);
     }
-    const p = !this.hasRenderedStep;
-    this.hasRenderedStep = !0, (!p || this.config.autoFocus) && requestAnimationFrame(() => m.focus());
+    const f = !this.hasRenderedStep;
+    this.hasRenderedStep = !0, (!f || this.config.autoFocus) && requestAnimationFrame(() => p.focus());
   }
   renderDone() {
     if (!this.cardEl || !this.questionnaire) return;
@@ -615,17 +762,22 @@ ${r}
     const e = document.createElement("div");
     e.className = "qaid-q-done";
     const i = document.createElement("div");
-    i.className = "qaid-q-done-icon", i.innerHTML = Y, e.appendChild(i);
-    const n = document.createElement("h3");
-    if (n.className = "qaid-q-done-title", n.textContent = this.questionnaire.thankYouTitle ?? "Thank you!", e.appendChild(n), this.questionnaire.thankYouMessage) {
-      const a = document.createElement("p");
-      a.className = "qaid-q-done-message", a.textContent = this.questionnaire.thankYouMessage, e.appendChild(a);
+    i.className = "qaid-q-done-icon", i.innerHTML = ue, e.appendChild(i);
+    const a = document.createElement("h3");
+    a.className = "qaid-q-done-title";
+    const n = this.questionnaire.thankYouTitle ?? "Thank you!";
+    if (a.textContent = n, a.setAttribute("tabindex", "-1"), e.appendChild(a), this.questionnaire.thankYouMessage) {
+      const o = document.createElement("p");
+      o.className = "qaid-q-done-message", o.textContent = this.questionnaire.thankYouMessage, e.appendChild(o);
     }
     if (!this.isUserContainer) {
-      const a = document.createElement("button");
-      a.type = "button", a.className = "qaid-q-btn qaid-q-btn-primary", a.textContent = "Close", a.style.marginTop = "1rem", a.addEventListener("click", () => this.close()), e.appendChild(a);
+      const o = document.createElement("button");
+      o.type = "button", o.className = "qaid-q-btn qaid-q-btn-primary", o.textContent = "Close", o.style.marginTop = "1rem", o.addEventListener("click", () => this.close()), e.appendChild(o);
     }
-    this.cardEl.appendChild(e);
+    if (this.cardEl.appendChild(e), requestAnimationFrame(() => a.focus()), this.shadowRoot) {
+      const o = this.questionnaire.thankYouMessage ? `${n}. ${this.questionnaire.thankYouMessage}` : n;
+      v(this.shadowRoot, o);
+    }
   }
   // ------------------------------------------------------------------
   // Navigation
@@ -633,7 +785,7 @@ ${r}
   advance(e, i) {
     if (!this.currentInput || !this.questionnaire) return;
     if (!this.currentInput.isValid()) {
-      i.textContent = _(e), this.currentInput.focus();
+      i.textContent = qe(e), this.currentInput.setInvalid(i.id), this.currentInput.focus();
       return;
     }
     if (this.handleAnswerChange(e, this.currentInput.getValue(), { immediate: !0 }), this.stepIndex === this.visibleQuestions.length - 1) {
@@ -649,12 +801,12 @@ ${r}
   // Answer handling + autosave
   // ------------------------------------------------------------------
   recomputeVisible() {
-    this.questionnaire && (this.visibleQuestions = K(this.questionnaire, this.answers));
+    this.questionnaire && (this.visibleQuestions = G(this.questionnaire, this.answers));
   }
-  handleAnswerChange(e, i, n = {}) {
+  handleAnswerChange(e, i, a = {}) {
     this.answers[e.id] = i, this.recomputeVisible();
-    const a = e.type === "text" || e.type === "currency" || e.type === "range";
-    if (n.immediate || !a) {
+    const n = e.type === "text" || e.type === "currency" || e.type === "range";
+    if (a.immediate || !n) {
       this.flushPendingSave(), this.saveAnswer(e.id, i);
       return;
     }
@@ -674,9 +826,9 @@ ${r}
     });
   }
   async doSave(e, i) {
-    let n = 0;
-    for (; this.responseId === null && n < 5e3; )
-      await new Promise((a) => setTimeout(a, 50)), n += 50;
+    let a = 0;
+    for (; this.responseId === null && a < 5e3; )
+      await new Promise((n) => setTimeout(n, 50)), a += 50;
     if (this.responseId !== null)
       try {
         await fetch(`${this.config.endpoint}/${this.responseId}`, {
@@ -684,8 +836,8 @@ ${r}
           headers: this.jsonHeaders(),
           body: JSON.stringify({ questionId: e, value: i })
         });
-      } catch (a) {
-        console.error("[quests-embed] failed to save answer:", a);
+      } catch (n) {
+        console.error("[quests-embed] failed to save answer:", n);
       }
   }
   async createResponse() {
@@ -740,12 +892,21 @@ ${r}
   handleKeyDown(e) {
     e.key === "Escape" && !this.isUserContainer && this.state !== "DONE" && this.close();
   }
+  /**
+   * Modal mode only: trap Tab within the card and mark the rest of the
+   * page inert while the dialog is open. Runs once (guarded) after the
+   * first step renders. Inline mode keeps normal page tab flow and is
+   * never trapped or isolated.
+   */
+  setupModalA11y() {
+    this.isUserContainer || !this.cardEl || this.focusTrap || (this.focusTrap = ae(this.cardEl), this.inertRestore = de(this.cardEl));
+  }
   close() {
     this.flushPendingSave(), this.destroy();
   }
   /** Destroy the embed and clean up all resources */
   destroy() {
-    document.removeEventListener("keydown", this.boundKeyDown), this.pendingSaveTimer && (clearTimeout(this.pendingSaveTimer), this.pendingSaveTimer = null), this.shadowHost && (this.shadowHost.remove(), this.shadowHost = null, this.shadowRoot = null), this.rootEl = null, this.cardEl = null, this.bodyEl = null, this.footerEl = null, this.titleEl = null, this.stepCounterEl = null, this.progressFillEl = null, this.savingEl = null, this.backdropEl = null, this.currentInput = null;
+    document.removeEventListener("keydown", this.boundKeyDown), this.pendingSaveTimer && (clearTimeout(this.pendingSaveTimer), this.pendingSaveTimer = null), this.focusTrap && (this.focusTrap.release(), this.focusTrap = null), this.inertRestore && (this.inertRestore(), this.inertRestore = null), !this.isUserContainer && this.savedOpener && re(this.savedOpener), this.savedOpener = null, this.shadowHost && (this.shadowHost.remove(), this.shadowHost = null, this.shadowRoot = null), this.rootEl = null, this.cardEl = null, this.bodyEl = null, this.footerEl = null, this.titleEl = null, this.stepCounterEl = null, this.progressFillEl = null, this.savingEl = null, this.backdropEl = null, this.currentInput = null;
   }
   /** Read-only snapshot of current answers */
   getAnswers() {
@@ -774,11 +935,11 @@ ${r}
   goToStep(e) {
     if (this.state !== "READY" || !this.questionnaire)
       return this.pendingGoToStep = e, !1;
-    const i = this.visibleQuestions.findIndex((n) => n.id === e);
+    const i = this.visibleQuestions.findIndex((a) => a.id === e);
     return i === -1 ? !1 : (i === this.stepIndex || (this.flushPendingSave(), this.stepIndex = i, this.renderStep()), !0);
   }
 }
-function _(t) {
+function qe(t) {
   switch (t.type) {
     case "text":
       return t.minLength ? `Please enter at least ${t.minLength} characters.` : "This field is required.";
@@ -792,10 +953,10 @@ function _(t) {
       return "Please choose a value.";
   }
 }
-function w(t) {
+function I(t) {
   return document.querySelector(t)?.textContent?.trim() ?? "";
 }
-function J() {
+function pe() {
   const t = document.querySelector(
     'script[type="application/json"][data-quests-config]'
   );
@@ -804,49 +965,49 @@ function J() {
   if (!e) return null;
   try {
     const i = JSON.parse(e);
-    return i.cssSelector && !i.css && (i.css = w(i.cssSelector), delete i.cssSelector), i;
+    return i.cssSelector && !i.css && (i.css = I(i.cssSelector), delete i.cssSelector), i;
   } catch {
     return null;
   }
 }
-function X(t) {
+function fe(t) {
   const e = t.getAttribute("data-endpoint");
   if (!e) return null;
-  const i = t.getAttribute("data-config-url"), n = t.getAttribute("data-api-key"), a = t.getAttribute("data-container"), o = t.getAttribute("data-zindex"), r = t.getAttribute("data-positive-color"), q = t.getAttribute("data-negative-color"), h = t.getAttribute("data-marker-color"), m = t.getAttribute("data-modal-width"), f = t.getAttribute("data-backdrop-opacity"), s = t.getAttribute("data-font-family"), c = t.getAttribute("data-font-size"), d = t.getAttribute("data-css-selector"), p = t.getAttribute("data-auto-advance"), g = t.getAttribute("data-save-debounce-ms"), u = t.getAttribute("data-theme-url"), l = t.getAttribute("data-preset"), y = t.getAttribute("data-theme"), k = t.getAttribute("data-unstyled");
+  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), o = t.getAttribute("data-zindex"), r = t.getAttribute("data-positive-color"), c = t.getAttribute("data-negative-color"), q = t.getAttribute("data-marker-color"), p = t.getAttribute("data-modal-width"), m = t.getAttribute("data-backdrop-opacity"), s = t.getAttribute("data-font-family"), u = t.getAttribute("data-font-size"), d = t.getAttribute("data-css-selector"), f = t.getAttribute("data-auto-advance"), g = t.getAttribute("data-save-debounce-ms"), h = t.getAttribute("data-theme-url"), l = t.getAttribute("data-preset"), E = t.getAttribute("data-theme"), N = t.getAttribute("data-unstyled");
   return {
     endpoint: e,
     configUrl: i ?? void 0,
-    apiKey: n ?? void 0,
-    container: a ?? void 0,
+    apiKey: a ?? void 0,
+    container: n ?? void 0,
     zIndex: o ? parseInt(o, 10) : void 0,
     colors: {
       positive: r ?? void 0,
-      negative: q ?? void 0,
-      marker: h ?? void 0
+      negative: c ?? void 0,
+      marker: q ?? void 0
     },
-    modalWidth: m ? parseInt(m, 10) : void 0,
-    backdropOpacity: f ? parseFloat(f) : void 0,
+    modalWidth: p ? parseInt(p, 10) : void 0,
+    backdropOpacity: m ? parseFloat(m) : void 0,
     fontFamily: s ?? void 0,
-    fontSize: c ? parseInt(c, 10) : void 0,
-    css: d ? w(d) : void 0,
-    autoAdvance: p === "true" ? !0 : void 0,
+    fontSize: u ? parseInt(u, 10) : void 0,
+    css: d ? I(d) : void 0,
+    autoAdvance: f === "true" ? !0 : void 0,
     saveDebounceMs: g ? parseInt(g, 10) : void 0,
-    themeUrl: u ?? void 0,
+    themeUrl: h ?? void 0,
     preset: l || void 0,
-    theme: y || void 0,
-    unstyled: k === "true" ? !0 : void 0
+    theme: E || void 0,
+    unstyled: N === "true" ? !0 : void 0
   };
 }
 if (typeof document < "u") {
   const t = () => {
-    const e = document.currentScript, i = J(), n = e ? X(e) : null, a = i ?? n;
-    a?.endpoint && (a.configUrl || a.questionnaire) && new G(a);
+    const e = document.currentScript, i = pe(), a = e ? fe(e) : null, n = i ?? a;
+    n?.endpoint && (n.configUrl || n.questionnaire) && new he(n);
   };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", t) : t();
 }
 export {
-  G as QaidQuests,
-  v as evaluateRule,
-  K as getVisibleQuestions
+  he as QaidQuests,
+  x as evaluateRule,
+  G as getVisibleQuestions
 };
 //# sourceMappingURL=qaid-quests.js.map

@@ -31,6 +31,9 @@ export declare class QaidQuests {
     private backdropEl;
     private currentInput;
     private boundKeyDown;
+    private savedOpener;
+    private focusTrap;
+    private inertRestore;
     private cssVars;
     private hostThemeOverrides;
     private hostInlineVars;
@@ -73,6 +76,13 @@ export declare class QaidQuests {
     private jsonHeaders;
     private showSaving;
     private handleKeyDown;
+    /**
+     * Modal mode only: trap Tab within the card and mark the rest of the
+     * page inert while the dialog is open. Runs once (guarded) after the
+     * first step renders. Inline mode keeps normal page tab flow and is
+     * never trapped or isolated.
+     */
+    private setupModalA11y;
     private close;
     /** Destroy the embed and clean up all resources */
     destroy(): void;

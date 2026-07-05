@@ -1,6 +1,6 @@
 {
   "name": "@qaiddev/quests-embed",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Any Questions for your Users?",
   "type": "module",
   "main": "./dist/qaid-quests.umd.cjs",
@@ -39,7 +39,9 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.18",
+    "axe-core": "^4.12.1",
     "happy-dom": "^20.5.1",
+    "jsdom": "^29.1.1",
     "typescript": "^5.3.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"

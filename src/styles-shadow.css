@@ -463,8 +463,9 @@ button {
 .qaid-q-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  /* 24px meets the WCAG 2.5.8 (Target Size, Minimum) 24×24 CSS px floor. */
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--qaid-q-accent, #10b981);
   border: 3px solid var(--qaid-q-card-bg);
@@ -474,8 +475,9 @@ button {
 }
 
 .qaid-q-range::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  /* 24px meets the WCAG 2.5.8 (Target Size, Minimum) 24×24 CSS px floor. */
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--qaid-q-accent, #10b981);
   border: 3px solid var(--qaid-q-card-bg);
@@ -879,4 +881,108 @@ button {
   all: unset;
   display: revert;
   box-sizing: border-box;
+}
+
+/* ==================== Accessibility: focus visibility ====================
+ * WCAG 2.4.7 (Focus Visible), 2.4.13 (Focus Appearance), 1.4.11 (Non-text
+ * Contrast). Every control already paints a box-shadow focus ring in normal
+ * color modes (rules above). A box-shadow is dropped under forced-colors, so
+ * we also declare a real :focus-visible outline on every focusable control.
+ * It is `transparent` in normal color modes — the box-shadow carries the
+ * visible ring there, so we don't double the indicator — but
+ * `forced-colors: active` repaints a `transparent` outline with a system
+ * color, so the ring survives Windows High Contrast. Text/number/date inputs
+ * and the textarea previously had only :focus (no :focus-visible); this gives
+ * them the same keyboard-focus outline as the buttons, options and slider. */
+.qaid-q-input:focus-visible,
+.qaid-q-textarea:focus-visible,
+.qaid-q-option:focus-visible,
+.qaid-q-btn:focus-visible,
+.qaid-q-close:focus-visible,
+.qaid-q-range:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* ==================== Accessibility: reduced motion ====================
+ * WCAG 2.3.3 (Animation from Interactions), 2.2.2 (Pause, Stop, Hide). When
+ * the OS "reduce motion" setting is on, neutralise the step slide/fade entry
+ * (qaid-q-slide), the backdrop fade (qaid-q-fade), the progress-bar width
+ * transition, and the indefinite "Saving…" dot pulse (qaid-q-pulse) — with no
+ * host config flag required. Near-zero durations (rather than `none`) keep any
+ * animationend/transitionend listeners firing. Every animated element lives
+ * inside .qaid-q-root, so scoping there also covers the backdrop/modal. */
+@media (prefers-reduced-motion: reduce) {
+  .qaid-q-root *,
+  .qaid-q-root *::before,
+  .qaid-q-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Pseudo-element slider thumbs are not matched by the `*` rules above. */
+  .qaid-q-range::-webkit-slider-thumb {
+    transition: none !important;
+  }
+  .qaid-q-range::-moz-range-thumb {
+    transition: none !important;
+  }
+}
+
+/* ==================== Accessibility: forced colors ====================
+ * WCAG 1.4.11 (Non-text Contrast), 2.4.7 / 2.4.13 (Focus). Under forced-colors
+ * (e.g. Windows High Contrast) box-shadows and color-mix() rings are dropped
+ * and low-contrast token borders can vanish. Re-assert the control boundaries,
+ * the focus ring, and the progress bar with system color keywords so nothing
+ * interactive becomes invisible. */
+@media (forced-colors: active) {
+  /* Real keyboard-focus outline (the box-shadow ring is gone here). */
+  .qaid-q-input:focus-visible,
+  .qaid-q-textarea:focus-visible,
+  .qaid-q-option:focus-visible,
+  .qaid-q-btn:focus-visible,
+  .qaid-q-close:focus-visible,
+  .qaid-q-range:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  /* Keep the card + control boundaries perceivable. */
+  .qaid-q-card {
+    border: 1px solid CanvasText;
+  }
+  .qaid-q-input,
+  .qaid-q-textarea,
+  .qaid-q-option {
+    border-color: CanvasText;
+  }
+  .qaid-q-option.qaid-q-selected {
+    border-color: Highlight;
+  }
+
+  /* The selected radio/checkbox marker reads as "on" only via its fill; pin
+   * it to system colors (opting out of the forced mapping) so the selected
+   * state survives, with a contrasting glyph. */
+  .qaid-q-option.qaid-q-selected .qaid-q-option-marker {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+  }
+  .qaid-q-option.qaid-q-selected .qaid-q-option-marker::after {
+    background: HighlightText;
+  }
+
+  /* Progress track + fill would both flatten to the same system color and
+   * lose the fill boundary; opt out and set an explicit track (Canvas +
+   * border) vs fill (Highlight) so progress stays readable. */
+  .qaid-q-progress {
+    forced-color-adjust: none;
+    background: Canvas;
+    border: 1px solid CanvasText;
+  }
+  .qaid-q-progress-fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
 }

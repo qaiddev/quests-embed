@@ -11,6 +11,15 @@ import type {
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleQuestions } from "./visibility";
+import {
+  announce,
+  applyDialog,
+  createFocusTrap,
+  restoreFocus,
+  saveFocus,
+  setBackgroundInert,
+  type FocusTrap,
+} from "./a11y";
 
 const VISITOR_ID_KEY = "qaid_visitor_id";
 
@@ -81,6 +90,12 @@ export class QaidQuests {
   private backdropEl: HTMLDivElement | null = null;
   private currentInput: QuestionInput | null = null;
   private boundKeyDown: (e: KeyboardEvent) => void;
+
+  // Modal-mode a11y plumbing (never set in inline/container mode, which
+  // keeps normal page tab flow and never traps or restores focus).
+  private savedOpener: HTMLElement | null = null;
+  private focusTrap: FocusTrap | null = null;
+  private inertRestore: (() => void) | null = null;
 
   private cssVars: Record<string, string> = {};
 
@@ -207,6 +222,11 @@ export class QaidQuests {
       this.state = "READY";
       this.renderHeader();
       this.renderStep();
+      // Arm the modal focus trap + background isolation once the first
+      // step exists. Done synchronously after renderStep so the trap's
+      // initial focus lands first and renderStep's own rAF(input.focus)
+      // then wins, leaving the intended field focused.
+      this.setupModalA11y();
     } catch (err) {
       this.state = "ERROR";
       this.renderError(err);
@@ -348,6 +368,9 @@ export class QaidQuests {
       userContainer.appendChild(this.shadowHost);
       this.isUserContainer = true;
     } else {
+      // Modal mode: remember the control that opened us so focus can be
+      // restored on close/destroy (WCAG 2.4.3).
+      this.savedOpener = saveFocus();
       // Modal mode: shadow host is fixed and full-viewport.
       this.shadowHost.style.position = "fixed";
       this.shadowHost.style.inset = "0";
@@ -403,6 +426,13 @@ export class QaidQuests {
       this.shadowHost.style.pointerEvents = "auto";
     }
 
+    // Modal mode is a dialog; inline (container) mode stays a plain
+    // region. The accessible name (aria-labelledby / aria-label) is
+    // wired in renderHeader once the title element exists.
+    if (!this.isUserContainer && this.cardEl) {
+      applyDialog(this.cardEl);
+    }
+
     document.addEventListener("keydown", this.boundKeyDown);
   }
 
@@ -413,6 +443,7 @@ export class QaidQuests {
     msg.className = "qaid-q-description";
     msg.textContent = "Loading…";
     this.cardEl.appendChild(msg);
+    if (this.shadowRoot) announce(this.shadowRoot, "Loading");
   }
 
   private renderError(err: unknown): void {
@@ -421,11 +452,17 @@ export class QaidQuests {
     const heading = document.createElement("h3");
     heading.className = "qaid-q-title";
     heading.textContent = "Couldn't load form";
+    const detail = err instanceof Error ? err.message : String(err);
     const msg = document.createElement("p");
     msg.className = "qaid-q-description";
-    msg.textContent = err instanceof Error ? err.message : String(err);
+    msg.textContent = detail;
     this.cardEl.appendChild(heading);
     this.cardEl.appendChild(msg);
+    if (this.shadowRoot) {
+      announce(this.shadowRoot, `Couldn't load form. ${detail}`, {
+        assertive: true,
+      });
+    }
   }
 
   private effectiveProgressPosition(): "top" | "bottom" {
@@ -529,6 +566,23 @@ export class QaidQuests {
       this.cardEl.appendChild(header);
     }
 
+    // Give the modal dialog an accessible name: reference the visible
+    // title when shown, otherwise fall back to the questionnaire title.
+    // Inline mode is not a dialog, so it is skipped.
+    if (!this.isUserContainer && this.cardEl) {
+      if (this.titleEl) {
+        this.titleEl.id = this.titleEl.id || "qaid-q-dialog-title";
+        this.cardEl.setAttribute("aria-labelledby", this.titleEl.id);
+        this.cardEl.removeAttribute("aria-label");
+      } else {
+        this.cardEl.removeAttribute("aria-labelledby");
+        this.cardEl.setAttribute(
+          "aria-label",
+          this.questionnaire.title ?? "Questionnaire",
+        );
+      }
+    }
+
     if (hasDescription) {
       const desc = document.createElement("p");
       desc.className = "qaid-q-description";
@@ -579,6 +633,27 @@ export class QaidQuests {
       const pct = ((idx + 1) / total) * 100;
       this.progressFillEl.style.width = `${pct}%`;
     }
+    // Expose progress semantics to assistive tech. valuemax is the count
+    // of currently-visible questions (branching can change it), valuenow
+    // is 1-based so the ratio matches the visual fill (idx+1)/total.
+    if (this.progressEl) {
+      this.progressEl.setAttribute("role", "progressbar");
+      this.progressEl.setAttribute("aria-label", "Progress");
+      this.progressEl.setAttribute("aria-valuemin", "0");
+      this.progressEl.setAttribute("aria-valuemax", String(total));
+      this.progressEl.setAttribute("aria-valuenow", String(idx + 1));
+      this.progressEl.setAttribute(
+        "aria-valuetext",
+        `Question ${idx + 1} of ${total}`,
+      );
+    }
+    // Announce the step change through the shared polite region. Kept
+    // distinct from the per-step validation error region below so the
+    // two never clobber each other. Skipped for single-question forms
+    // where there is no step to move between.
+    if (this.shadowRoot && total > 1) {
+      announce(this.shadowRoot, `Step ${idx + 1} of ${total}`);
+    }
 
     // Build step body
     const step = document.createElement("div");
@@ -608,6 +683,7 @@ export class QaidQuests {
 
     const errorEl = document.createElement("p");
     errorEl.className = "qaid-q-error";
+    errorEl.id = `qaid-q-error-${idx}`;
     errorEl.setAttribute("aria-live", "polite");
 
     const initialValue = this.answers[question.id] ?? null;
@@ -619,7 +695,10 @@ export class QaidQuests {
       onChange: (value) => {
         this.handleAnswerChange(question, value);
         // clearing error if the user starts typing again
-        if (errorEl.textContent) errorEl.textContent = "";
+        if (errorEl.textContent) {
+          errorEl.textContent = "";
+          this.currentInput?.clearInvalid();
+        }
       },
       onSubmit: () => this.advance(question, errorEl),
       onAutoAdvance: () => this.advance(question, errorEl),
@@ -714,7 +793,11 @@ export class QaidQuests {
 
     const title = document.createElement("h3");
     title.className = "qaid-q-done-title";
-    title.textContent = this.questionnaire.thankYouTitle ?? "Thank you!";
+    const doneTitle = this.questionnaire.thankYouTitle ?? "Thank you!";
+    title.textContent = doneTitle;
+    // Make the heading programmatically focusable so focus can land on
+    // the confirmation once the step controls are gone (WCAG 2.4.3).
+    title.setAttribute("tabindex", "-1");
     done.appendChild(title);
 
     if (this.questionnaire.thankYouMessage) {
@@ -735,6 +818,16 @@ export class QaidQuests {
     }
 
     this.cardEl.appendChild(done);
+
+    // Move focus to the thank-you heading and announce the confirmation
+    // (the submit button that had focus was just removed).
+    requestAnimationFrame(() => title.focus());
+    if (this.shadowRoot) {
+      const message = this.questionnaire.thankYouMessage
+        ? `${doneTitle}. ${this.questionnaire.thankYouMessage}`
+        : doneTitle;
+      announce(this.shadowRoot, message);
+    }
   }
 
   // ------------------------------------------------------------------
@@ -745,6 +838,9 @@ export class QaidQuests {
     if (!this.currentInput || !this.questionnaire) return;
     if (!this.currentInput.isValid()) {
       errorEl.textContent = validationMessage(question);
+      // Signal invalidity on the control itself and tie the error text to
+      // it via aria-describedby so it is not conveyed by colour alone.
+      this.currentInput.setInvalid(errorEl.id);
       this.currentInput.focus();
       return;
     }
@@ -930,6 +1026,19 @@ export class QaidQuests {
     }
   }
 
+  /**
+   * Modal mode only: trap Tab within the card and mark the rest of the
+   * page inert while the dialog is open. Runs once (guarded) after the
+   * first step renders. Inline mode keeps normal page tab flow and is
+   * never trapped or isolated.
+   */
+  private setupModalA11y(): void {
+    if (this.isUserContainer || !this.cardEl) return;
+    if (this.focusTrap) return;
+    this.focusTrap = createFocusTrap(this.cardEl);
+    this.inertRestore = setBackgroundInert(this.cardEl);
+  }
+
   private close(): void {
     this.flushPendingSave();
     this.destroy();
@@ -942,6 +1051,21 @@ export class QaidQuests {
       clearTimeout(this.pendingSaveTimer);
       this.pendingSaveTimer = null;
     }
+    // Tear down modal-mode a11y plumbing before removing the host:
+    // release the focus trap, un-inert the background, then return focus
+    // to the control that opened the dialog. All no-ops in inline mode.
+    if (this.focusTrap) {
+      this.focusTrap.release();
+      this.focusTrap = null;
+    }
+    if (this.inertRestore) {
+      this.inertRestore();
+      this.inertRestore = null;
+    }
+    if (!this.isUserContainer && this.savedOpener) {
+      restoreFocus(this.savedOpener);
+    }
+    this.savedOpener = null;
     if (this.shadowHost) {
       this.shadowHost.remove();
       this.shadowHost = null;

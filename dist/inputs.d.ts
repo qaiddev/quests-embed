@@ -15,6 +15,15 @@ export interface QuestionInput {
     focus(): void;
     getValue(): AnswerValue;
     isValid(): boolean;
+    /**
+     * Mark the control invalid: sets aria-invalid="true" and links the
+     * error text (identified by `errorId`) via aria-describedby so a
+     * screen reader reads the error as the field's description. Do not
+     * rely on colour alone (WCAG 3.3.1 / 1.3.1 / 4.1.2).
+     */
+    setInvalid(errorId: string): void;
+    /** Clear aria-invalid and unlink the error text once the field is corrected. */
+    clearInvalid(): void;
 }
 export interface QuestionInputOptions {
     question: Question;

@@ -130,6 +130,29 @@ describe("getEmbedStyles", () => {
     expect(typeof css).toBe("string");
     expect(css.length).toBeGreaterThan(0);
   });
+
+  it("disables motion under prefers-reduced-motion", () => {
+    const css = getEmbedStyles();
+    expect(css).toContain("@media (prefers-reduced-motion: reduce)");
+    // Neutralises animations (slide/fade + the infinite saving-dot pulse)
+    // and transitions (progress-bar width) via near-zero durations.
+    expect(css).toContain("animation-duration: 0.01ms !important");
+    expect(css).toContain("transition-duration: 0.01ms !important");
+  });
+
+  it("keeps borders/focus/progress visible under forced-colors", () => {
+    const css = getEmbedStyles();
+    expect(css).toContain("@media (forced-colors: active)");
+    // System-color focus outline + progress fill survive High Contrast.
+    expect(css).toContain("outline: 2px solid Highlight");
+    expect(css).toMatch(/\.qaid-q-progress-fill\s*\{[^}]*background:\s*Highlight/);
+  });
+
+  it("declares a :focus-visible outline on interactive controls", () => {
+    const css = getEmbedStyles();
+    expect(css).toContain(".qaid-q-input:focus-visible");
+    expect(css).toMatch(/outline:\s*2px solid transparent/);
+  });
 });
 
 describe("getPresetCss", () => {
