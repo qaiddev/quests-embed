@@ -487,6 +487,13 @@ class he {
   themeUrl;
   themeDocument;
   hostCss;
+  // Host integration hooks (see QuestsConfig). Kept off the resolved
+  // value-config since they're behaviour, not render tokens.
+  metadata;
+  onCompleteCb;
+  onCloseCb;
+  // Guards onClose to fire exactly once even if destroy() runs twice.
+  closed = !1;
   constructor(e) {
     this.config = {
       endpoint: e.endpoint,
@@ -531,7 +538,7 @@ class he {
       backdropOpacity: e.backdropOpacity,
       fontFamily: e.fontFamily,
       fontSize: e.fontSize
-    }, this.themeUrl = e.themeUrl, this.themeDocument = e.themeDocument, this.hostCss = e.css ?? "", this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = le(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
+    }, this.themeUrl = e.themeUrl, this.themeDocument = e.themeDocument, this.hostCss = e.css ?? "", this.metadata = e.metadata, this.onCompleteCb = e.onComplete, this.onCloseCb = e.onClose, this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = le(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
   }
   async init() {
     this.cssVars = P(this.hostInlineVars), this.mountShell(), this.renderLoading();
@@ -850,7 +857,8 @@ ${r}
           questId: this.questionnaire?.id,
           pageUrl: window.location.href,
           visitorId: this.visitorId,
-          userAgent: navigator.userAgent
+          userAgent: navigator.userAgent,
+          metadata: this.metadata
         })
       });
       if (e.ok) {
@@ -874,7 +882,12 @@ ${r}
       } catch (e) {
         console.error("[quests-embed] failed to submit:", e);
       }
-    this.state = "DONE", this.renderDone();
+    if (this.state = "DONE", this.renderDone(), this.onCompleteCb)
+      try {
+        this.onCompleteCb({ ...this.answers });
+      } catch (e) {
+        console.error("[quests-embed] onComplete handler threw:", e);
+      }
   }
   jsonHeaders() {
     const e = {
@@ -906,7 +919,12 @@ ${r}
   }
   /** Destroy the embed and clean up all resources */
   destroy() {
-    document.removeEventListener("keydown", this.boundKeyDown), this.pendingSaveTimer && (clearTimeout(this.pendingSaveTimer), this.pendingSaveTimer = null), this.focusTrap && (this.focusTrap.release(), this.focusTrap = null), this.inertRestore && (this.inertRestore(), this.inertRestore = null), !this.isUserContainer && this.savedOpener && re(this.savedOpener), this.savedOpener = null, this.shadowHost && (this.shadowHost.remove(), this.shadowHost = null, this.shadowRoot = null), this.rootEl = null, this.cardEl = null, this.bodyEl = null, this.footerEl = null, this.titleEl = null, this.stepCounterEl = null, this.progressFillEl = null, this.savingEl = null, this.backdropEl = null, this.currentInput = null;
+    if (document.removeEventListener("keydown", this.boundKeyDown), this.pendingSaveTimer && (clearTimeout(this.pendingSaveTimer), this.pendingSaveTimer = null), this.focusTrap && (this.focusTrap.release(), this.focusTrap = null), this.inertRestore && (this.inertRestore(), this.inertRestore = null), !this.isUserContainer && this.savedOpener && re(this.savedOpener), this.savedOpener = null, this.shadowHost && (this.shadowHost.remove(), this.shadowHost = null, this.shadowRoot = null), this.rootEl = null, this.cardEl = null, this.bodyEl = null, this.footerEl = null, this.titleEl = null, this.stepCounterEl = null, this.progressFillEl = null, this.savingEl = null, this.backdropEl = null, this.currentInput = null, !this.closed && (this.closed = !0, this.onCloseCb))
+      try {
+        this.onCloseCb();
+      } catch (e) {
+        console.error("[quests-embed] onClose handler threw:", e);
+      }
   }
   /** Read-only snapshot of current answers */
   getAnswers() {

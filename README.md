@@ -246,6 +246,27 @@ We offer a Free Plan that hosts both the endpoint and a dashboard for managing y
 | `saveDebounceMs` | `number` | `500` | Debounce in ms for autosave on text/currency/range |
 | `autoFocus` | `boolean` | `true` | Auto-focus the input on each step. Set `false` in preview/embedded contexts that shouldn't steal focus |
 
+### Host integration
+
+For programmatic embedding — e.g. launching a quest from another widget — these hooks let the host pass correlation data in and react to the quest's lifecycle. They're only useful when you construct `QaidQuests` yourself (not via the auto-init `<script>` tag).
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `metadata` | `Record<string, unknown>` | — | Extra key/value pairs sent verbatim in the create-response `POST` body. The server decides which keys it persists; unknown keys are ignored. Used, for example, by `@qaiddev/thumbs-embed` to pass `{ feedbackId }` so the QAid backend joins the quest answers to the feedback record. |
+| `onComplete` | `(answers) => void` | — | Called once when the quest is completed and submitted (just after the thank-you screen renders), with a copy of the collected answers. Fires in both modal and inline modes. |
+| `onClose` | `() => void` | — | Called once when the embed is torn down — visitor close, host `destroy()`, or teardown after completion. Lets a host that launched the quest drop its reference. |
+
+```typescript
+const quest = new QaidQuests({
+  endpoint: 'https://qaid.dev/api/quests/responses',
+  configUrl: 'https://qaid.dev/api/quests/<questId>/definition',
+  apiKey: 'YOUR_API_KEY',
+  metadata: { feedbackId: 'clx…' },       // correlate this response server-side
+  onComplete: (answers) => console.log('done', answers),
+  onClose: () => { /* drop your reference */ },
+});
+```
+
 ### Appearance
 
 | Option | Type | Default | Description |

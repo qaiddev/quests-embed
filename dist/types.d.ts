@@ -254,6 +254,27 @@ export interface QuestsConfig {
      * Same precedence as `themeUrl` (explicit config wins).
      */
     themeDocument?: ResolvedQuestTheme;
+    /**
+     * Extra key/value pairs sent verbatim in the create-response POST
+     * body (alongside `apiKey` / `questId` / …). Lets a host correlate
+     * the response with something on its side — e.g. the thumbs-embed
+     * widget passes `{ feedbackId }` so the backend can join the quest
+     * answers to the feedback record. The server decides which keys it
+     * persists; unknown keys are ignored.
+     */
+    metadata?: Record<string, unknown>;
+    /**
+     * Called once when the quest is completed and submitted (right after
+     * the final "thank you" screen renders). Receives a copy of the
+     * collected answers. Fired in both modal and inline modes.
+     */
+    onComplete?: (answers: Answers) => void;
+    /**
+     * Called once when the embed is torn down — whether the visitor
+     * closed the modal, the host called `destroy()`, or teardown followed
+     * completion. Lets a host that launched the quest drop its reference.
+     */
+    onClose?: () => void;
 }
 /**
  * Shape of a single quest-theme document, as served by the docs site
@@ -306,6 +327,8 @@ export interface CreateResponsePayload {
     pageUrl: string;
     visitorId: string;
     userAgent?: string;
+    /** Host-supplied correlation fields (see QuestsConfig.metadata) */
+    metadata?: Record<string, unknown>;
 }
 export interface CreateResponseResult {
     /** Server-assigned id used for subsequent answer updates */

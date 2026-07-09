@@ -40,6 +40,10 @@ export declare class QaidQuests {
     private themeUrl;
     private themeDocument;
     private hostCss;
+    private metadata;
+    private onCompleteCb;
+    private onCloseCb;
+    private closed;
     constructor(config: QuestsConfig);
     private init;
     private loadTheme;

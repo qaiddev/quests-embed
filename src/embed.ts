@@ -126,6 +126,14 @@ export class QaidQuests {
   private themeDocument: ResolvedQuestTheme | undefined;
   private hostCss: string;
 
+  // Host integration hooks (see QuestsConfig). Kept off the resolved
+  // value-config since they're behaviour, not render tokens.
+  private metadata: Record<string, unknown> | undefined;
+  private onCompleteCb: ((answers: Answers) => void) | undefined;
+  private onCloseCb: (() => void) | undefined;
+  // Guards onClose to fire exactly once even if destroy() runs twice.
+  private closed = false;
+
   constructor(config: QuestsConfig) {
     this.config = {
       endpoint: config.endpoint,
@@ -177,6 +185,10 @@ export class QaidQuests {
     this.themeUrl = config.themeUrl;
     this.themeDocument = config.themeDocument;
     this.hostCss = config.css ?? "";
+
+    this.metadata = config.metadata;
+    this.onCompleteCb = config.onComplete;
+    this.onCloseCb = config.onClose;
 
     this.inlineQuestionnaire = config.questionnaire;
     this.configUrl = config.configUrl;
@@ -968,6 +980,7 @@ export class QaidQuests {
           pageUrl: window.location.href,
           visitorId: this.visitorId,
           userAgent: navigator.userAgent,
+          metadata: this.metadata,
         }),
       });
       if (res.ok) {
@@ -1000,6 +1013,17 @@ export class QaidQuests {
 
     this.state = "DONE";
     this.renderDone();
+
+    // Notify the host after the thank-you screen is up. A copy so a
+    // callback can't mutate our answer store. Never let a throwing
+    // handler break the completed flow.
+    if (this.onCompleteCb) {
+      try {
+        this.onCompleteCb({ ...this.answers });
+      } catch (err) {
+        console.error("[quests-embed] onComplete handler threw:", err);
+      }
+    }
   }
 
   private jsonHeaders(): Record<string, string> {
@@ -1081,6 +1105,19 @@ export class QaidQuests {
     this.savingEl = null;
     this.backdropEl = null;
     this.currentInput = null;
+
+    // Notify the host exactly once that the embed is gone, whatever the
+    // teardown path (visitor close, completion, or host-driven destroy).
+    if (!this.closed) {
+      this.closed = true;
+      if (this.onCloseCb) {
+        try {
+          this.onCloseCb();
+        } catch (err) {
+          console.error("[quests-embed] onClose handler threw:", err);
+        }
+      }
+    }
   }
 
   /** Read-only snapshot of current answers */

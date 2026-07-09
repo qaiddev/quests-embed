@@ -685,4 +685,124 @@ describe("QaidQuests", () => {
       expect(hostIdx).toBeGreaterThan(themeIdx);
     });
   });
+
+  describe("host integration hooks", () => {
+    const single: Questionnaire = {
+      id: "hooks",
+      title: "Hooks",
+      questions: [{ id: "q1", type: "text", label: "One?", required: true }],
+    };
+
+    // The create-response POST body (the first POST to the bare endpoint,
+    // not the .../submit call).
+    function createBody(): Record<string, unknown> {
+      const create = vi
+        .mocked(fetch)
+        .mock.calls.find(
+          ([url, opts]) => url === "/api/responses" && opts?.method === "POST",
+        );
+      expect(create).toBeTruthy();
+      return JSON.parse(create![1]!.body as string);
+    }
+
+    async function complete(shadow: ShadowRoot): Promise<void> {
+      const input = await waitFor(() =>
+        shadow.querySelector<HTMLInputElement>(".qaid-q-input"),
+      );
+      input.value = "hi";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+    }
+
+    it("sends metadata verbatim in the create-response body", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        metadata: { feedbackId: "fb-123" },
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(createBody().metadata).toEqual({ feedbackId: "fb-123" });
+    });
+
+    it("omits metadata when the host didn't provide any", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect("metadata" in createBody()).toBe(false);
+    });
+
+    it("fires onComplete once with a copy of the answers after submit", async () => {
+      const onComplete = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        onComplete,
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      await complete(shadow);
+
+      expect(onComplete).toHaveBeenCalledTimes(1);
+      expect(onComplete).toHaveBeenCalledWith({ q1: "hi" });
+      // The argument is a copy — mutating it must not touch the store.
+      (onComplete.mock.calls[0]![0] as Record<string, unknown>).q1 = "x";
+      expect(embed!.getAnswers().q1).toBe("hi");
+    });
+
+    it("fires onClose exactly once, even across repeated destroy()", async () => {
+      const onClose = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        onClose,
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      embed.destroy();
+      embed.destroy();
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("survives a throwing onComplete handler", async () => {
+      const onComplete = vi.fn(() => {
+        throw new Error("boom");
+      });
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        onComplete,
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      await complete(shadow);
+      // Reached the done screen despite the handler throwing.
+      expect(shadow.querySelector(".qaid-q-done")).toBeTruthy();
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+
+    it("survives a throwing onClose handler during destroy()", async () => {
+      const onClose = vi.fn(() => {
+        throw new Error("boom");
+      });
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        onClose,
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      // destroy() must not throw even though onClose does.
+      expect(() => embed!.destroy()).not.toThrow();
+      expect(onClose).toHaveBeenCalledTimes(1);
+      // Host shadow host is gone despite the throwing handler.
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+  });
 });
