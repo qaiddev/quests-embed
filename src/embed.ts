@@ -11,6 +11,7 @@ import type {
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleQuestions } from "./visibility";
+import { watchOverflow, type OverflowWatcher } from "./overflow";
 import {
   announce,
   applyDialog,
@@ -85,6 +86,8 @@ export class QaidQuests {
   private progressEl: HTMLDivElement | null = null;
   private progressFillEl: HTMLDivElement | null = null;
   private bodyEl: HTMLDivElement | null = null;
+  private scrollCueEl: HTMLDivElement | null = null;
+  private overflow: OverflowWatcher | null = null;
   private footerEl: HTMLDivElement | null = null;
   private savingEl: HTMLDivElement | null = null;
   private backdropEl: HTMLDivElement | null = null;
@@ -615,6 +618,20 @@ export class QaidQuests {
     this.footerEl = document.createElement("div");
     this.footerEl.className = "qaid-q-footer";
     this.cardEl.appendChild(this.footerEl);
+
+    // "More below" cue. Decorative: the body is the scroll region and the
+    // footer's Next button is the real affordance, so keep it out of the
+    // accessibility tree entirely.
+    this.scrollCueEl = document.createElement("div");
+    this.scrollCueEl.className = "qaid-q-scroll-cue";
+    this.scrollCueEl.setAttribute("aria-hidden", "true");
+    this.scrollCueEl.hidden = true;
+    this.scrollCueEl.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"' +
+      ' stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+    this.bodyEl.appendChild(this.scrollCueEl);
+
+    this.overflow = watchOverflow(this.bodyEl, this.cardEl, this.scrollCueEl);
   }
 
   // ------------------------------------------------------------------
@@ -722,6 +739,12 @@ export class QaidQuests {
     step.appendChild(errorEl);
 
     this.bodyEl.replaceChildren(step);
+    // replaceChildren drops the cue, so put it back and re-measure the new
+    // step. The ResizeObserver watches the body's box, which a step with more
+    // options does not change — only its scrollHeight — so refresh explicitly.
+    if (this.scrollCueEl) this.bodyEl.appendChild(this.scrollCueEl);
+    this.bodyEl.scrollTop = 0;
+    this.overflow?.refresh();
 
     // Footer
     this.footerEl.replaceChildren();
@@ -1097,7 +1120,10 @@ export class QaidQuests {
     }
     this.rootEl = null;
     this.cardEl = null;
+    this.overflow?.destroy();
+    this.overflow = null;
     this.bodyEl = null;
+    this.scrollCueEl = null;
     this.footerEl = null;
     this.titleEl = null;
     this.stepCounterEl = null;

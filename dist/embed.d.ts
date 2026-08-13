@@ -26,6 +26,8 @@ export declare class QaidQuests {
     private progressEl;
     private progressFillEl;
     private bodyEl;
+    private scrollCueEl;
+    private overflow;
     private footerEl;
     private savingEl;
     private backdropEl;

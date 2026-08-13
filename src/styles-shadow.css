@@ -314,6 +314,109 @@ button {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  /* Anchor for the scroll cue below. */
+  position: relative;
+}
+
+/* ==================== Overflow affordances ====================
+ * `data-qaid-scroll` is maintained in JS (see overflow.ts) and says which
+ * edges have content beyond them. Without this the body scrolled silently and
+ * a clipped option just looked like a broken layout.
+ *
+ * The fade is a mask rather than an overlay so it works on any card
+ * background, including the themes that set an image or gradient. */
+.qaid-q-body[data-qaid-scroll="top"] {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent 100%);
+}
+
+.qaid-q-body[data-qaid-scroll="middle"] {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 2rem,
+    #000 calc(100% - 2.5rem),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 2rem,
+    #000 calc(100% - 2.5rem),
+    transparent 100%
+  );
+}
+
+.qaid-q-body[data-qaid-scroll="bottom"] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 2rem);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 2rem);
+}
+
+/* The explicit "there is more below" cue. Decorative — the body itself is the
+ * scrollable region, and the footer's Next button is the real affordance. */
+.qaid-q-scroll-cue {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 1.5rem;
+  margin-top: -1.5rem;
+  pointer-events: none;
+  color: var(--qaid-q-muted-fg);
+}
+
+.qaid-q-scroll-cue[hidden] {
+  display: none;
+}
+
+.qaid-q-scroll-cue svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  animation: qaid-q-nudge 1.6s ease-in-out infinite;
+}
+
+@keyframes qaid-q-nudge {
+  0%, 100% { transform: translateY(-2px); opacity: 0.55; }
+  50%      { transform: translateY(2px); opacity: 1; }
+}
+
+/* ==================== Compact fit ====================
+ * `data-qaid-fit="compact"` is set when the body has little height to work
+ * with. Option tiles previously had width rules only, so a short container
+ * clipped them instead of adapting. */
+.qaid-q-card[data-qaid-fit="compact"] .qaid-q-options--image-vertical {
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 0.375rem;
+}
+
+.qaid-q-card[data-qaid-fit="compact"] .qaid-q-options--image-vertical .qaid-q-option {
+  padding: 0.5rem;
+  gap: 0.375rem;
+}
+
+/* The square tile is what actually eats the height, so cap it. */
+.qaid-q-card[data-qaid-fit="compact"] .qaid-q-options--image-vertical .qaid-q-option-image {
+  max-height: 5.5rem;
+  object-fit: contain;
+}
+
+.qaid-q-card[data-qaid-fit="compact"] .qaid-q-option-desc {
+  font-size: 0.75em;
+}
+
+.qaid-q-card[data-qaid-fit="compact"] .qaid-q-step {
+  gap: calc(var(--qaid-q-gap) * 0.6);
+}
+
+/* Horizontal only — the vertical grid's tile is width:100% and capped above,
+ * and this selector would otherwise outrank it and shrink it to a thumbnail. */
+.qaid-q-card[data-qaid-fit="compact"]
+  .qaid-q-options--image-horizontal
+  .qaid-q-option-image {
+  width: 36px;
+  height: 36px;
 }
 
 .qaid-q-step {
