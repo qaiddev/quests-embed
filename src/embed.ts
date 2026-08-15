@@ -57,6 +57,15 @@ export class QaidQuests {
   // Latched goToStep request when called before init finishes. Applied
   // once the questionnaire + visible list are ready.
   private pendingGoToStep: string | null = null;
+  // Latched update() request, for the same reason: a host that swaps the
+  // questionnaire while init is still in flight would otherwise have its
+  // questionnaire overwritten by the one init is already loading.
+  private pendingUpdate: Questionnaire | null = null;
+  // Consumed by the next renderStep(). Set by update(), because a host
+  // swapping the questionnaire is not the reader navigating: pulling focus
+  // into the form would take it off whatever they are actually using — in
+  // an editor preview, the field they are typing the questionnaire into.
+  private suppressStepFocus = false;
   // True after the first step has rendered. Used so the focus-on-step
   // logic in renderStep() can distinguish initial mount (driven by the
   // `autoFocus` config) from subsequent step changes (always focused so
@@ -220,7 +229,10 @@ export class QaidQuests {
       if (!q || !q.questions || q.questions.length === 0) {
         throw new Error("Questionnaire is empty");
       }
-      this.questionnaire = q;
+      // A questionnaire handed to update() while this was in flight wins:
+      // it is newer than the one we were already loading.
+      this.questionnaire = this.pendingUpdate ?? q;
+      this.pendingUpdate = null;
       this.applyResolvedTheme(themeDoc);
       this.recomputeVisible();
       // Apply any goToStep request that came in before init finished.
@@ -639,6 +651,10 @@ export class QaidQuests {
   // ------------------------------------------------------------------
 
   private renderStep(): void {
+    // Read before the guards so a suppressed render that bails early can't
+    // leave the flag set for the next, unrelated one.
+    const suppressFocus = this.suppressStepFocus;
+    this.suppressStepFocus = false;
     if (!this.questionnaire || !this.bodyEl || !this.footerEl) return;
 
     const total = this.visibleQuestions.length;
@@ -806,9 +822,14 @@ export class QaidQuests {
     //     action expecting to interact with the next question, and
     //     screen-reader users need focus to move so the new question's
     //     accessible name is announced.
+    //   - A host-driven `update()`: never, see `suppressStepFocus`.
     const isInitialRender = !this.hasRenderedStep;
     this.hasRenderedStep = true;
-    const shouldFocus = isInitialRender ? this.config.autoFocus : true;
+    const shouldFocus = suppressFocus
+      ? false
+      : isInitialRender
+        ? this.config.autoFocus
+        : true;
     if (shouldFocus) {
       requestAnimationFrame(() => input.focus());
     }
@@ -1161,6 +1182,83 @@ export class QaidQuests {
     if (this.state !== "READY") return null;
     const q = this.visibleQuestions[this.stepIndex];
     return q ? q.id : null;
+  }
+
+  /**
+   * Swap in a new questionnaire without tearing the embed down.
+   *
+   * Built for editor previews, where the alternative — `destroy()` plus a
+   * fresh construction on every edit — re-mounts the shadow root, repaints
+   * the loading state, and re-runs both the theme fetch and the create
+   * call. Because that path awaits the network it always paints a blank
+   * frame first, which is what makes a live preview strobe while the author
+   * types. This re-renders the header and the current step and nothing
+   * else, synchronously: the shadow root, the resolved theme, the response
+   * id and the answers so far all survive.
+   *
+   * Answers are kept for questions that still exist and dropped for ones
+   * that don't, so `getAnswers()` never reports an id the questionnaire has
+   * no question for. The reader's place is kept the same way: if the
+   * question on screen is still present and visible, the embed stays on it,
+   * otherwise the step index is clamped into range.
+   *
+   * Returns whether the update was applied. It is refused, leaving the
+   * embed exactly as it was, when the questionnaire has no questions, or
+   * once the reader has completed the form — resuming a submitted response
+   * is not something this can decide on the host's behalf, so a host that
+   * wants the new form there should rebuild. Called before the embed has
+   * finished initializing, the update is latched and applied as soon as it
+   * is ready (and reported as applied), the same way `goToStep` is.
+   */
+  public update(questionnaire: Questionnaire): boolean {
+    if (!questionnaire?.questions || questionnaire.questions.length === 0) {
+      return false;
+    }
+    if (this.state === "DONE") return false;
+    if (this.state === "LOADING") {
+      this.pendingUpdate = questionnaire;
+      return true;
+    }
+
+    // Resolve the incoming questionnaire fully before committing to it, so a
+    // refusal below leaves the embed untouched rather than half-swapped.
+    const live = new Set(questionnaire.questions.map((q) => q.id));
+    const nextAnswers: Answers = {};
+    for (const [id, value] of Object.entries(this.answers)) {
+      if (live.has(id)) nextAnswers[id] = value;
+    }
+    const nextVisible = getVisibleQuestions(questionnaire, nextAnswers);
+    // Every question gated behind an unmet `visibleIf` leaves nothing to
+    // render, and renderStep() reads "no visible questions" as "the reader
+    // finished" and submits. Refuse instead — a host mid-edit has simply not
+    // written a reachable first question yet.
+    if (nextVisible.length === 0) return false;
+
+    // Don't let a debounced PATCH for the outgoing questionnaire land after
+    // the incoming one is on screen.
+    this.flushPendingSave();
+
+    const currentId = this.getCurrentQuestionId();
+    this.questionnaire = questionnaire;
+    // Keep the inline copy in step, or a later re-init would resurrect the
+    // questionnaire this one replaced.
+    if (this.inlineQuestionnaire) this.inlineQuestionnaire = questionnaire;
+    this.state = "READY";
+    this.answers = nextAnswers;
+    this.visibleQuestions = nextVisible;
+
+    const idx = currentId
+      ? this.visibleQuestions.findIndex((q) => q.id === currentId)
+      : -1;
+    this.stepIndex =
+      idx !== -1
+        ? idx
+        : Math.min(this.stepIndex, Math.max(0, this.visibleQuestions.length - 1));
+
+    this.suppressStepFocus = true;
+    this.renderHeader();
+    this.renderStep();
+    return true;
   }
 
   /**

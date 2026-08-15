@@ -1,6 +1,6 @@
 {
   "name": "@qaiddev/quests-embed",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Any Questions for your Users?",
   "type": "module",
   "main": "./dist/qaid-quests.umd.cjs",

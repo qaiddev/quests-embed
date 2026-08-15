@@ -1,4 +1,4 @@
-import type { Answers, QuestsConfig } from "./types";
+import type { Answers, Questionnaire, QuestsConfig } from "./types";
 export declare class QaidQuests {
     private config;
     private questionnaire;
@@ -8,6 +8,8 @@ export declare class QaidQuests {
     private stepIndex;
     private visibleQuestions;
     private pendingGoToStep;
+    private pendingUpdate;
+    private suppressStepFocus;
     private hasRenderedStep;
     private answers;
     private responseId;
@@ -101,6 +103,33 @@ export declare class QaidQuests {
      * user's place after a forced re-mount.
      */
     getCurrentQuestionId(): string | null;
+    /**
+     * Swap in a new questionnaire without tearing the embed down.
+     *
+     * Built for editor previews, where the alternative — `destroy()` plus a
+     * fresh construction on every edit — re-mounts the shadow root, repaints
+     * the loading state, and re-runs both the theme fetch and the create
+     * call. Because that path awaits the network it always paints a blank
+     * frame first, which is what makes a live preview strobe while the author
+     * types. This re-renders the header and the current step and nothing
+     * else, synchronously: the shadow root, the resolved theme, the response
+     * id and the answers so far all survive.
+     *
+     * Answers are kept for questions that still exist and dropped for ones
+     * that don't, so `getAnswers()` never reports an id the questionnaire has
+     * no question for. The reader's place is kept the same way: if the
+     * question on screen is still present and visible, the embed stays on it,
+     * otherwise the step index is clamped into range.
+     *
+     * Returns whether the update was applied. It is refused, leaving the
+     * embed exactly as it was, when the questionnaire has no questions, or
+     * once the reader has completed the form — resuming a submitted response
+     * is not something this can decide on the host's behalf, so a host that
+     * wants the new form there should rebuild. Called before the embed has
+     * finished initializing, the update is latched and applied as soon as it
+     * is ready (and reported as applied), the same way `goToStep` is.
+     */
+    update(questionnaire: Questionnaire): boolean;
     /**
      * Jump to the visible question with the given id. Returns true if
      * the question is currently visible (and the embed navigated to

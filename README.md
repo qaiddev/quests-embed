@@ -348,7 +348,51 @@ const quests = new QaidQuests(config: QuestsConfig);
 | Method | Description |
 |--------|-------------|
 | `getAnswers()` | Read-only snapshot of the answers collected so far, keyed by question id |
+| `getCurrentQuestionId()` | Id of the question on screen, or `null` if the embed isn't on one (loading, finished, or unmounted) |
+| `goToStep(questionId)` | Jump to a visible question. Returns `false` if it's unknown or hidden by an unmet `visibleIf`. Latched if the embed is still initializing |
+| `update(questionnaire)` | Swap in a new questionnaire without re-mounting. Returns whether it was applied — see below |
 | `destroy()` | Remove all DOM elements, event listeners, and injected styles. Safe to call multiple times |
+
+#### `update(questionnaire)`
+
+For hosts that render a questionnaire while it is being authored — a live
+preview in an editor, say. Rebuilding the embed on every edit re-mounts the
+shadow root, repaints the loading state, and re-runs both the theme fetch and
+the create call; because that path awaits the network it always paints a blank
+frame first, which is what makes a live preview flicker as the author types.
+
+`update()` re-renders the header and the current step, synchronously. The
+shadow root, the resolved theme, the response id and the answers so far all
+survive, and focus is left wherever the host put it — it does not pull focus
+into the form the way stepping through it does.
+
+Answers are kept for questions that still exist and dropped for ones that
+don't, so `getAnswers()` never reports an id the questionnaire has no question
+for. The reader's place is kept the same way: if the question on screen is
+still present and visible, the embed stays on it; otherwise the step index is
+clamped into range.
+
+It returns `false`, leaving the embed exactly as it was, when:
+
+- the questionnaire has no questions,
+- every question is gated off behind an unmet `visibleIf`, so there would be
+  nothing to render,
+- or the reader has already completed the form — resuming a submitted response
+  isn't something the embed can decide for you, so rebuild if you want the new
+  form there.
+
+Called before the embed has finished initializing, the update is latched and
+applied as soon as it is ready (and reported as applied), the same way
+`goToStep` is.
+
+```js
+const quests = new QaidQuests({ endpoint, questionnaire, container: "#preview" });
+
+// later, as the author edits — no teardown, no refetch, no flicker
+if (!quests.update(nextQuestionnaire)) {
+  // refused: rebuild if you need the new questionnaire on screen
+}
+```
 
 ### Server Protocol
 

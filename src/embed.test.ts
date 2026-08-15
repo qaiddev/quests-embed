@@ -358,6 +358,261 @@ describe("QaidQuests", () => {
       expect(label.textContent).toContain("B?");
     });
 
+    it("update swaps the questionnaire in place, keeping the shadow root and the response", async () => {
+      const fetchMock = vi.fn(async () =>
+        new Response(JSON.stringify({ id: "resp-1" }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      );
+      vi.stubGlobal("fetch", fetchMock);
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          questions: [
+            { id: "a", type: "text", label: "A?" },
+            { id: "b", type: "text", label: "B?" },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      const hostBefore = document.querySelector("[data-qaid-quests]");
+      const callsBefore = fetchMock.mock.calls.length;
+
+      expect(
+        embed.update({
+          questions: [
+            { id: "a", type: "text", label: "A, but edited?" },
+            { id: "b", type: "text", label: "B?" },
+          ],
+        }),
+      ).toBe(true);
+
+      // Rendered synchronously — no loading frame between the two states,
+      // which is the whole point of not rebuilding.
+      expect(shadow.querySelector(".qaid-q-label")?.textContent).toContain(
+        "A, but edited?",
+      );
+      // Same host, same shadow root: nothing was re-mounted...
+      expect(document.querySelector("[data-qaid-quests]")).toBe(hostBefore);
+      expect(getShadow()).toBe(shadow);
+      // ...and no create/theme round trip was re-run.
+      expect(fetchMock.mock.calls.length).toBe(callsBefore);
+    });
+
+    it("update keeps the reader's place and their answers to questions that survive", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          questions: [
+            { id: "a", type: "text", label: "A?" },
+            { id: "b", type: "text", label: "B?" },
+            { id: "c", type: "text", label: "C?" },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+
+      const input = shadow.querySelector<HTMLInputElement>(".qaid-q-input")!;
+      input.value = "answered";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      embed.goToStep("b");
+      await waitFor(() => {
+        const l = shadow.querySelector(".qaid-q-label");
+        return l?.textContent?.includes("B?") ? l : null;
+      });
+
+      // "c" is dropped, "b" (on screen) and "a" (answered) both survive.
+      embed.update({
+        questions: [
+          { id: "a", type: "text", label: "A?" },
+          { id: "b", type: "text", label: "B, edited?" },
+        ],
+      });
+
+      expect(shadow.querySelector(".qaid-q-label")?.textContent).toContain(
+        "B, edited?",
+      );
+      expect(shadow.querySelector(".qaid-q-step-counter")?.textContent).toBe("2 / 2");
+      expect(embed.getAnswers().a).toBe("answered");
+    });
+
+    it("update drops answers whose question no longer exists", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          questions: [
+            { id: "a", type: "text", label: "A?" },
+            { id: "b", type: "text", label: "B?" },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      const input = shadow.querySelector<HTMLInputElement>(".qaid-q-input")!;
+      input.value = "gone soon";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      expect(embed.getAnswers().a).toBe("gone soon");
+
+      embed.update({ questions: [{ id: "b", type: "text", label: "B?" }] });
+
+      // Reporting an answer to a question the questionnaire no longer has
+      // would submit an id the server cannot place.
+      expect("a" in embed.getAnswers()).toBe(false);
+    });
+
+    it("update falls back to the first question when the current one is gone", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          questions: [
+            { id: "a", type: "text", label: "A?" },
+            { id: "b", type: "text", label: "B?" },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      embed.goToStep("b");
+      await waitFor(() => {
+        const l = shadow.querySelector(".qaid-q-label");
+        return l?.textContent?.includes("B?") ? l : null;
+      });
+
+      embed.update({ questions: [{ id: "z", type: "text", label: "Z?" }] });
+
+      expect(shadow.querySelector(".qaid-q-label")?.textContent).toContain("Z?");
+      // The header was rebuilt too, not just the step: a one-question form
+      // has no progress to track, so its chrome is gone.
+      expect(shadow.querySelector(".qaid-q-step-counter")).toBeNull();
+    });
+
+    it("update does not move focus", async () => {
+      const outside = document.createElement("input");
+      document.body.appendChild(outside);
+      try {
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: {
+            questions: [
+              { id: "a", type: "text", label: "A?" },
+              { id: "b", type: "text", label: "B?" },
+            ],
+          },
+          container: "#mount",
+          autoFocus: false,
+        });
+        const shadow = getShadow();
+        await waitFor(() => shadow.querySelector(".qaid-q-step"));
+
+        // Stand in for the author typing into the editor beside the preview.
+        outside.focus();
+        expect(document.activeElement).toBe(outside);
+
+        embed.update({
+          questions: [
+            { id: "a", type: "text", label: "A, edited?" },
+            { id: "b", type: "text", label: "B?" },
+          ],
+        });
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+
+        // A step render normally focuses its input; an update is not the
+        // reader navigating, so it must leave focus where the host put it.
+        expect(document.activeElement).toBe(outside);
+      } finally {
+        outside.remove();
+      }
+    });
+
+    it("update refuses an empty questionnaire and leaves the current one standing", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { questions: [{ id: "a", type: "text", label: "A?" }] },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+
+      expect(embed.update({ questions: [] })).toBe(false);
+      expect(shadow.querySelector(".qaid-q-label")?.textContent).toContain("A?");
+    });
+
+    it("update refuses a questionnaire whose every question is gated off", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { questions: [{ id: "a", type: "text", label: "A?" }] },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+
+      // Nothing is visible, and renderStep() reads that as "the reader
+      // finished" — so applying this would silently submit the form.
+      expect(
+        embed.update({
+          questions: [
+            {
+              id: "gated",
+              type: "text",
+              label: "Gated?",
+              visibleIf: { questionId: "nope", equals: "yes" },
+            },
+          ],
+        }),
+      ).toBe(false);
+      expect(shadow.querySelector(".qaid-q-label")?.textContent).toContain("A?");
+      expect(shadow.querySelector(".qaid-q-done")).toBeNull();
+    });
+
+    it("update refuses once the reader has completed the form", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { questions: [{ id: "a", type: "text", label: "A?" }] },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      const input = shadow.querySelector<HTMLInputElement>(".qaid-q-input")!;
+      input.value = "done";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+
+      // Resuming a submitted response isn't ours to decide — the host
+      // rebuilds if it wants the new form here.
+      expect(
+        embed.update({ questions: [{ id: "b", type: "text", label: "B?" }] }),
+      ).toBe(false);
+      expect(shadow.querySelector(".qaid-q-done")).toBeTruthy();
+    });
+
+    it("update latches when called before init finishes, and wins over the loading questionnaire", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { questions: [{ id: "a", type: "text", label: "Old?" }] },
+        container: "#mount",
+      });
+      // Called BEFORE init resolves — the newer questionnaire must not be
+      // clobbered by the one already in flight.
+      expect(
+        embed.update({ questions: [{ id: "a", type: "text", label: "New?" }] }),
+      ).toBe(true);
+
+      const shadow = getShadow();
+      const label = await waitFor(() => {
+        const l = shadow.querySelector(".qaid-q-label");
+        return l?.textContent ? l : null;
+      });
+      expect(label.textContent).toContain("New?");
+    });
+
     it("does not throw when an inline questionnaire references an unknown questionId", async () => {
       const malformed: Questionnaire = {
         questions: [
