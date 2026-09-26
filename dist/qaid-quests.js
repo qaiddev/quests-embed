@@ -20,13 +20,13 @@ function ee(t) {
   const e = t.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
   return e ? { r: parseInt(e[1]), g: parseInt(e[2]), b: parseInt(e[3]) } : null;
 }
-function T(t) {
+function N(t) {
   const e = ee(t);
   return e && Z(e.r, e.g, e.b) > 0.4 ? "black" : "white";
 }
 function te(t = {}) {
   const e = {};
-  return t.accentColor !== void 0 && (e["--qaid-q-accent"] = t.accentColor, e["--qaid-q-accent-text"] = T(t.accentColor)), t.errorColor !== void 0 && (e["--qaid-q-error"] = t.errorColor), t.focusColor !== void 0 && (e["--qaid-q-focus"] = t.focusColor, e["--qaid-q-focus-text"] = T(t.focusColor)), t.modalWidth !== void 0 && (e["--qaid-modal-width"] = `${t.modalWidth}px`), t.backdropOpacity !== void 0 && (e["--qaid-backdrop-opacity"] = String(t.backdropOpacity)), t.fontFamily !== void 0 && (e["--qaid-font-family"] = t.fontFamily), t.fontSize !== void 0 && (e["--qaid-font-size"] = `${t.fontSize}px`), e;
+  return t.accentColor !== void 0 && (e["--qaid-q-accent"] = t.accentColor, e["--qaid-q-accent-text"] = N(t.accentColor)), t.errorColor !== void 0 && (e["--qaid-q-error"] = t.errorColor), t.focusColor !== void 0 && (e["--qaid-q-focus"] = t.focusColor, e["--qaid-q-focus-text"] = N(t.focusColor)), t.modalWidth !== void 0 && (e["--qaid-modal-width"] = `${t.modalWidth}px`), t.backdropOpacity !== void 0 && (e["--qaid-backdrop-opacity"] = String(t.backdropOpacity)), t.fontFamily !== void 0 && (e["--qaid-font-family"] = t.fontFamily), t.fontSize !== void 0 && (e["--qaid-font-size"] = `${t.fontSize}px`), e;
 }
 function ie(t, e) {
   for (const [i, a] of Object.entries(e))
@@ -38,7 +38,7 @@ function ae() {
 function ne(t) {
   return X(t);
 }
-function y(t) {
+function v(t) {
   let e = null;
   return {
     setInvalid(i) {
@@ -104,7 +104,7 @@ function se(t, e) {
       const n = a.value.trim();
       return !(n.length === 0 || t.minLength && n.length < t.minLength);
     },
-    ...y(a)
+    ...v(a)
   };
 }
 function oe(t) {
@@ -147,7 +147,7 @@ function de(t, e) {
       const r = n.value === "" ? null : Number(n.value);
       return !(t.required && (r === null || Number.isNaN(r)) || r !== null && !Number.isNaN(r) && (typeof t.min == "number" && r < t.min || typeof t.max == "number" && r > t.max));
     },
-    ...y(n)
+    ...v(n)
   };
 }
 function le(t, e) {
@@ -169,8 +169,8 @@ function ce(t, e) {
   a.className = "qaid-q-range-value";
   const n = document.createElement("span");
   if (a.appendChild(n), t.unit) {
-    const l = document.createElement("span");
-    l.className = "qaid-q-range-unit", l.textContent = t.unit, a.appendChild(l);
+    const d = document.createElement("span");
+    d.className = "qaid-q-range-unit", d.textContent = t.unit, a.appendChild(d);
   }
   const r = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, s = document.createElement("input");
   s.className = "qaid-q-range", s.type = "range", s.min = String(t.min), s.max = String(t.max), s.step = String(t.step ?? 1), s.value = String(r), s.setAttribute("aria-label", t.label), s.setAttribute("aria-valuemin", String(t.min)), s.setAttribute("aria-valuemax", String(t.max));
@@ -179,20 +179,20 @@ function ce(t, e) {
   };
   o(), s.addEventListener("input", () => {
     o(), e.onChange(Number(s.value));
-  }), s.addEventListener("keydown", (l) => {
-    l.key === "Enter" && (l.preventDefault(), e.onSubmit());
+  }), s.addEventListener("keydown", (d) => {
+    d.key === "Enter" && (d.preventDefault(), e.onSubmit());
   });
   const u = document.createElement("div");
   u.className = "qaid-q-range-bounds";
   const q = document.createElement("span");
   q.textContent = `${t.min}${t.unit ?? ""}`;
-  const m = document.createElement("span");
-  return m.textContent = `${t.max}${t.unit ?? ""}`, u.appendChild(q), u.appendChild(m), i.appendChild(a), i.appendChild(s), i.appendChild(u), queueMicrotask(() => e.onChange(Number(s.value))), {
+  const f = document.createElement("span");
+  return f.textContent = `${t.max}${t.unit ?? ""}`, u.appendChild(q), u.appendChild(f), i.appendChild(a), i.appendChild(s), i.appendChild(u), queueMicrotask(() => e.onChange(Number(s.value))), {
     element: i,
     focus: () => s.focus(),
     getValue: () => Number(s.value),
     isValid: () => !0,
-    ...y(s)
+    ...v(s)
   };
 }
 function ue(t, e) {
@@ -206,112 +206,112 @@ function ue(t, e) {
     focus: () => i.focus(),
     getValue: () => i.value || null,
     isValid: () => t.required ? i.value !== "" : !0,
-    ...y(i)
+    ...v(i)
   };
 }
 function he(t, e) {
-  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", r = t.options.some((l) => !!l.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
+  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", r = t.options.some((d) => !!d.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
   i.className = `qaid-q-options${r}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label), t.required && i.setAttribute("aria-required", "true");
   const s = /* @__PURE__ */ new Set();
   if (t.multiple && Array.isArray(e.initialValue))
-    for (const l of e.initialValue) s.add(l);
+    for (const d of e.initialValue) s.add(d);
   else !t.multiple && typeof e.initialValue == "string" && s.add(e.initialValue);
   const o = [];
-  t.options.forEach((l, h) => {
-    const c = document.createElement("button");
-    c.type = "button", c.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, c.dataset.value = l.value, c.setAttribute("role", t.multiple ? "checkbox" : "radio"), c.setAttribute("aria-checked", s.has(l.value) ? "true" : "false"), s.has(l.value) && c.classList.add("qaid-q-selected");
-    const p = document.createElement("span");
-    p.className = "qaid-q-option-marker", p.setAttribute("aria-hidden", "true");
-    const f = document.createElement("span");
-    if (f.className = "qaid-q-option-body", l.image) {
-      const d = document.createElement("img");
-      d.className = "qaid-q-option-image", d.src = l.image, d.alt = "", d.loading = "lazy", d.decoding = "async", f.appendChild(d);
-    }
+  t.options.forEach((d, h) => {
+    const l = document.createElement("button");
+    l.type = "button", l.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, l.dataset.value = d.value, l.setAttribute("role", t.multiple ? "checkbox" : "radio"), l.setAttribute("aria-checked", s.has(d.value) ? "true" : "false"), s.has(d.value) && l.classList.add("qaid-q-selected");
+    const m = document.createElement("span");
+    m.className = "qaid-q-option-marker", m.setAttribute("aria-hidden", "true");
     const g = document.createElement("span");
-    if (g.className = "qaid-q-option-label", g.textContent = l.label, f.appendChild(g), l.description) {
-      const d = document.createElement("span");
-      d.className = "qaid-q-option-desc", d.textContent = l.description, f.appendChild(d);
+    if (g.className = "qaid-q-option-body", d.image) {
+      const c = document.createElement("img");
+      c.className = "qaid-q-option-image", c.src = d.image, c.alt = "", c.loading = "lazy", c.decoding = "async", g.appendChild(c);
     }
-    if (c.appendChild(p), c.appendChild(f), h < 9) {
-      const d = document.createElement("span");
-      d.className = "qaid-q-option-key", d.textContent = String(h + 1), d.setAttribute("aria-hidden", "true"), c.appendChild(d);
+    const p = document.createElement("span");
+    if (p.className = "qaid-q-option-label", p.textContent = d.label, g.appendChild(p), d.description) {
+      const c = document.createElement("span");
+      c.className = "qaid-q-option-desc", c.textContent = d.description, g.appendChild(c);
     }
-    c.addEventListener("click", () => q(h)), c.addEventListener("keydown", (d) => {
-      if (d.key === "ArrowDown" || d.key === "ArrowRight") {
-        d.preventDefault(), u((h + 1) % o.length);
+    if (l.appendChild(m), l.appendChild(g), h < 9) {
+      const c = document.createElement("span");
+      c.className = "qaid-q-option-key", c.textContent = String(h + 1), c.setAttribute("aria-hidden", "true"), l.appendChild(c);
+    }
+    l.addEventListener("click", () => q(h)), l.addEventListener("keydown", (c) => {
+      if (c.key === "ArrowDown" || c.key === "ArrowRight") {
+        c.preventDefault(), u((h + 1) % o.length);
         return;
       }
-      if (d.key === "ArrowUp" || d.key === "ArrowLeft") {
-        d.preventDefault(), u((h - 1 + o.length) % o.length);
+      if (c.key === "ArrowUp" || c.key === "ArrowLeft") {
+        c.preventDefault(), u((h - 1 + o.length) % o.length);
         return;
       }
-      !t.multiple && d.key === "Enter" && s.size > 0 && (d.preventDefault(), e.onSubmit());
-    }), o.push(c), i.appendChild(c);
-  }), i.addEventListener("keydown", (l) => {
-    const h = l.key;
+      !t.multiple && c.key === "Enter" && s.size > 0 && (c.preventDefault(), e.onSubmit());
+    }), o.push(l), i.appendChild(l);
+  }), i.addEventListener("keydown", (d) => {
+    const h = d.key;
     if (h.length === 1 && h >= "1" && h <= "9") {
-      const c = parseInt(h, 10) - 1;
-      c < o.length && (l.preventDefault(), q(c), u(c));
+      const l = parseInt(h, 10) - 1;
+      l < o.length && (d.preventDefault(), q(l), u(l));
     }
   });
-  function u(l) {
-    o[l]?.focus();
+  function u(d) {
+    o[d]?.focus();
   }
-  function q(l) {
-    const h = t.options[l].value;
-    t.multiple ? s.has(h) ? s.delete(h) : s.add(h) : (s.clear(), s.add(h)), o.forEach((c) => {
-      const p = c.dataset.value, f = s.has(p);
-      c.classList.toggle("qaid-q-selected", f), c.setAttribute("aria-checked", f ? "true" : "false");
-    }), e.onChange(m()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
+  function q(d) {
+    const h = t.options[d].value;
+    t.multiple ? s.has(h) ? s.delete(h) : s.add(h) : (s.clear(), s.add(h)), o.forEach((l) => {
+      const m = l.dataset.value, g = s.has(m);
+      l.classList.toggle("qaid-q-selected", g), l.setAttribute("aria-checked", g ? "true" : "false");
+    }), e.onChange(f()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
   }
-  function m() {
+  function f() {
     if (t.multiple) return Array.from(s);
-    const l = s.values().next();
-    return l.done ? null : l.value;
+    const d = s.values().next();
+    return d.done ? null : d.value;
   }
   return {
     element: i,
     focus: () => {
       (o.find((h) => h.classList.contains("qaid-q-selected")) ?? o[0])?.focus();
     },
-    getValue: () => m(),
+    getValue: () => f(),
     isValid: () => t.required ? s.size > 0 : !0,
-    ...y(i)
+    ...v(i)
   };
 }
-function C(t, e) {
+function w(t, e) {
   const i = /* @__PURE__ */ Object.create(null), a = [];
   for (const n of t.questions)
-    n.visibleIf && !k(n.visibleIf, i) || (a.push(n), Object.prototype.hasOwnProperty.call(e, n.id) && (i[n.id] = e[n.id]));
+    n.visibleIf && !C(n.visibleIf, i) || (a.push(n), Object.prototype.hasOwnProperty.call(e, n.id) && (i[n.id] = e[n.id]));
   return a;
 }
 function pe(t, e) {
   const i = {};
-  for (const a of C(t, e))
+  for (const a of w(t, e))
     Object.prototype.hasOwnProperty.call(e, a.id) && (i[a.id] = e[a.id]);
   return i;
 }
-function k(t, e) {
+function C(t, e) {
   if ("allOf" in t) {
     for (const n of t.allOf)
-      if (!k(n, e)) return !1;
+      if (!C(n, e)) return !1;
     return !0;
   }
   if ("anyOf" in t) {
     for (const n of t.anyOf)
-      if (k(n, e)) return !0;
+      if (C(n, e)) return !0;
     return !1;
   }
   const i = e[t.questionId], a = i != null && !(typeof i == "string" && i.trim() === "") && !(Array.isArray(i) && i.length === 0);
-  return "answered" in t ? t.answered ? a : !a : a ? "equals" in t ? x(i, t.equals) : "notEquals" in t ? !x(i, t.notEquals) : "in" in t ? t.in.some((n) => x(i, n)) : !1 : !1;
+  return "answered" in t ? t.answered ? a : !a : a ? "equals" in t ? y(i, t.equals) : "notEquals" in t ? !y(i, t.notEquals) : "in" in t ? t.in.some((n) => y(i, n)) : !1 : !1;
 }
-function x(t, e) {
+function y(t, e) {
   return Array.isArray(t) ? t.some((i) => i === e) : t === e;
 }
-const qe = 360, E = 2;
+const qe = 360, x = 2;
 function me(t) {
   const e = t.scrollHeight - t.clientHeight;
-  return e <= E ? "none" : t.scrollTop <= E ? "top" : t.scrollTop >= e - E ? "bottom" : "middle";
+  return e <= x ? "none" : t.scrollTop <= x ? "top" : t.scrollTop >= e - x ? "bottom" : "middle";
 }
 function fe(t, e) {
   const i = me(t);
@@ -338,7 +338,7 @@ function be(t, e, i) {
     }
   };
 }
-const L = "data-qaid-a11y-live", ve = "position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;", ye = [
+const T = "data-qaid-a11y-live", ve = "position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;", ye = [
   "a[href]",
   "button",
   "input",
@@ -351,13 +351,13 @@ function xe(t) {
 }
 function Ee(t, e) {
   const i = e ? "assertive" : "polite", a = t.querySelector(
-    `[${L}="${i}"]`
+    `[${T}="${i}"]`
   );
   if (a) return a;
   const r = xe(t).createElement("div");
-  return r.setAttribute(L, i), r.setAttribute("role", e ? "alert" : "status"), r.setAttribute("aria-live", e ? "assertive" : "polite"), r.setAttribute("aria-atomic", "true"), r.style.cssText = ve, t.appendChild(r), r;
+  return r.setAttribute(T, i), r.setAttribute("role", e ? "alert" : "status"), r.setAttribute("aria-live", e ? "assertive" : "polite"), r.setAttribute("aria-atomic", "true"), r.style.cssText = ve, t.appendChild(r), r;
 }
-function v(t, e, i = {}) {
+function b(t, e, i = {}) {
   const a = Ee(t, !!i.assertive);
   a.textContent = "", a.textContent = e;
 }
@@ -375,12 +375,12 @@ function Ce(t) {
   }
   return !1;
 }
-function O(t) {
+function L(t) {
   return Array.from(
     t.querySelectorAll(ye)
   ).filter((i) => !(i.getAttribute("tabindex") === "-1" || i instanceof HTMLInputElement && i.type === "hidden" || i instanceof HTMLAnchorElement && !i.getAttribute("href") || we(i) || Ce(i)));
 }
-function j(t) {
+function D(t) {
   let e = t.activeElement;
   for (; e && e.shadowRoot && e.shadowRoot.activeElement; )
     e = e.shadowRoot.activeElement;
@@ -391,16 +391,16 @@ function ke(t) {
   let i = !1;
   const a = (r) => {
     if (r.key !== "Tab") return;
-    const s = O(t);
+    const s = L(t);
     if (s.length === 0) {
       r.preventDefault(), t.focus();
       return;
     }
-    const o = s[0], u = s[s.length - 1], q = j(e), m = q ? s.indexOf(q) !== -1 : !1;
-    r.shiftKey ? (!m || q === o) && (r.preventDefault(), u.focus()) : (!m || q === u) && (r.preventDefault(), o.focus());
+    const o = s[0], u = s[s.length - 1], q = D(e), f = q ? s.indexOf(q) !== -1 : !1;
+    r.shiftKey ? (!f || q === o) && (r.preventDefault(), u.focus()) : (!f || q === u) && (r.preventDefault(), o.focus());
   };
   t.addEventListener("keydown", a);
-  const n = O(t);
+  const n = L(t);
   return n.length > 0 ? n[0].focus() : (t.hasAttribute("tabindex") || (t.setAttribute("tabindex", "-1"), i = !0), t.focus()), {
     release() {
       t.removeEventListener("keydown", a), i && (t.removeAttribute("tabindex"), i = !1);
@@ -408,7 +408,7 @@ function ke(t) {
   };
 }
 function Ae() {
-  return j(document);
+  return D(document);
 }
 function Se(t) {
   if (!(!t || typeof t.focus != "function"))
@@ -450,8 +450,8 @@ function Te(t) {
     }
   };
 }
-const P = "qaid_visitor_id";
-function z() {
+const O = "qaid_visitor_id";
+function P() {
   const t = typeof crypto < "u" ? crypto : void 0;
   if (t && typeof t.randomUUID == "function") return t.randomUUID();
   const e = new Uint8Array(16);
@@ -465,10 +465,10 @@ function z() {
 }
 function Le() {
   try {
-    let t = localStorage.getItem(P);
-    return t || (t = z(), localStorage.setItem(P, t)), t;
+    let t = localStorage.getItem(O);
+    return t || (t = P(), localStorage.setItem(O, t)), t;
   } catch {
-    return z();
+    return P();
   }
 }
 const Oe = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', Pe = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
@@ -535,6 +535,9 @@ class ze {
   scrollCueEl = null;
   overflow = null;
   footerEl = null;
+  // The step's primary (Next / Submit) button. Kept so an answer can relabel
+  // it in place, see `syncPrimaryLabel`.
+  primaryBtn = null;
   savingEl = null;
   backdropEl = null;
   currentInput = null;
@@ -728,7 +731,7 @@ ${s}
     if (!this.cardEl) return;
     this.cardEl.replaceChildren();
     const e = document.createElement("p");
-    e.className = "qaid-q-description", e.textContent = "Loading…", this.cardEl.appendChild(e), this.shadowRoot && v(this.shadowRoot, "Loading");
+    e.className = "qaid-q-description", e.textContent = "Loading…", this.cardEl.appendChild(e), this.shadowRoot && b(this.shadowRoot, "Loading");
   }
   renderError(e) {
     if (!this.cardEl) return;
@@ -736,7 +739,7 @@ ${s}
     const i = document.createElement("h3");
     i.className = "qaid-q-title", i.textContent = "Couldn't load form";
     const a = e instanceof Error ? e.message : String(e), n = document.createElement("p");
-    n.className = "qaid-q-description", n.textContent = a, this.cardEl.appendChild(i), this.cardEl.appendChild(n), this.shadowRoot && v(this.shadowRoot, `Couldn't load form. ${a}`, {
+    n.className = "qaid-q-description", n.textContent = a, this.cardEl.appendChild(i), this.cardEl.appendChild(n), this.shadowRoot && b(this.shadowRoot, `Couldn't load form. ${a}`, {
       assertive: !0
     });
   }
@@ -752,25 +755,25 @@ ${s}
     u.className = "qaid-q-saving-dot";
     const q = document.createElement("span");
     q.textContent = "Saving…", this.savingEl.appendChild(u), this.savingEl.appendChild(q), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
-    const m = n || o;
-    if (m) {
-      const l = document.createElement("div");
-      l.className = "qaid-q-header";
+    const f = n || o;
+    if (f) {
+      const d = document.createElement("div");
+      d.className = "qaid-q-header";
       const h = document.createElement("div");
       n && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, h.appendChild(this.titleEl));
-      const c = document.createElement("div");
-      if (c.style.display = "flex", c.style.alignItems = "center", c.style.gap = "0.5rem", i || (c.appendChild(this.savingEl), e || c.appendChild(this.stepCounterEl)), s) {
-        const p = document.createElement("button");
-        p.type = "button", p.className = "qaid-q-close", p.setAttribute("aria-label", "Close form"), p.innerHTML = Oe, p.addEventListener("click", () => this.close()), c.appendChild(p);
+      const l = document.createElement("div");
+      if (l.style.display = "flex", l.style.alignItems = "center", l.style.gap = "0.5rem", i || (l.appendChild(this.savingEl), e || l.appendChild(this.stepCounterEl)), s) {
+        const m = document.createElement("button");
+        m.type = "button", m.className = "qaid-q-close", m.setAttribute("aria-label", "Close form"), m.innerHTML = Oe, m.addEventListener("click", () => this.close()), l.appendChild(m);
       }
-      l.appendChild(h), l.appendChild(c), this.cardEl.appendChild(l);
+      d.appendChild(h), d.appendChild(l), this.cardEl.appendChild(d);
     }
     if (!this.isUserContainer && this.cardEl && (this.titleEl ? (this.titleEl.id = this.titleEl.id || "qaid-q-dialog-title", this.cardEl.setAttribute("aria-labelledby", this.titleEl.id), this.cardEl.removeAttribute("aria-label")) : (this.cardEl.removeAttribute("aria-labelledby"), this.cardEl.setAttribute(
       "aria-label",
       this.questionnaire.title ?? "Questionnaire"
     ))), r) {
-      const l = document.createElement("p");
-      l.className = "qaid-q-description", l.textContent = this.questionnaire.description, l.style.marginTop = m ? "-0.5rem" : "0", l.style.marginBottom = "0.75rem", this.cardEl.appendChild(l);
+      const d = document.createElement("p");
+      d.className = "qaid-q-description", d.textContent = this.questionnaire.description, d.style.marginTop = f ? "-0.5rem" : "0", d.style.marginBottom = "0.75rem", this.cardEl.appendChild(d);
     }
     !i && !e && this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl), this.scrollCueEl = document.createElement("div"), this.scrollCueEl.className = "qaid-q-scroll-cue", this.scrollCueEl.setAttribute("aria-hidden", "true"), this.scrollCueEl.hidden = !0, this.scrollCueEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>', this.bodyEl.appendChild(this.scrollCueEl), this.overflow = be(this.bodyEl, this.cardEl, this.scrollCueEl);
   }
@@ -788,56 +791,56 @@ ${s}
     this.stepIndex >= i && (this.stepIndex = i - 1);
     const a = this.stepIndex, n = this.visibleQuestions[a];
     if (this.stepCounterEl && (this.stepCounterEl.textContent = `${a + 1} / ${i}`), this.progressFillEl) {
-      const d = (a + 1) / i * 100;
-      this.progressFillEl.style.width = `${d}%`;
+      const p = (a + 1) / i * 100;
+      this.progressFillEl.style.width = `${p}%`;
     }
     this.progressEl && (this.progressEl.setAttribute("role", "progressbar"), this.progressEl.setAttribute("aria-label", "Progress"), this.progressEl.setAttribute("aria-valuemin", "0"), this.progressEl.setAttribute("aria-valuemax", String(i)), this.progressEl.setAttribute("aria-valuenow", String(a + 1)), this.progressEl.setAttribute(
       "aria-valuetext",
       `Question ${a + 1} of ${i}`
-    )), this.shadowRoot && i > 1 && v(this.shadowRoot, `Step ${a + 1} of ${i}`);
+    )), this.shadowRoot && i > 1 && b(this.shadowRoot, `Step ${a + 1} of ${i}`);
     const r = document.createElement("div");
     r.className = "qaid-q-step", r.setAttribute("role", "group"), r.setAttribute("aria-labelledby", `qaid-q-label-${a}`);
     const s = document.createElement("label");
     if (s.id = `qaid-q-label-${a}`, s.className = "qaid-q-label", s.textContent = n.label, n.required) {
-      const d = document.createElement("span");
-      d.className = "qaid-q-required", d.textContent = "*", d.setAttribute("aria-label", "required"), s.appendChild(d);
+      const p = document.createElement("span");
+      p.className = "qaid-q-required", p.textContent = "*", p.setAttribute("aria-label", "required"), s.appendChild(p);
     }
     if (r.appendChild(s), n.description) {
-      const d = document.createElement("p");
-      d.className = "qaid-q-description", d.textContent = n.description, r.appendChild(d);
+      const p = document.createElement("p");
+      p.className = "qaid-q-description", p.textContent = n.description, r.appendChild(p);
     }
     const o = document.createElement("p");
     o.className = "qaid-q-error", o.id = `qaid-q-error-${a}`, o.setAttribute("aria-live", "polite");
-    const u = this.answers[n.id] ?? null, q = a === i - 1, m = re({
+    const u = this.answers[n.id] ?? null, q = re({
       question: n,
       initialValue: u,
-      onChange: (d) => {
-        this.handleAnswerChange(n, d), o.textContent && (o.textContent = "", this.currentInput?.clearInvalid());
+      onChange: (p) => {
+        this.handleAnswerChange(n, p), o.textContent && (o.textContent = "", this.currentInput?.clearInvalid());
       },
       onSubmit: () => this.advance(n, o),
       onAutoAdvance: () => this.advance(n, o),
       autoAdvance: this.config.autoAdvance
     });
-    this.currentInput = m, r.appendChild(m.element), r.appendChild(o), this.bodyEl.replaceChildren(r), this.scrollCueEl && this.bodyEl.appendChild(this.scrollCueEl), this.bodyEl.scrollTop = 0, this.overflow?.refresh(), this.footerEl.replaceChildren();
-    const h = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = a > 0 ? (() => {
-      const d = document.createElement("button");
-      return d.type = "button", d.className = "qaid-q-btn qaid-q-btn-secondary", d.textContent = this.questionnaire.backLabel ?? "Back", d.addEventListener("click", () => this.back()), d;
-    })() : null, p = document.createElement("button");
-    if (p.type = "button", p.className = "qaid-q-btn qaid-q-btn-primary", p.textContent = q ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", p.addEventListener("click", () => this.advance(n, o)), h)
-      this.footerEl.classList.add("qaid-q-footer--inline-progress"), c && this.footerEl.appendChild(c), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(p);
+    this.currentInput = q, r.appendChild(q.element), r.appendChild(o), this.bodyEl.replaceChildren(r), this.scrollCueEl && this.bodyEl.appendChild(this.scrollCueEl), this.bodyEl.scrollTop = 0, this.overflow?.refresh(), this.footerEl.replaceChildren();
+    const d = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", h = a > 0 ? (() => {
+      const p = document.createElement("button");
+      return p.type = "button", p.className = "qaid-q-btn qaid-q-btn-secondary", p.textContent = this.questionnaire.backLabel ?? "Back", p.addEventListener("click", () => this.back()), p;
+    })() : null, l = document.createElement("button");
+    if (l.type = "button", l.className = "qaid-q-btn qaid-q-btn-primary", this.primaryBtn = l, this.syncPrimaryLabel(), l.addEventListener("click", () => this.advance(n, o)), d)
+      this.footerEl.classList.add("qaid-q-footer--inline-progress"), h && this.footerEl.appendChild(h), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(l);
     else {
       this.footerEl.classList.remove("qaid-q-footer--inline-progress");
-      const d = document.createElement("div");
-      d.className = "qaid-q-footer-left";
-      const b = document.createElement("div");
-      b.className = "qaid-q-footer-right", c && d.appendChild(c), b.appendChild(p), this.footerEl.appendChild(d), this.footerEl.appendChild(b);
+      const p = document.createElement("div");
+      p.className = "qaid-q-footer-left";
+      const c = document.createElement("div");
+      c.className = "qaid-q-footer-right", h && p.appendChild(h), c.appendChild(l), this.footerEl.appendChild(p), this.footerEl.appendChild(c);
     }
-    const f = !this.hasRenderedStep;
-    this.hasRenderedStep = !0, !e && (!f || this.config.autoFocus) && requestAnimationFrame(() => m.focus());
+    const m = !this.hasRenderedStep;
+    this.hasRenderedStep = !0, !e && (!m || this.config.autoFocus) && requestAnimationFrame(() => q.focus());
   }
   renderDone() {
     if (!this.cardEl || !this.questionnaire) return;
-    this.cardEl.replaceChildren();
+    this.cardEl.replaceChildren(), this.primaryBtn = null;
     const e = document.createElement("div");
     e.className = "qaid-q-done";
     const i = document.createElement("div");
@@ -855,7 +858,7 @@ ${s}
     }
     if (this.cardEl.appendChild(e), requestAnimationFrame(() => a.focus()), this.shadowRoot) {
       const r = this.questionnaire.thankYouMessage ? `${n}. ${this.questionnaire.thankYouMessage}` : n;
-      v(this.shadowRoot, r);
+      b(this.shadowRoot, r);
     }
   }
   /**
@@ -865,7 +868,7 @@ ${s}
    * if needed) without the visitor re-entering anything.
    */
   renderSubmitError() {
-    if (this.state = "SUBMIT_FAILED", !this.cardEl) return;
+    if (this.state = "SUBMIT_FAILED", this.primaryBtn = null, !this.cardEl) return;
     this.cardEl.replaceChildren();
     const e = document.createElement("div");
     e.className = "qaid-q-submit-error";
@@ -886,7 +889,7 @@ ${s}
       const u = document.createElement("button");
       u.type = "button", u.className = "qaid-q-btn qaid-q-btn-secondary", u.textContent = "Close", u.addEventListener("click", () => this.close()), s.appendChild(u);
     }
-    e.appendChild(s), this.cardEl.appendChild(e), requestAnimationFrame(() => i.focus()), this.shadowRoot && v(this.shadowRoot, `${a}. ${r}`, { assertive: !0 });
+    e.appendChild(s), this.cardEl.appendChild(e), requestAnimationFrame(() => i.focus()), this.shadowRoot && b(this.shadowRoot, `${a}. ${r}`, { assertive: !0 });
   }
   // ------------------------------------------------------------------
   // Navigation
@@ -910,10 +913,24 @@ ${s}
   // Answer handling + autosave
   // ------------------------------------------------------------------
   recomputeVisible() {
-    this.questionnaire && (this.visibleQuestions = C(this.questionnaire, this.answers));
+    this.questionnaire && (this.visibleQuestions = w(this.questionnaire, this.answers));
+  }
+  /**
+   * Label the step's primary button for what pressing it will do: "Submit"
+   * when no question after this one is visible under the current answers,
+   * "Next" otherwise. Uses the same test as `advance()`, so the two cannot
+   * disagree. Called on draw AND on every answer, because an answer can
+   * reveal a follow-up (Submit → Next) or hide the last one (Next → Submit).
+   * Edits the one button in place — no redraw, so focus and typed text stay.
+   */
+  syncPrimaryLabel() {
+    const e = this.primaryBtn;
+    if (!e || !this.questionnaire) return;
+    const a = this.stepIndex >= this.visibleQuestions.length - 1 ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next";
+    e.textContent !== a && (e.textContent = a);
   }
   handleAnswerChange(e, i, a = {}) {
-    this.answers[e.id] = i, this.recomputeVisible();
+    this.answers[e.id] = i, this.recomputeVisible(), this.syncPrimaryLabel();
     const n = e.type === "text" || e.type === "currency" || e.type === "range";
     if (a.immediate || !n) {
       this.flushPendingSave(), this.saveAnswer(e.id, i);
@@ -1117,7 +1134,7 @@ ${s}
     const i = new Set(e.questions.map((o) => o.id)), a = {};
     for (const [o, u] of Object.entries(this.answers))
       i.has(o) && (a[o] = u);
-    const n = C(e, a);
+    const n = w(e, a);
     if (n.length === 0) return !1;
     this.flushPendingSave();
     const r = this.getCurrentQuestionId();
@@ -1155,7 +1172,7 @@ function De(t) {
       return "Please choose a value.";
   }
 }
-function V(t) {
+function j(t) {
   return document.querySelector(t)?.textContent?.trim() ?? "";
 }
 function je() {
@@ -1167,33 +1184,33 @@ function je() {
   if (!e) return null;
   try {
     const i = JSON.parse(e);
-    return i.cssSelector && !i.css && (i.css = V(i.cssSelector), delete i.cssSelector), i;
+    return i.cssSelector && !i.css && (i.css = j(i.cssSelector), delete i.cssSelector), i;
   } catch {
     return null;
   }
 }
-function A(t, e, i) {
+function k(t, e, i) {
   console.warn(
     `[quests-embed] Ignoring ${t}="${e}": expected ${i}.`
   );
 }
-function D(t, e) {
+function z(t, e) {
   if (e !== null) {
     if (e === "true") return !0;
     if (e === "false") return !1;
-    A(t, e, '"true" or "false"');
+    k(t, e, '"true" or "false"');
   }
 }
 function Ve(t, e, i) {
   if (e !== null) {
     if (i.includes(e)) return e;
-    A(t, e, i.map((a) => `"${a}"`).join(" or "));
+    k(t, e, i.map((a) => `"${a}"`).join(" or "));
   }
 }
 function He(t) {
   return typeof t == "object" && t !== null && !Array.isArray(t);
 }
-function w(t, e, i, a = () => !0) {
+function E(t, e, i, a = () => !0) {
   if (e === null) return;
   let n = null;
   try {
@@ -1202,31 +1219,31 @@ function w(t, e, i, a = () => !0) {
     n = null;
   }
   if (He(n) && a(n)) return n;
-  A(t, e, i);
+  k(t, e, i);
 }
 function Re(t) {
   const e = t.getAttribute("data-endpoint");
   if (!e) return null;
-  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), r = t.getAttribute("data-zindex"), s = t.getAttribute("data-accent-color"), o = t.getAttribute("data-error-color"), u = t.getAttribute("data-focus-color"), q = t.getAttribute("data-positive-color"), m = t.getAttribute("data-negative-color"), l = t.getAttribute("data-marker-color"), h = t.getAttribute("data-modal-width"), c = t.getAttribute("data-backdrop-opacity"), p = t.getAttribute("data-font-family"), f = t.getAttribute("data-font-size"), g = t.getAttribute("data-css"), d = t.getAttribute("data-css-selector"), b = t.getAttribute("data-auto-advance"), S = t.getAttribute("data-save-debounce-ms"), H = t.getAttribute("data-theme-url"), I = t.getAttribute("data-preset"), N = t.getAttribute("data-theme"), R = t.getAttribute("data-unstyled"), $ = D(
+  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), r = t.getAttribute("data-zindex"), s = t.getAttribute("data-accent-color"), o = t.getAttribute("data-error-color"), u = t.getAttribute("data-focus-color"), q = t.getAttribute("data-positive-color"), f = t.getAttribute("data-negative-color"), d = t.getAttribute("data-marker-color"), h = t.getAttribute("data-modal-width"), l = t.getAttribute("data-backdrop-opacity"), m = t.getAttribute("data-font-family"), g = t.getAttribute("data-font-size"), p = t.getAttribute("data-css"), c = t.getAttribute("data-css-selector"), V = t.getAttribute("data-auto-advance"), A = t.getAttribute("data-save-debounce-ms"), H = t.getAttribute("data-theme-url"), S = t.getAttribute("data-preset"), I = t.getAttribute("data-theme"), R = t.getAttribute("data-unstyled"), $ = z(
     "data-auto-focus",
     t.getAttribute("data-auto-focus")
-  ), U = D(
+  ), U = z(
     "data-animate",
     t.getAttribute("data-animate")
   ), F = Ve(
     "data-progress-position",
     t.getAttribute("data-progress-position"),
     ["top", "bottom"]
-  ), M = w(
+  ), M = E(
     "data-questionnaire",
     t.getAttribute("data-questionnaire"),
     'a JSON questionnaire with a "questions" array',
-    (B) => Array.isArray(B.questions)
-  ), Q = w(
+    (K) => Array.isArray(K.questions)
+  ), Q = E(
     "data-theme-document",
     t.getAttribute("data-theme-document"),
     "a JSON theme object"
-  ), K = w(
+  ), B = E(
     "data-metadata",
     t.getAttribute("data-metadata"),
     "a JSON object"
@@ -1243,27 +1260,27 @@ function Re(t) {
       error: o ?? void 0,
       focus: u ?? void 0,
       positive: q ?? void 0,
-      negative: m ?? void 0,
-      marker: l ?? void 0
+      negative: f ?? void 0,
+      marker: d ?? void 0
     },
     modalWidth: h ? parseInt(h, 10) : void 0,
-    backdropOpacity: c ? parseFloat(c) : void 0,
-    fontFamily: p ?? void 0,
-    fontSize: f ? parseInt(f, 10) : void 0,
+    backdropOpacity: l ? parseFloat(l) : void 0,
+    fontFamily: m ?? void 0,
+    fontSize: g ? parseInt(g, 10) : void 0,
     // Inline CSS wins over a selector, as `css` wins over `cssSelector` in
     // the JSON block.
-    css: g || (d ? V(d) : void 0),
-    autoAdvance: b === "true" ? !0 : void 0,
-    saveDebounceMs: S ? parseInt(S, 10) : void 0,
+    css: p || (c ? j(c) : void 0),
+    autoAdvance: V === "true" ? !0 : void 0,
+    saveDebounceMs: A ? parseInt(A, 10) : void 0,
     autoFocus: $,
     animate: U,
     progressPosition: F,
     themeUrl: H ?? void 0,
     themeDocument: Q,
-    preset: I || void 0,
-    theme: N || void 0,
+    preset: S || void 0,
+    theme: I || void 0,
     unstyled: R === "true" ? !0 : void 0,
-    metadata: K
+    metadata: B
   };
 }
 if (typeof document < "u") {
@@ -1275,8 +1292,8 @@ if (typeof document < "u") {
 }
 export {
   ze as QaidQuests,
-  k as evaluateRule,
+  C as evaluateRule,
   pe as getVisibleAnswers,
-  C as getVisibleQuestions
+  w as getVisibleQuestions
 };
 //# sourceMappingURL=qaid-quests.js.map

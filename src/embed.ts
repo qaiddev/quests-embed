@@ -137,6 +137,9 @@ export class QaidQuests {
   private scrollCueEl: HTMLDivElement | null = null;
   private overflow: OverflowWatcher | null = null;
   private footerEl: HTMLDivElement | null = null;
+  // The step's primary (Next / Submit) button. Kept so an answer can relabel
+  // it in place, see `syncPrimaryLabel`.
+  private primaryBtn: HTMLButtonElement | null = null;
   private savingEl: HTMLDivElement | null = null;
   private backdropEl: HTMLDivElement | null = null;
   private currentInput: QuestionInput | null = null;
@@ -772,7 +775,6 @@ export class QaidQuests {
     errorEl.setAttribute("aria-live", "polite");
 
     const initialValue = this.answers[question.id] ?? null;
-    const isLast = idx === total - 1;
 
     const input = createInput({
       question,
@@ -825,9 +827,8 @@ export class QaidQuests {
     const next = document.createElement("button");
     next.type = "button";
     next.className = "qaid-q-btn qaid-q-btn-primary";
-    next.textContent = isLast
-      ? (this.questionnaire.submitLabel ?? "Submit")
-      : (this.questionnaire.nextLabel ?? "Next");
+    this.primaryBtn = next;
+    this.syncPrimaryLabel();
     next.addEventListener("click", () => this.advance(question, errorEl));
 
     if (isBottomProgress) {
@@ -878,6 +879,7 @@ export class QaidQuests {
   private renderDone(): void {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
+    this.primaryBtn = null;
 
     const done = document.createElement("div");
     done.className = "qaid-q-done";
@@ -934,6 +936,7 @@ export class QaidQuests {
    */
   private renderSubmitError(): void {
     this.state = "SUBMIT_FAILED";
+    this.primaryBtn = null;
     if (!this.cardEl) return;
     this.cardEl.replaceChildren();
 
@@ -1041,6 +1044,26 @@ export class QaidQuests {
     this.visibleQuestions = getVisibleQuestions(this.questionnaire, this.answers);
   }
 
+  /**
+   * Label the step's primary button for what pressing it will do: "Submit"
+   * when no question after this one is visible under the current answers,
+   * "Next" otherwise. Uses the same test as `advance()`, so the two cannot
+   * disagree. Called on draw AND on every answer, because an answer can
+   * reveal a follow-up (Submit → Next) or hide the last one (Next → Submit).
+   * Edits the one button in place — no redraw, so focus and typed text stay.
+   */
+  private syncPrimaryLabel(): void {
+    const btn = this.primaryBtn;
+    if (!btn || !this.questionnaire) return;
+    const isLast = this.stepIndex >= this.visibleQuestions.length - 1;
+    const label = isLast
+      ? (this.questionnaire.submitLabel ?? "Submit")
+      : (this.questionnaire.nextLabel ?? "Next");
+    // Only write on a change, so a screen reader is not handed the same name
+    // again on every keystroke.
+    if (btn.textContent !== label) btn.textContent = label;
+  }
+
   private handleAnswerChange(
     question: Question,
     value: AnswerValue,
@@ -1049,8 +1072,10 @@ export class QaidQuests {
     this.answers[question.id] = value;
     // Visibility may flip on follow-up questions when this answer
     // changes. Recompute synchronously so advance() / back() see the
-    // up-to-date list. We don't re-render here — the user is mid-edit.
+    // up-to-date list. We don't re-render here — the user is mid-edit —
+    // but the primary button's Next/Submit label is relabelled in place.
     this.recomputeVisible();
+    this.syncPrimaryLabel();
 
     const debounced =
       question.type === "text" ||

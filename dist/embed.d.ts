@@ -45,6 +45,7 @@ export declare class QaidQuests {
     private scrollCueEl;
     private overflow;
     private footerEl;
+    private primaryBtn;
     private savingEl;
     private backdropEl;
     private currentInput;
@@ -96,6 +97,15 @@ export declare class QaidQuests {
     private advance;
     private back;
     private recomputeVisible;
+    /**
+     * Label the step's primary button for what pressing it will do: "Submit"
+     * when no question after this one is visible under the current answers,
+     * "Next" otherwise. Uses the same test as `advance()`, so the two cannot
+     * disagree. Called on draw AND on every answer, because an answer can
+     * reveal a follow-up (Submit → Next) or hide the last one (Next → Submit).
+     * Edits the one button in place — no redraw, so focus and typed text stay.
+     */
+    private syncPrimaryLabel;
     private handleAnswerChange;
     private flushPendingSave;
     private saveAnswer;

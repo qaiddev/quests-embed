@@ -443,6 +443,146 @@ describe("QaidQuests", () => {
       expect(cleared).toEqual(["detail", "more"]);
     });
 
+    describe("the primary button follows the answers", () => {
+      function primary(shadow: ShadowRoot): HTMLButtonElement {
+        return shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!;
+      }
+
+      const yesNo: Questionnaire = {
+        id: "yes-no",
+        questions: [
+          {
+            id: "gate",
+            type: "multiple-choice",
+            label: "Any problems?",
+            required: true,
+            options: [
+              { value: "yes", label: "Yes" },
+              { value: "no", label: "No" },
+            ],
+          },
+          {
+            id: "detail",
+            type: "text",
+            label: "What happened?",
+            visibleIf: { questionId: "gate", equals: "yes" },
+          },
+        ],
+      };
+
+      it("reads Next once an answer reveals a follow-up, and Next goes there", async () => {
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: branching,
+          container: "#mount",
+        });
+        const shadow = getShadow();
+        await waitFor(() => shadow.querySelector(".qaid-q-options"));
+
+        // Drawn with no follow-up visible, so it starts as Submit.
+        const btn = primary(shadow);
+        expect(btn.textContent).toBe("Submit");
+
+        pickOption(shadow, "bad");
+        // Same button, relabelled — pressing it now moves on, not submits.
+        expect(primary(shadow)).toBe(btn);
+        expect(btn.textContent).toBe("Next");
+
+        btn.click();
+        await waitForLabel(shadow, "What went wrong");
+        expect(submitCalls()).toHaveLength(0);
+      });
+
+      it("reads Submit once an answer hides the last follow-up, and Submit submits", async () => {
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: yesNo,
+          container: "#mount",
+        });
+        const shadow = getShadow();
+        await waitFor(() => shadow.querySelector(".qaid-q-options"));
+
+        pickOption(shadow, "yes");
+        primary(shadow).click();
+        await waitForLabel(shadow, "What happened");
+
+        // Back to the gate: drawn with the follow-up visible, so Next.
+        shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-secondary")!.click();
+        await waitFor(() => shadow.querySelector(".qaid-q-options"));
+        const btn = primary(shadow);
+        expect(btn.textContent).toBe("Next");
+
+        // "no" hides the only follow-up: the gate is now the last question.
+        pickOption(shadow, "no");
+        expect(primary(shadow)).toBe(btn);
+        expect(btn.textContent).toBe("Submit");
+
+        btn.click();
+        await waitFor(() => shadow.querySelector(".qaid-q-done"));
+        expect(submitCalls()[0].body).toEqual({ answers: { gate: "no" } });
+      });
+
+      it("uses the questionnaire's own labels when it flips", async () => {
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: { ...yesNo, nextLabel: "Onward", submitLabel: "Send it" },
+          container: "#mount",
+        });
+        const shadow = getShadow();
+        await waitFor(() => shadow.querySelector(".qaid-q-options"));
+
+        expect(primary(shadow).textContent).toBe("Send it");
+        pickOption(shadow, "yes");
+        expect(primary(shadow).textContent).toBe("Onward");
+        pickOption(shadow, "no");
+        expect(primary(shadow).textContent).toBe("Send it");
+      });
+
+      it("relabels in place while typing: no redraw, focus and text kept", async () => {
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: {
+            id: "typed-gate",
+            questions: [
+              { id: "note", type: "text", label: "Anything to add?" },
+              {
+                id: "why",
+                type: "text",
+                label: "Why is that?",
+                visibleIf: { questionId: "note", answered: true },
+              },
+            ],
+          },
+          container: "#mount",
+        });
+        const shadow = getShadow();
+        const step = await waitFor(() => shadow.querySelector(".qaid-q-step"));
+        // Let the mount's autofocus frame run so it can't move focus later.
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+
+        const input = shadow.querySelector<HTMLInputElement>(".qaid-q-input")!;
+        input.focus();
+        const btn = primary(shadow);
+        expect(btn.textContent).toBe("Submit");
+
+        typeInto(shadow, "yes, one thing");
+        expect(btn.textContent).toBe("Next");
+        // Nothing was redrawn: same step, same input, same button, and the
+        // visitor is still in the field with their text.
+        expect(shadow.querySelector(".qaid-q-step")).toBe(step);
+        expect(shadow.querySelector(".qaid-q-input")).toBe(input);
+        expect(primary(shadow)).toBe(btn);
+        expect(shadow.activeElement).toBe(input);
+        expect(input.value).toBe("yes, one thing");
+
+        // Clearing the field hides the follow-up again.
+        typeInto(shadow, "");
+        expect(btn.textContent).toBe("Submit");
+        expect(shadow.querySelector(".qaid-q-step")).toBe(step);
+        expect(shadow.activeElement).toBe(input);
+      });
+    });
+
     it("goToStep jumps to the named visible question", async () => {
       embed = new QaidQuests({
         endpoint: "/api/responses",
