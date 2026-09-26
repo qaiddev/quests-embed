@@ -248,7 +248,7 @@ We offer a Free Plan that hosts both the endpoint and a dashboard for managing y
 
 ### Host integration
 
-For programmatic embedding — e.g. launching a quest from another widget — these hooks let the host pass correlation data in and react to the quest's lifecycle. They're only useful when you construct `QaidQuests` yourself (not via the auto-init `<script>` tag).
+For programmatic embedding — e.g. launching a quest from another widget — these hooks let the host pass correlation data in and react to the quest's lifecycle. `metadata` can also be set on the `<script>` tag as `data-metadata`; the two callbacks are functions, so they need you to construct `QaidQuests` yourself.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -297,25 +297,45 @@ Colors accept hex (`#ABC`, `#AABBCC`) or `rgb(r, g, b)` format. The text color u
 
 ## Script Tag Data Attributes
 
-When using the script tag method, all config options are available as `data-*` attributes:
+Every config option except the two callbacks (`onComplete`, `onClose`) has a `data-*` attribute, so the script tag alone can set anything else. If a JSON config block is also on the page, the block wins and the attributes are not read.
+
+Object options take JSON. In HTML, wrap the value in single quotes so the JSON's double quotes survive: `data-metadata='{"feedbackId":"clx1"}'`.
 
 | Attribute | Maps To |
 |-----------|---------|
-| `data-endpoint` | `endpoint` |
-| `data-config-url` | `configUrl` |
+| `data-endpoint` | `endpoint` (required) |
 | `data-api-key` | `apiKey` |
+| `data-questionnaire` | `questionnaire`: the questionnaire as JSON, with a `questions` array. Starts the quest without `data-config-url` |
+| `data-config-url` | `configUrl` |
 | `data-container` | `container` |
 | `data-zindex` | `zIndex` |
-| `data-positive-color` | `colors.positive` |
-| `data-negative-color` | `colors.negative` |
-| `data-marker-color` | `colors.marker` |
+| `data-accent-color` | `colors.accent` |
+| `data-error-color` | `colors.error` |
+| `data-focus-color` | `colors.focus` |
+| `data-positive-color` | `colors.positive` (deprecated alias for `colors.accent`) |
+| `data-negative-color` | `colors.negative` (deprecated alias for `colors.error`) |
+| `data-marker-color` | `colors.marker` (deprecated alias for `colors.focus`) |
 | `data-modal-width` | `modalWidth` |
 | `data-backdrop-opacity` | `backdropOpacity` |
 | `data-font-family` | `fontFamily` |
 | `data-font-size` | `fontSize` |
+| `data-css` | `css` (wins over `data-css-selector`) |
+| `data-css-selector` | `css`, taken from the `textContent` of the element this selector matches |
 | `data-auto-advance` | `autoAdvance` (`"true"` to enable) |
 | `data-save-debounce-ms` | `saveDebounceMs` |
-| `data-css-selector` | CSS selector for an element whose `textContent` is used as `css` |
+| `data-auto-focus` | `autoFocus` (`"true"` or `"false"`) |
+| `data-animate` | `animate` (`"true"` or `"false"`) |
+| `data-progress-position` | `progressPosition` (`"top"` or `"bottom"`) |
+| `data-theme` | `theme` (`"light"`, `"dark"` or `"auto"`) |
+| `data-unstyled` | `unstyled` (`"true"` to enable) |
+| `data-preset` | `preset` (`"default"`, `"minimal"`, `"pill"` or `"dense"`) |
+| `data-theme-url` | `themeUrl` |
+| `data-theme-document` | `themeDocument`, as a JSON object |
+| `data-metadata` | `metadata`, as a JSON object |
+
+`onComplete` and `onClose` are functions, so they can only be passed from code (`new QaidQuests({ ... })`).
+
+A value the embed can't use (malformed JSON, a questionnaire with no `questions` array, `data-auto-focus="yes"`, an unknown `data-progress-position`) is ignored with one `console.warn` naming the attribute, and the default stays.
 
 ## Modal vs. Inline
 

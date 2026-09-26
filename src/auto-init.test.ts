@@ -51,4 +51,42 @@ describe("script-tag auto-init", () => {
     const ctor = await load("interactive", tag());
     expect(ctor).toHaveBeenCalledOnce();
   });
+
+  it("starts from an inline data-questionnaire with no config URL", async () => {
+    const script = document.createElement("script");
+    script.setAttribute("data-endpoint", "https://qaid.dev/api/quests/responses");
+    script.setAttribute(
+      "data-questionnaire",
+      JSON.stringify({ questions: [{ id: "name", type: "text", label: "Your name" }] }),
+    );
+    script.setAttribute("data-auto-focus", "false");
+    document.head.appendChild(script);
+
+    const ctor = await load("interactive", script);
+
+    expect(ctor).toHaveBeenCalledOnce();
+    expect(ctor.mock.calls[0]![0]).toMatchObject({
+      questionnaire: { questions: [{ id: "name" }] },
+      autoFocus: false,
+    });
+  });
+
+  it("lets a JSON config block win over the tag's attributes", async () => {
+    const block = document.createElement("script");
+    block.setAttribute("type", "application/json");
+    block.setAttribute("data-quests-config", "");
+    block.textContent = JSON.stringify({
+      endpoint: "https://qaid.dev/from-block",
+      configUrl: "https://qaid.dev/block-definition",
+    });
+    document.head.appendChild(block);
+
+    const ctor = await load("interactive", tag());
+
+    expect(ctor).toHaveBeenCalledOnce();
+    expect(ctor.mock.calls[0]![0]).toEqual({
+      endpoint: "https://qaid.dev/from-block",
+      configUrl: "https://qaid.dev/block-definition",
+    });
+  });
 });
