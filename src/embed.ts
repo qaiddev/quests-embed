@@ -28,16 +28,42 @@ const VISITOR_ID_KEY = "qaid_visitor_id";
 // The answers are kept and the visitor can retry from the error screen.
 type EmbedState = "LOADING" | "READY" | "DONE" | "ERROR" | "SUBMIT_FAILED";
 
+/**
+ * A random v4 UUID.
+ *
+ * `crypto.randomUUID` exists only in secure contexts (HTTPS and localhost). On
+ * a plain http:// page it is undefined, and calling it threw while mounting, so
+ * the quest never appeared. `crypto.getRandomValues` has no such restriction;
+ * `Math.random` covers a runtime with no `crypto` at all. The id only groups
+ * one browser's responses, so it needs to be unique, not secret.
+ */
+export function randomId(): string {
+  const c = typeof crypto !== "undefined" ? crypto : undefined;
+  if (c && typeof c.randomUUID === "function") return c.randomUUID();
+
+  const bytes = new Uint8Array(16);
+  if (c && typeof c.getRandomValues === "function") {
+    c.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  // RFC 4122 version 4 / variant 1 bits, so the result reads as a real UUID.
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 function getOrCreateVisitorId(): string {
   try {
     let id = localStorage.getItem(VISITOR_ID_KEY);
     if (!id) {
-      id = crypto.randomUUID();
+      id = randomId();
       localStorage.setItem(VISITOR_ID_KEY, id);
     }
     return id;
   } catch {
-    return crypto.randomUUID();
+    return randomId();
   }
 }
 
