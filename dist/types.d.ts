@@ -9,6 +9,10 @@
  *
  * Composition: `allOf` / `anyOf` accept arrays of nested rules.
  * Atom forms target a single prior question via `questionId`.
+ *
+ * A question that is itself hidden counts as unanswered, whatever the
+ * visitor typed into it before it was hidden, so follow-ups chained on
+ * it hide too.
  */
 export type VisibilityRule = {
     allOf: VisibilityRule[];
@@ -191,9 +195,14 @@ export interface QuestsConfig {
     fontSize?: number;
     /** Custom CSS injected into the shadow root for theming */
     css?: string;
-    /** When true, advances automatically on selection for multiple-choice (single) and range. Default: false */
+    /**
+     * When true, picking an option on a single-choice multiple-choice
+     * question advances to the next step. No other question type
+     * auto-advances (multi-select, text, currency, range and date all wait
+     * for Next / Enter). Default: false
+     */
     autoAdvance?: boolean;
-    /** Debounce in ms for autosave on text/currency. Default: 500 */
+    /** Debounce in ms for autosave on text/currency/range. Default: 500 */
     saveDebounceMs?: number;
     /** Auto-focus the input on each step. Default: true. Set false in preview/embedded contexts that shouldn't steal focus. */
     autoFocus?: boolean;
@@ -264,9 +273,11 @@ export interface QuestsConfig {
      */
     metadata?: Record<string, unknown>;
     /**
-     * Called once when the quest is completed and submitted (right after
-     * the final "thank you" screen renders). Receives a copy of the
-     * collected answers. Fired in both modal and inline modes.
+     * Called once when the quest is completed and the server accepted the
+     * submit (right after the final "thank you" screen renders). Receives
+     * a copy of the submitted answers — answers to questions hidden by
+     * `visibleIf` are left out. Not called while the submit is failing.
+     * Fired in both modal and inline modes.
      */
     onComplete?: (answers: Answers) => void;
     /**
@@ -339,7 +350,10 @@ export interface UpdateAnswerPayload {
     questionId: string;
     value: AnswerValue;
 }
-/** Sent when the form is submitted */
+/**
+ * Sent when the form is submitted. `answers` holds only the questions
+ * visible at submit time; a hidden question's answer is left out.
+ */
 export interface SubmitPayload {
     answers: Answers;
 }

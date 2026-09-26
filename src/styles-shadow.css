@@ -915,6 +915,41 @@ button {
   margin: 0;
 }
 
+/* ==================== Submit failed ==================== */
+/* Replaces the done screen when the create or submit request fails.
+ * Same centred layout; the actions row holds "Try again" (+ Close in
+ * modal mode). */
+
+.qaid-q-submit-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1.5rem 0;
+  flex: 1;
+  min-height: 0;
+}
+
+.qaid-q-submit-error-title {
+  font-size: 1.25em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.qaid-q-submit-error-message {
+  color: var(--qaid-q-muted-fg);
+  margin: 0;
+}
+
+.qaid-q-submit-error-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
 /* ==================== Saving indicator ==================== */
 
 .qaid-q-saving {
@@ -980,7 +1015,11 @@ button {
   .qaid-q-done,
   .qaid-q-done-icon,
   .qaid-q-done-title,
-  .qaid-q-done-message) {
+  .qaid-q-done-message,
+  .qaid-q-submit-error,
+  .qaid-q-submit-error-title,
+  .qaid-q-submit-error-message,
+  .qaid-q-submit-error-actions) {
   all: unset;
   display: revert;
   box-sizing: border-box;

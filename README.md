@@ -78,8 +78,8 @@ For complex configurations or inline questionnaires, use a separate JSON config 
 2. A response record is created on your server (`POST` to `endpoint`)
 3. Questions render one at a time with a progress bar and Back/Next navigation
 4. Answers autosave as the user moves between steps (`PATCH` per question). Text and currency fields debounce by `saveDebounceMs` (default 500ms)
-5. On the final step, all answers are submitted in a single batch (`POST` to `{endpoint}/{id}/submit`)
-6. A "thank you" screen appears when finished
+5. On the final step, the answers to the questions still visible are submitted in a single batch (`POST` to `{endpoint}/{id}/submit`). An answer to a question that `visibleIf` has since hidden is left out, and cleared on the server with a `PATCH` of `null`
+6. A "thank you" screen appears once the server accepts the submit. If the create or the submit fails (a network error or a non-2xx reply), the embed shows "Couldn't send your answers" with a **Try again** button instead; the answers are kept, and Try again re-creates the response first if it has to
 
 If `container` is set, the form renders inline inside that element. If not, it opens as a centered modal with a backdrop.
 
@@ -242,7 +242,7 @@ We offer a Free Plan that hosts both the endpoint and a dashboard for managing y
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `autoAdvance` | `boolean` | `false` | Advance automatically on selection for single-choice multiple-choice and range questions |
+| `autoAdvance` | `boolean` | `false` | Advance automatically when an option is picked on a single-choice multiple-choice question. No other type auto-advances (multi-select, text, currency, range and date wait for Next / Enter) |
 | `saveDebounceMs` | `number` | `500` | Debounce in ms for autosave on text/currency/range |
 | `autoFocus` | `boolean` | `true` | Auto-focus the input on each step. Set `false` in preview/embedded contexts that shouldn't steal focus |
 
@@ -253,7 +253,7 @@ For programmatic embedding — e.g. launching a quest from another widget — th
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `metadata` | `Record<string, unknown>` | — | Extra key/value pairs sent verbatim in the create-response `POST` body. The server decides which keys it persists; unknown keys are ignored. Used, for example, by `@qaiddev/thumbs-embed` to pass `{ feedbackId }` so the QAid backend joins the quest answers to the feedback record. |
-| `onComplete` | `(answers) => void` | — | Called once when the quest is completed and submitted (just after the thank-you screen renders), with a copy of the collected answers. Fires in both modal and inline modes. |
+| `onComplete` | `(answers) => void` | — | Called once when the quest is completed and the server accepted the submit (just after the thank-you screen renders), with a copy of the submitted answers — answers to questions hidden by `visibleIf` are left out. Not called while the submit is failing. Fires in both modal and inline modes. |
 | `onClose` | `() => void` | — | Called once when the embed is torn down — visitor close, host `destroy()`, or teardown after completion. Lets a host that launched the quest drop its reference. |
 
 ```typescript
@@ -422,8 +422,14 @@ Your endpoint should return `{ "id": "..." }` (string or number). The form is us
 ```
 
 `value` is `string | number | string[] | null` depending on the question type.
+Just before submitting, the embed sends `"value": null` for every answered
+question that `visibleIf` has since hidden, so a server that stores answers
+from these PATCHes drops them too.
 
-**3. Submit** — `POST {endpoint}/{id}/submit`:
+**3. Submit** — `POST {endpoint}/{id}/submit`. `answers` holds only the
+questions visible at submit time. Reply with a 2xx; anything else (or a
+network error) shows the visitor a retry screen instead of the thank-you
+screen:
 
 ```json
 {

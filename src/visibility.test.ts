@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { evaluateRule, getVisibleQuestions } from "./visibility";
+import {
+  evaluateRule,
+  getVisibleAnswers,
+  getVisibleQuestions,
+} from "./visibility";
 import type { Questionnaire } from "./types";
 
 describe("evaluateRule", () => {
@@ -218,5 +222,155 @@ describe("getVisibleQuestions", () => {
     const visible = getVisibleQuestions(questionnaire, { experience: "bad" });
     expect(visible[0].id).toBe("experience");
     expect(visible[1].id).toBe("what_went_wrong");
+  });
+
+  // gate -> detail (shown on "yes") -> more (shown once detail is answered)
+  const chain: Questionnaire = {
+    questions: [
+      {
+        id: "gate",
+        type: "multiple-choice",
+        label: "Any problems?",
+        options: [
+          { value: "yes", label: "Yes" },
+          { value: "no", label: "No" },
+        ],
+      },
+      {
+        id: "detail",
+        type: "text",
+        label: "What happened?",
+        visibleIf: { questionId: "gate", equals: "yes" },
+      },
+      {
+        id: "more",
+        type: "text",
+        label: "Anything else about it?",
+        visibleIf: { questionId: "detail", answered: true },
+      },
+    ],
+  };
+
+  it("walks a chain of follow-ups while each link is shown", () => {
+    expect(
+      getVisibleQuestions(chain, { gate: "yes", detail: "it broke" }).map(
+        (q) => q.id,
+      ),
+    ).toEqual(["gate", "detail", "more"]);
+  });
+
+  it("collapses the whole chain when its head is hidden, even with leftover answers", () => {
+    // The visitor said "yes", filled both follow-ups, went back and
+    // switched to "no". "detail" is hidden, so its leftover answer must not
+    // keep "more" on screen.
+    expect(
+      getVisibleQuestions(chain, {
+        gate: "no",
+        detail: "it broke",
+        more: "twice",
+      }).map((q) => q.id),
+    ).toEqual(["gate"]);
+  });
+
+  it("reads a hidden question as unanswered, so `answered: false` matches it", () => {
+    const q: Questionnaire = {
+      questions: [
+        { id: "a", type: "text", label: "A?" },
+        {
+          id: "b",
+          type: "text",
+          label: "B?",
+          visibleIf: { questionId: "a", equals: "show" },
+        },
+        {
+          id: "c",
+          type: "text",
+          label: "C?",
+          visibleIf: { questionId: "b", answered: false },
+        },
+      ],
+    };
+    expect(
+      getVisibleQuestions(q, { a: "hide", b: "left over" }).map((x) => x.id),
+    ).toEqual(["a", "c"]);
+  });
+
+  it("reads a reference to a later question as unanswered", () => {
+    const q: Questionnaire = {
+      questions: [
+        { id: "a", type: "text", label: "A?" },
+        {
+          id: "b",
+          type: "text",
+          label: "B?",
+          visibleIf: { questionId: "c", equals: "x" },
+        },
+        { id: "c", type: "text", label: "C?" },
+      ],
+    };
+    expect(getVisibleQuestions(q, { c: "x" }).map((x) => x.id)).toEqual([
+      "a",
+      "c",
+    ]);
+  });
+
+  it("does not read inherited object properties as answers", () => {
+    const q: Questionnaire = {
+      questions: [
+        { id: "a", type: "text", label: "A?" },
+        {
+          id: "b",
+          type: "text",
+          label: "B?",
+          visibleIf: { questionId: "constructor", answered: true },
+        },
+      ],
+    };
+    expect(getVisibleQuestions(q, {}).map((x) => x.id)).toEqual(["a"]);
+  });
+});
+
+describe("getVisibleAnswers", () => {
+  const chain: Questionnaire = {
+    questions: [
+      {
+        id: "gate",
+        type: "multiple-choice",
+        label: "Any problems?",
+        options: [
+          { value: "yes", label: "Yes" },
+          { value: "no", label: "No" },
+        ],
+      },
+      {
+        id: "detail",
+        type: "text",
+        label: "What happened?",
+        visibleIf: { questionId: "gate", equals: "yes" },
+      },
+      { id: "rating", type: "range", label: "Rating?", min: 0, max: 10 },
+    ],
+  };
+
+  it("keeps answers to visible questions, nulls included", () => {
+    expect(
+      getVisibleAnswers(chain, { gate: "yes", detail: "it broke", rating: null }),
+    ).toEqual({ gate: "yes", detail: "it broke", rating: null });
+  });
+
+  it("drops the answer to a question that was later hidden", () => {
+    expect(
+      getVisibleAnswers(chain, { gate: "no", detail: "it broke", rating: 7 }),
+    ).toEqual({ gate: "no", rating: 7 });
+  });
+
+  it("drops answers keyed by ids the questionnaire does not have", () => {
+    expect(getVisibleAnswers(chain, { gate: "no", ghost: "boo" })).toEqual({
+      gate: "no",
+    });
+  });
+
+  it("leaves out visible questions that have no answer yet", () => {
+    expect(getVisibleAnswers(chain, { gate: "no" })).toEqual({ gate: "no" });
   });
 });

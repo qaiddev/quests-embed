@@ -14,6 +14,10 @@ export declare class QaidQuests {
     private answers;
     private responseId;
     private visitorId;
+    private createPromise;
+    private createPending;
+    private droppedSaves;
+    private submitting;
     private pendingSaveTimer;
     private pendingSaveQuestionId;
     private pendingSaveValue;
@@ -72,6 +76,13 @@ export declare class QaidQuests {
     private renderHeader;
     private renderStep;
     private renderDone;
+    /**
+     * Shown instead of the thank-you screen when the response could not be
+     * created or the submit was refused. The answers stay in memory, so
+     * "Try again" re-runs the whole submit (re-creating the response first
+     * if needed) without the visitor re-entering anything.
+     */
+    private renderSubmitError;
     private advance;
     private back;
     private recomputeVisible;
@@ -79,8 +90,11 @@ export declare class QaidQuests {
     private flushPendingSave;
     private saveAnswer;
     private doSave;
+    private patchAnswer;
+    private startCreate;
     private createResponse;
     private submit;
+    private trySubmit;
     private jsonHeaders;
     private showSaving;
     private handleKeyDown;

@@ -5,10 +5,15 @@
  * to those whose `visibleIf` predicate currently evaluates to true. A
  * question with no `visibleIf` is always visible.
  *
- * Predicates are evaluated against the answers map (the same shape the
- * embed maintains internally and posts on submit). They never throw — a
- * predicate referencing an unknown questionId resolves as if that
- * question is unanswered.
+ * Visibility resolves in question order. A predicate only sees the
+ * answers of questions that are themselves visible at that point, so a
+ * hidden question reads as unanswered — even if the visitor answered it
+ * before it was hidden — and a chain of follow-ups collapses behind it.
+ * The same rule makes a reference to a LATER question (which the
+ * dashboard validator rejects anyway) read as unanswered.
+ *
+ * Predicates never throw — a predicate referencing an unknown
+ * questionId resolves as if that question is unanswered.
  */
 
 import type {
@@ -23,9 +28,37 @@ export function getVisibleQuestions(
   q: Questionnaire,
   answers: Answers,
 ): Question[] {
-  return q.questions.filter((qn) =>
-    qn.visibleIf ? evaluateRule(qn.visibleIf, answers) : true,
-  );
+  // Answers of the questions resolved visible so far. Null-prototype so a
+  // questionId like "constructor" can't read an inherited property.
+  const seen: Answers = Object.create(null);
+  const visible: Question[] = [];
+  for (const qn of q.questions) {
+    if (qn.visibleIf && !evaluateRule(qn.visibleIf, seen)) continue;
+    visible.push(qn);
+    if (Object.prototype.hasOwnProperty.call(answers, qn.id)) {
+      seen[qn.id] = answers[qn.id];
+    }
+  }
+  return visible;
+}
+
+/**
+ * The subset of `answers` that belongs to currently visible questions —
+ * what the embed submits. An answer given to a question that was later
+ * hidden (the visitor went back and changed the gating answer) is left
+ * out, as are answers keyed by ids the questionnaire has no question for.
+ */
+export function getVisibleAnswers(
+  q: Questionnaire,
+  answers: Answers,
+): Answers {
+  const out: Answers = {};
+  for (const qn of getVisibleQuestions(q, answers)) {
+    if (Object.prototype.hasOwnProperty.call(answers, qn.id)) {
+      out[qn.id] = answers[qn.id];
+    }
+  }
+  return out;
 }
 
 export function evaluateRule(

@@ -10,7 +10,7 @@ import type {
 } from "./types";
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
 import { createInput, type QuestionInput } from "./inputs";
-import { getVisibleQuestions } from "./visibility";
+import { getVisibleAnswers, getVisibleQuestions } from "./visibility";
 import { watchOverflow, type OverflowWatcher } from "./overflow";
 import {
   announce,
@@ -24,7 +24,9 @@ import {
 
 const VISITOR_ID_KEY = "qaid_visitor_id";
 
-type EmbedState = "LOADING" | "READY" | "DONE" | "ERROR";
+// SUBMIT_FAILED: the create or submit request failed or was refused.
+// The answers are kept and the visitor can retry from the error screen.
+type EmbedState = "LOADING" | "READY" | "DONE" | "ERROR" | "SUBMIT_FAILED";
 
 function getOrCreateVisitorId(): string {
   try {
@@ -75,6 +77,17 @@ export class QaidQuests {
   private answers: Answers = {};
   private responseId: string | number | null = null;
   private visitorId: string;
+  // The create-response request, so submit() can wait for one still in
+  // flight, and whether it is still running (a save stops waiting for an
+  // id the moment the create has failed, instead of sitting out 5 s).
+  private createPromise: Promise<void> | null = null;
+  private createPending = false;
+  // Set when an autosave was dropped because there was no response id to
+  // PATCH. submit() then re-sends every visible answer once it has an id,
+  // since a server may store answers from the PATCHes alone.
+  private droppedSaves = false;
+  // Guards submit() against a double click or a retry while one runs.
+  private submitting = false;
 
   // Per-question pending autosave (text/currency are debounced)
   private pendingSaveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -244,8 +257,9 @@ export class QaidQuests {
         this.pendingGoToStep = null;
       }
       // Fire-and-forget create. The form is usable immediately;
-      // saves will queue until the response id arrives.
-      this.createResponse();
+      // saves will queue until the response id arrives, and submit()
+      // retries the create if this one fails.
+      void this.startCreate();
       this.state = "READY";
       this.renderHeader();
       this.renderStep();
@@ -886,6 +900,69 @@ export class QaidQuests {
     }
   }
 
+  /**
+   * Shown instead of the thank-you screen when the response could not be
+   * created or the submit was refused. The answers stay in memory, so
+   * "Try again" re-runs the whole submit (re-creating the response first
+   * if needed) without the visitor re-entering anything.
+   */
+  private renderSubmitError(): void {
+    this.state = "SUBMIT_FAILED";
+    if (!this.cardEl) return;
+    this.cardEl.replaceChildren();
+
+    const wrap = document.createElement("div");
+    wrap.className = "qaid-q-submit-error";
+
+    const title = document.createElement("h3");
+    title.className = "qaid-q-submit-error-title";
+    const titleText = "Couldn't send your answers";
+    title.textContent = titleText;
+    // Focus target once the Submit button that had focus is gone.
+    title.setAttribute("tabindex", "-1");
+    wrap.appendChild(title);
+
+    const msg = document.createElement("p");
+    msg.className = "qaid-q-submit-error-message";
+    const msgText = "Your answers are still here. Check your connection and try again.";
+    msg.textContent = msgText;
+    wrap.appendChild(msg);
+
+    const actions = document.createElement("div");
+    actions.className = "qaid-q-submit-error-actions";
+
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "qaid-q-btn qaid-q-btn-primary";
+    retry.textContent = "Try again";
+    retry.addEventListener("click", () => {
+      if (this.submitting) return;
+      // aria-disabled rather than disabled: disabling the focused button
+      // would drop focus to <body>.
+      retry.setAttribute("aria-disabled", "true");
+      retry.textContent = "Sending…";
+      void this.submit();
+    });
+    actions.appendChild(retry);
+
+    if (!this.isUserContainer) {
+      const closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "qaid-q-btn qaid-q-btn-secondary";
+      closeBtn.textContent = "Close";
+      closeBtn.addEventListener("click", () => this.close());
+      actions.appendChild(closeBtn);
+    }
+
+    wrap.appendChild(actions);
+    this.cardEl.appendChild(wrap);
+
+    requestAnimationFrame(() => title.focus());
+    if (this.shadowRoot) {
+      announce(this.shadowRoot, `${titleText}. ${msgText}`, { assertive: true });
+    }
+  }
+
   // ------------------------------------------------------------------
   // Navigation
   // ------------------------------------------------------------------
@@ -996,12 +1073,19 @@ export class QaidQuests {
     // Wait for response id to be assigned before sending updates.
     // If creation is still in flight, queue tightly via microtask polling.
     let waited = 0;
-    while (this.responseId === null && waited < 5000) {
+    while (this.responseId === null && this.createPending && waited < 5000) {
       await new Promise((r) => setTimeout(r, 50));
       waited += 50;
     }
-    if (this.responseId === null) return;
+    if (this.responseId === null) {
+      // Nothing to PATCH yet. submit() re-sends it once it has an id.
+      this.droppedSaves = true;
+      return;
+    }
+    await this.patchAnswer(questionId, value);
+  }
 
+  private async patchAnswer(questionId: string, value: AnswerValue): Promise<void> {
     try {
       await fetch(`${this.config.endpoint}/${this.responseId}`, {
         method: "PATCH",
@@ -1011,6 +1095,14 @@ export class QaidQuests {
     } catch (err) {
       console.error("[quests-embed] failed to save answer:", err);
     }
+  }
+
+  private startCreate(): Promise<void> {
+    this.createPending = true;
+    this.createPromise = this.createResponse().finally(() => {
+      this.createPending = false;
+    });
+    return this.createPromise;
   }
 
   private async createResponse(): Promise<void> {
@@ -1027,9 +1119,17 @@ export class QaidQuests {
           metadata: this.metadata,
         }),
       });
-      if (res.ok) {
-        const data = (await res.json()) as CreateResponseResult;
+      if (!res.ok) {
+        console.error(
+          `[quests-embed] failed to create response (${res.status})`,
+        );
+        return;
+      }
+      const data = (await res.json()) as CreateResponseResult | null;
+      if (data && data.id !== null && data.id !== undefined) {
         this.responseId = data.id;
+      } else {
+        console.error("[quests-embed] create response returned no id");
       }
     } catch (err) {
       console.error("[quests-embed] failed to create response:", err);
@@ -1037,22 +1137,74 @@ export class QaidQuests {
   }
 
   private async submit(): Promise<void> {
+    if (this.submitting) return;
+    this.submitting = true;
+    try {
+      await this.trySubmit();
+    } finally {
+      this.submitting = false;
+    }
+  }
+
+  private async trySubmit(): Promise<void> {
     this.flushPendingSave();
     // Wait for any in-flight saves so the server sees the final state.
     while (this.inflightSaves > 0) {
       await new Promise((r) => setTimeout(r, 50));
     }
 
-    if (this.responseId !== null) {
-      try {
-        await fetch(`${this.config.endpoint}/${this.responseId}/submit`, {
-          method: "POST",
-          headers: this.jsonHeaders(),
-          body: JSON.stringify({ answers: this.answers }),
-        });
-      } catch (err) {
-        console.error("[quests-embed] failed to submit:", err);
+    // A create still in flight gets to finish; a failed one gets one
+    // more try. Without an id there is nothing to submit to, and saying
+    // "Thank you!" would tell the visitor their answers arrived.
+    if (this.createPromise) await this.createPromise;
+    if (this.responseId === null) await this.startCreate();
+    if (this.responseId === null) {
+      this.renderSubmitError();
+      return;
+    }
+
+    const submitted = this.questionnaire
+      ? getVisibleAnswers(this.questionnaire, this.answers)
+      : {};
+
+    // Bring the server's per-answer rows in line with what is submitted.
+    // Answers whose autosave was dropped (no id yet) are sent now; an
+    // answer to a question that has since been hidden was already
+    // PATCHed while it was visible, so it is cleared with a null. Both
+    // matter for a server that stores answers from the PATCHes and not
+    // from the submit body.
+    const writes: Promise<void>[] = [];
+    if (this.droppedSaves) {
+      for (const [id, value] of Object.entries(submitted)) {
+        writes.push(this.patchAnswer(id, value));
       }
+    }
+    for (const [id, value] of Object.entries(this.answers)) {
+      const isSubmitted = Object.prototype.hasOwnProperty.call(submitted, id);
+      if (!isSubmitted && value !== null) {
+        writes.push(this.patchAnswer(id, null));
+      }
+    }
+    await Promise.all(writes);
+    this.droppedSaves = false;
+
+    let accepted = false;
+    try {
+      const res = await fetch(`${this.config.endpoint}/${this.responseId}/submit`, {
+        method: "POST",
+        headers: this.jsonHeaders(),
+        body: JSON.stringify({ answers: submitted }),
+      });
+      accepted = res.ok;
+      if (!accepted) {
+        console.error(`[quests-embed] submit was refused (${res.status})`);
+      }
+    } catch (err) {
+      console.error("[quests-embed] failed to submit:", err);
+    }
+    if (!accepted) {
+      this.renderSubmitError();
+      return;
     }
 
     this.state = "DONE";
@@ -1063,7 +1215,7 @@ export class QaidQuests {
     // handler break the completed flow.
     if (this.onCompleteCb) {
       try {
-        this.onCompleteCb({ ...this.answers });
+        this.onCompleteCb({ ...submitted });
       } catch (err) {
         console.error("[quests-embed] onComplete handler threw:", err);
       }

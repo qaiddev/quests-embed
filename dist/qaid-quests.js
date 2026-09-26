@@ -1,60 +1,60 @@
-const z = `*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}:where(.qaid-q-root){--qaid-q-card-bg: light-dark(#ffffff, #1f2937);--qaid-q-card-fg: light-dark(#1f2937, #f9fafb);--qaid-q-card-border: light-dark(#e5e7eb, #374151);--qaid-q-card-radius: 1rem;--qaid-q-card-padding: 1.5rem;--qaid-q-card-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, .25), rgba(0, 0, 0, .6));--qaid-q-muted-fg: light-dark(#6b7280, #9ca3af);--qaid-q-progress-track: light-dark(#e5e7eb, #374151);--qaid-q-btn-radius: .5rem;--qaid-q-btn-padding-y: .625rem;--qaid-q-btn-padding-x: 1.125rem;--qaid-q-btn-font-weight: 500;--qaid-q-btn-primary-bg: var(--qaid-q-accent, #10b981);--qaid-q-btn-primary-fg: var(--qaid-q-accent-text, #ffffff);--qaid-q-btn-primary-border: transparent;--qaid-q-btn-secondary-bg: transparent;--qaid-q-btn-secondary-fg: light-dark(#374151, #d1d5db);--qaid-q-btn-secondary-border: light-dark(#d1d5db, #4b5563);--qaid-q-btn-secondary-hover-bg: light-dark(#f3f4f6, #374151);--qaid-q-option-bg: light-dark(#ffffff, #111827);--qaid-q-option-bg-selected: color-mix(in srgb, var(--qaid-q-accent, #10b981) 10%, transparent);--qaid-q-option-bg-hover: light-dark(#f9fafb, #1f2937);--qaid-q-option-fg: light-dark(#1f2937, #f9fafb);--qaid-q-option-border: light-dark(#e5e7eb, #374151);--qaid-q-option-border-selected: var(--qaid-q-accent, #10b981);--qaid-q-option-border-hover: light-dark(#9ca3af, #4b5563);--qaid-q-option-radius: .625rem;--qaid-q-option-padding: .75rem .875rem;--qaid-q-marker-bg: light-dark(#ffffff, #111827);--qaid-q-marker-bg-selected: var(--qaid-q-accent, #10b981);--qaid-q-marker-border: light-dark(#d1d5db, #4b5563);--qaid-q-marker-icon: light-dark(#ffffff, #1f2937);--qaid-q-marker-radius: 50%;--qaid-q-input-bg: light-dark(#ffffff, #111827);--qaid-q-input-fg: light-dark(#1f2937, #f9fafb);--qaid-q-input-border: light-dark(#d1d5db, #374151);--qaid-q-input-radius: .625rem;--qaid-q-input-padding: .75rem .875rem;--qaid-q-input-placeholder: light-dark(#9ca3af, #6b7280);--qaid-q-gap: .75rem;--qaid-q-section-gap: 1.25rem}:where(.qaid-q-root.qaid-q-theme-light){--qaid-q-card-bg: #ffffff;--qaid-q-card-fg: #1f2937;--qaid-q-card-border: #e5e7eb;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);--qaid-q-muted-fg: #6b7280;--qaid-q-progress-track: #e5e7eb;--qaid-q-btn-secondary-fg: #374151;--qaid-q-btn-secondary-border: #d1d5db;--qaid-q-btn-secondary-hover-bg: #f3f4f6;--qaid-q-option-bg: #ffffff;--qaid-q-option-bg-hover: #f9fafb;--qaid-q-option-fg: #1f2937;--qaid-q-option-border: #e5e7eb;--qaid-q-option-border-hover: #9ca3af;--qaid-q-marker-bg: #ffffff;--qaid-q-marker-border: #d1d5db;--qaid-q-marker-icon: #ffffff;--qaid-q-input-bg: #ffffff;--qaid-q-input-fg: #1f2937;--qaid-q-input-border: #d1d5db;--qaid-q-input-placeholder: #9ca3af}:where(.qaid-q-root.qaid-q-theme-dark){--qaid-q-card-bg: #1f2937;--qaid-q-card-fg: #f9fafb;--qaid-q-card-border: #374151;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .6);--qaid-q-muted-fg: #9ca3af;--qaid-q-progress-track: #374151;--qaid-q-btn-secondary-fg: #d1d5db;--qaid-q-btn-secondary-border: #4b5563;--qaid-q-btn-secondary-hover-bg: #374151;--qaid-q-option-bg: #111827;--qaid-q-option-bg-hover: #1f2937;--qaid-q-option-fg: #f9fafb;--qaid-q-option-border: #374151;--qaid-q-option-border-hover: #4b5563;--qaid-q-marker-bg: #111827;--qaid-q-marker-border: #4b5563;--qaid-q-marker-icon: #1f2937;--qaid-q-input-bg: #111827;--qaid-q-input-fg: #f9fafb;--qaid-q-input-border: #374151;--qaid-q-input-placeholder: #6b7280}.qaid-q-root{color-scheme:light dark;font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:var(--qaid-q-card-fg)}.qaid-q-root.qaid-q-theme-light{color-scheme:light}.qaid-q-root.qaid-q-theme-dark{color-scheme:dark}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:var(--qaid-q-card-bg);color:var(--qaid-q-card-fg);border-radius:var(--qaid-q-card-radius);box-shadow:var(--qaid-q-card-shadow);padding:var(--qaid-q-card-padding);overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid var(--qaid-q-card-border);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:var(--qaid-q-card-fg)}.qaid-q-step-counter{font-size:.875em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:var(--qaid-q-muted-fg);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:var(--qaid-q-btn-secondary-hover-bg);color:var(--qaid-q-card-fg)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:var(--qaid-q-progress-track);border-radius:9999px;overflow:hidden;margin-bottom:var(--qaid-q-section-gap)}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-q-accent, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto;position:relative}.qaid-q-body[data-qaid-scroll=top]{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 2.5rem),transparent 100%);mask-image:linear-gradient(to bottom,#000 calc(100% - 2.5rem),transparent 100%)}.qaid-q-body[data-qaid-scroll=middle]{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 2rem,#000 calc(100% - 2.5rem),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 2rem,#000 calc(100% - 2.5rem),transparent 100%)}.qaid-q-body[data-qaid-scroll=bottom]{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 2rem);mask-image:linear-gradient(to bottom,transparent 0,#000 2rem)}.qaid-q-scroll-cue{position:sticky;bottom:0;left:0;display:flex;justify-content:center;align-items:flex-end;height:1.5rem;margin-top:-1.5rem;pointer-events:none;color:var(--qaid-q-muted-fg)}.qaid-q-scroll-cue[hidden]{display:none}.qaid-q-scroll-cue svg{width:1.125rem;height:1.125rem;animation:qaid-q-nudge 1.6s ease-in-out infinite}@keyframes qaid-q-nudge{0%,to{transform:translateY(-2px);opacity:.55}50%{transform:translateY(2px);opacity:1}}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-vertical{grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:.375rem}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-vertical .qaid-q-option{padding:.5rem;gap:.375rem}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-vertical .qaid-q-option-image{max-height:5.5rem;object-fit:contain}.qaid-q-card[data-qaid-fit=compact] .qaid-q-option-desc{font-size:.75em}.qaid-q-card[data-qaid-fit=compact] .qaid-q-step{gap:calc(var(--qaid-q-gap) * .6)}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-horizontal .qaid-q-option-image{width:36px;height:36px}.qaid-q-step{display:flex;flex-direction:column;gap:var(--qaid-q-gap);animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-no-motion .qaid-q-step,.qaid-q-no-motion.qaid-q-root{animation:none!important}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:var(--qaid-q-card-fg);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-q-error, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:var(--qaid-q-muted-fg);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-q-error, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:var(--qaid-q-input-padding);border:1px solid var(--qaid-q-input-border);border-radius:var(--qaid-q-input-radius);font-family:inherit;font-size:1em;background:var(--qaid-q-input-bg);color:var(--qaid-q-input-fg);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:var(--qaid-q-input-placeholder)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:var(--qaid-q-muted-fg);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-q-accent, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:var(--qaid-q-muted-fg);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:var(--qaid-q-progress-track);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:var(--qaid-q-option-padding);border:1px solid var(--qaid-q-option-border);border-radius:var(--qaid-q-option-radius);background:var(--qaid-q-option-bg);text-align:left;font-size:1em;color:var(--qaid-q-option-fg);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:var(--qaid-q-option-border-hover);background:var(--qaid-q-option-bg-hover)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-q-option-border-selected);background:var(--qaid-q-option-bg-selected)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid var(--qaid-q-marker-border);border-radius:var(--qaid-q-marker-radius);display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:var(--qaid-q-marker-bg);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-q-marker-bg-selected);background:var(--qaid-q-marker-bg-selected)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:var(--qaid-q-marker-icon)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:70%;height:70%;border-radius:0;background:var(--qaid-q-marker-icon);-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;transform:none}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:var(--qaid-q-progress-track);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:var(--qaid-q-muted-fg);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:var(--qaid-q-progress-track);color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:var(--qaid-q-section-gap)}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:var(--qaid-q-btn-padding-y) var(--qaid-q-btn-padding-x);border-radius:var(--qaid-q-btn-radius);font-size:var(--qaid-q-btn-font-size, .9375em);font-weight:var(--qaid-q-btn-font-weight);border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:var(--qaid-q-btn-secondary-bg);border-color:var(--qaid-q-btn-secondary-border);color:var(--qaid-q-btn-secondary-fg)}.qaid-q-btn-secondary:hover{background:var(--qaid-q-btn-secondary-hover-bg)}.qaid-q-btn-primary{background:var(--qaid-q-btn-primary-bg);color:var(--qaid-q-btn-primary-fg);border-color:var(--qaid-q-btn-primary-border)}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-done{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem;padding:1.5rem 0;flex:1;min-height:0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-q-accent, #10b981) 18%,transparent);color:var(--qaid-q-accent, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:var(--qaid-q-muted-fg);margin:0}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:var(--qaid-q-muted-fg);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-q-accent, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}:where(.qaid-q-root.qaid-q-unstyled) :where(.qaid-q-card,.qaid-q-header,.qaid-q-title,.qaid-q-description,.qaid-q-step,.qaid-q-label,.qaid-q-options,.qaid-q-option,.qaid-q-option-marker,.qaid-q-option-body,.qaid-q-option-label,.qaid-q-option-desc,.qaid-q-input,.qaid-q-textarea,.qaid-q-currency,.qaid-q-currency-prefix,.qaid-q-range,.qaid-q-range-wrap,.qaid-q-range-value,.qaid-q-btn,.qaid-q-footer,.qaid-q-progress,.qaid-q-progress-fill,.qaid-q-step-counter,.qaid-q-error,.qaid-q-saving,.qaid-q-done,.qaid-q-done-icon,.qaid-q-done-title,.qaid-q-done-message){all:unset;display:revert;box-sizing:border-box}.qaid-q-input:focus-visible,.qaid-q-textarea:focus-visible,.qaid-q-option:focus-visible,.qaid-q-btn:focus-visible,.qaid-q-close:focus-visible,.qaid-q-range:focus-visible{outline:2px solid transparent;outline-offset:2px}@media(prefers-reduced-motion:reduce){.qaid-q-root *,.qaid-q-root *:before,.qaid-q-root *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.qaid-q-range::-webkit-slider-thumb{transition:none!important}.qaid-q-range::-moz-range-thumb{transition:none!important}}@media(forced-colors:active){.qaid-q-input:focus-visible,.qaid-q-textarea:focus-visible,.qaid-q-option:focus-visible,.qaid-q-btn:focus-visible,.qaid-q-close:focus-visible,.qaid-q-range:focus-visible{outline:2px solid Highlight;outline-offset:2px}.qaid-q-card{border:1px solid CanvasText}.qaid-q-input,.qaid-q-textarea,.qaid-q-option{border-color:CanvasText}.qaid-q-option.qaid-q-selected{border-color:Highlight}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{forced-color-adjust:none;background:Highlight;border-color:Highlight}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{background:HighlightText}.qaid-q-progress{forced-color-adjust:none;background:Canvas;border:1px solid CanvasText}.qaid-q-progress-fill{forced-color-adjust:none;background:Highlight}}`;
-const D = ":where(.qaid-q-root){--qaid-q-card-radius: 0;--qaid-q-card-shadow: none;--qaid-q-btn-radius: 0;--qaid-q-option-radius: 0;--qaid-q-option-bg-selected: transparent;--qaid-q-input-radius: 0}", H = ":where(.qaid-q-root){--qaid-q-card-radius: 1.5rem;--qaid-q-btn-radius: 9999px;--qaid-q-btn-padding-x: 1.5rem;--qaid-q-option-radius: 9999px;--qaid-q-option-padding: .75rem 1.125rem;--qaid-q-input-radius: 9999px;--qaid-q-input-padding: .75rem 1.125rem}", O = ":where(.qaid-q-root){--qaid-q-card-padding: 1rem;--qaid-q-btn-padding-y: .5rem;--qaid-q-btn-padding-x: .875rem;--qaid-q-option-padding: .5rem .625rem;--qaid-q-input-padding: .5rem .625rem;--qaid-q-gap: .5rem;--qaid-q-section-gap: .875rem}", V = {
+const O = `*{box-sizing:border-box}button{cursor:pointer;font-family:inherit}:where(.qaid-q-root){--qaid-q-card-bg: light-dark(#ffffff, #1f2937);--qaid-q-card-fg: light-dark(#1f2937, #f9fafb);--qaid-q-card-border: light-dark(#e5e7eb, #374151);--qaid-q-card-radius: 1rem;--qaid-q-card-padding: 1.5rem;--qaid-q-card-shadow: 0 25px 50px -12px light-dark(rgba(0, 0, 0, .25), rgba(0, 0, 0, .6));--qaid-q-muted-fg: light-dark(#6b7280, #9ca3af);--qaid-q-progress-track: light-dark(#e5e7eb, #374151);--qaid-q-btn-radius: .5rem;--qaid-q-btn-padding-y: .625rem;--qaid-q-btn-padding-x: 1.125rem;--qaid-q-btn-font-weight: 500;--qaid-q-btn-primary-bg: var(--qaid-q-accent, #10b981);--qaid-q-btn-primary-fg: var(--qaid-q-accent-text, #ffffff);--qaid-q-btn-primary-border: transparent;--qaid-q-btn-secondary-bg: transparent;--qaid-q-btn-secondary-fg: light-dark(#374151, #d1d5db);--qaid-q-btn-secondary-border: light-dark(#d1d5db, #4b5563);--qaid-q-btn-secondary-hover-bg: light-dark(#f3f4f6, #374151);--qaid-q-option-bg: light-dark(#ffffff, #111827);--qaid-q-option-bg-selected: color-mix(in srgb, var(--qaid-q-accent, #10b981) 10%, transparent);--qaid-q-option-bg-hover: light-dark(#f9fafb, #1f2937);--qaid-q-option-fg: light-dark(#1f2937, #f9fafb);--qaid-q-option-border: light-dark(#e5e7eb, #374151);--qaid-q-option-border-selected: var(--qaid-q-accent, #10b981);--qaid-q-option-border-hover: light-dark(#9ca3af, #4b5563);--qaid-q-option-radius: .625rem;--qaid-q-option-padding: .75rem .875rem;--qaid-q-marker-bg: light-dark(#ffffff, #111827);--qaid-q-marker-bg-selected: var(--qaid-q-accent, #10b981);--qaid-q-marker-border: light-dark(#d1d5db, #4b5563);--qaid-q-marker-icon: light-dark(#ffffff, #1f2937);--qaid-q-marker-radius: 50%;--qaid-q-input-bg: light-dark(#ffffff, #111827);--qaid-q-input-fg: light-dark(#1f2937, #f9fafb);--qaid-q-input-border: light-dark(#d1d5db, #374151);--qaid-q-input-radius: .625rem;--qaid-q-input-padding: .75rem .875rem;--qaid-q-input-placeholder: light-dark(#9ca3af, #6b7280);--qaid-q-gap: .75rem;--qaid-q-section-gap: 1.25rem}:where(.qaid-q-root.qaid-q-theme-light){--qaid-q-card-bg: #ffffff;--qaid-q-card-fg: #1f2937;--qaid-q-card-border: #e5e7eb;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);--qaid-q-muted-fg: #6b7280;--qaid-q-progress-track: #e5e7eb;--qaid-q-btn-secondary-fg: #374151;--qaid-q-btn-secondary-border: #d1d5db;--qaid-q-btn-secondary-hover-bg: #f3f4f6;--qaid-q-option-bg: #ffffff;--qaid-q-option-bg-hover: #f9fafb;--qaid-q-option-fg: #1f2937;--qaid-q-option-border: #e5e7eb;--qaid-q-option-border-hover: #9ca3af;--qaid-q-marker-bg: #ffffff;--qaid-q-marker-border: #d1d5db;--qaid-q-marker-icon: #ffffff;--qaid-q-input-bg: #ffffff;--qaid-q-input-fg: #1f2937;--qaid-q-input-border: #d1d5db;--qaid-q-input-placeholder: #9ca3af}:where(.qaid-q-root.qaid-q-theme-dark){--qaid-q-card-bg: #1f2937;--qaid-q-card-fg: #f9fafb;--qaid-q-card-border: #374151;--qaid-q-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, .6);--qaid-q-muted-fg: #9ca3af;--qaid-q-progress-track: #374151;--qaid-q-btn-secondary-fg: #d1d5db;--qaid-q-btn-secondary-border: #4b5563;--qaid-q-btn-secondary-hover-bg: #374151;--qaid-q-option-bg: #111827;--qaid-q-option-bg-hover: #1f2937;--qaid-q-option-fg: #f9fafb;--qaid-q-option-border: #374151;--qaid-q-option-border-hover: #4b5563;--qaid-q-marker-bg: #111827;--qaid-q-marker-border: #4b5563;--qaid-q-marker-icon: #1f2937;--qaid-q-input-bg: #111827;--qaid-q-input-fg: #f9fafb;--qaid-q-input-border: #374151;--qaid-q-input-placeholder: #6b7280}.qaid-q-root{color-scheme:light dark;font-family:var(--qaid-font-family, system-ui, -apple-system, sans-serif);font-size:var(--qaid-font-size, 16px);color:var(--qaid-q-card-fg)}.qaid-q-root.qaid-q-theme-light{color-scheme:light}.qaid-q-root.qaid-q-theme-dark{color-scheme:dark}.qaid-q-backdrop{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,var(--qaid-backdrop-opacity, .4));animation:qaid-q-fade .18s ease-out}@keyframes qaid-q-fade{0%{opacity:0}to{opacity:1}}.qaid-q-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;width:var(--qaid-modal-width, 480px);max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);pointer-events:auto;display:flex;flex-direction:column}.qaid-q-card{background:var(--qaid-q-card-bg);color:var(--qaid-q-card-fg);border-radius:var(--qaid-q-card-radius);box-shadow:var(--qaid-q-card-shadow);padding:var(--qaid-q-card-padding);overflow:hidden;display:flex;flex-direction:column;min-height:0}:where(.qaid-q-root.qaid-q-inline) .qaid-q-card{box-shadow:none;border:1px solid var(--qaid-q-card-border);flex:1;min-height:0}:where(.qaid-q-root.qaid-q-inline){height:100%;display:flex;flex-direction:column;min-height:0}.qaid-q-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1rem}.qaid-q-title{font-size:1.125em;font-weight:700;margin:0;color:var(--qaid-q-card-fg)}.qaid-q-step-counter{font-size:.875em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums;white-space:nowrap}.qaid-q-close{width:28px;height:28px;padding:0;border:none;border-radius:50%;background:transparent;color:var(--qaid-q-muted-fg);display:inline-flex;align-items:center;justify-content:center;-webkit-appearance:none;appearance:none}.qaid-q-close:hover{background:var(--qaid-q-btn-secondary-hover-bg);color:var(--qaid-q-card-fg)}.qaid-q-close:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-progress{position:relative;height:4px;background:var(--qaid-q-progress-track);border-radius:9999px;overflow:hidden;margin-bottom:var(--qaid-q-section-gap)}.qaid-q-progress--inline{flex:1;min-width:60px;margin-bottom:0}.qaid-q-progress-fill{position:absolute;inset:0 auto 0 0;background:var(--qaid-q-accent, #10b981);border-radius:9999px;transition:width .3s ease;width:0%}.qaid-q-body{flex:1;min-height:0;overflow-y:auto;position:relative}.qaid-q-body[data-qaid-scroll=top]{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 2.5rem),transparent 100%);mask-image:linear-gradient(to bottom,#000 calc(100% - 2.5rem),transparent 100%)}.qaid-q-body[data-qaid-scroll=middle]{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 2rem,#000 calc(100% - 2.5rem),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 2rem,#000 calc(100% - 2.5rem),transparent 100%)}.qaid-q-body[data-qaid-scroll=bottom]{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 2rem);mask-image:linear-gradient(to bottom,transparent 0,#000 2rem)}.qaid-q-scroll-cue{position:sticky;bottom:0;left:0;display:flex;justify-content:center;align-items:flex-end;height:1.5rem;margin-top:-1.5rem;pointer-events:none;color:var(--qaid-q-muted-fg)}.qaid-q-scroll-cue[hidden]{display:none}.qaid-q-scroll-cue svg{width:1.125rem;height:1.125rem;animation:qaid-q-nudge 1.6s ease-in-out infinite}@keyframes qaid-q-nudge{0%,to{transform:translateY(-2px);opacity:.55}50%{transform:translateY(2px);opacity:1}}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-vertical{grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:.375rem}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-vertical .qaid-q-option{padding:.5rem;gap:.375rem}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-vertical .qaid-q-option-image{max-height:5.5rem;object-fit:contain}.qaid-q-card[data-qaid-fit=compact] .qaid-q-option-desc{font-size:.75em}.qaid-q-card[data-qaid-fit=compact] .qaid-q-step{gap:calc(var(--qaid-q-gap) * .6)}.qaid-q-card[data-qaid-fit=compact] .qaid-q-options--image-horizontal .qaid-q-option-image{width:36px;height:36px}.qaid-q-step{display:flex;flex-direction:column;gap:var(--qaid-q-gap);animation:qaid-q-slide .22s ease-out}@keyframes qaid-q-slide{0%{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.qaid-q-no-motion .qaid-q-step,.qaid-q-no-motion.qaid-q-root{animation:none!important}.qaid-q-label{font-size:1.125em;font-weight:600;margin:0;color:var(--qaid-q-card-fg);line-height:1.35}.qaid-q-label .qaid-q-required{color:var(--qaid-q-error, #ef4444);margin-left:.25rem}.qaid-q-description{font-size:.875em;color:var(--qaid-q-muted-fg);margin:0;line-height:1.4}.qaid-q-error{font-size:.8125em;color:var(--qaid-q-error, #ef4444);margin:0}.qaid-q-error:empty{display:none}.qaid-q-input,.qaid-q-textarea{width:100%;padding:var(--qaid-q-input-padding);border:1px solid var(--qaid-q-input-border);border-radius:var(--qaid-q-input-radius);font-family:inherit;font-size:1em;background:var(--qaid-q-input-bg);color:var(--qaid-q-input-fg);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}.qaid-q-textarea{min-height:7rem;resize:vertical;font-family:inherit}.qaid-q-input:focus,.qaid-q-textarea:focus{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 20%,transparent)}.qaid-q-input::placeholder,.qaid-q-textarea::placeholder{color:var(--qaid-q-input-placeholder)}.qaid-q-currency{position:relative}.qaid-q-currency-prefix{position:absolute;left:.875rem;top:50%;transform:translateY(-50%);color:var(--qaid-q-muted-fg);font-size:1em;font-weight:500;pointer-events:none}.qaid-q-currency .qaid-q-input{padding-left:2.25rem}.qaid-q-range-wrap{display:flex;flex-direction:column;gap:.5rem;padding:.5rem 0}.qaid-q-range-value{font-size:2em;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;color:var(--qaid-q-accent, #10b981)}.qaid-q-range-value .qaid-q-range-unit{font-size:.5em;font-weight:500;color:var(--qaid-q-muted-fg);margin-left:.25rem}.qaid-q-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:9999px;background:var(--qaid-q-progress-track);outline:none}.qaid-q-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer;transition:transform .1s}.qaid-q-range::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--qaid-q-accent, #10b981);border:3px solid var(--qaid-q-card-bg);box-shadow:0 2px 6px #0003;cursor:pointer}.qaid-q-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range:focus-visible::-moz-range-thumb{box-shadow:0 0 0 6px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-range-bounds{display:flex;justify-content:space-between;font-size:.8125em;color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-options{display:flex;flex-direction:column;gap:.5rem}.qaid-q-option{display:flex;align-items:flex-start;gap:.625rem;padding:var(--qaid-q-option-padding);border:1px solid var(--qaid-q-option-border);border-radius:var(--qaid-q-option-radius);background:var(--qaid-q-option-bg);text-align:left;font-size:1em;color:var(--qaid-q-option-fg);cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s;-webkit-appearance:none;appearance:none;width:100%}.qaid-q-option:hover{border-color:var(--qaid-q-option-border-hover);background:var(--qaid-q-option-bg-hover)}.qaid-q-option:focus-visible{outline:none;border-color:var(--qaid-q-focus, #6366f1);box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 25%,transparent)}.qaid-q-option.qaid-q-selected{border-color:var(--qaid-q-option-border-selected);background:var(--qaid-q-option-bg-selected)}.qaid-q-option-marker{flex-shrink:0;width:1.25rem;height:1.25rem;border:2px solid var(--qaid-q-marker-border);border-radius:var(--qaid-q-marker-radius);display:inline-flex;align-items:center;justify-content:center;margin-top:.125rem;background:var(--qaid-q-marker-bg);transition:border-color .12s,background .12s}.qaid-q-option.qaid-q-multi .qaid-q-option-marker{border-radius:.25rem}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{border-color:var(--qaid-q-marker-bg-selected);background:var(--qaid-q-marker-bg-selected)}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:.5rem;height:.5rem;border-radius:50%;background:var(--qaid-q-marker-icon)}.qaid-q-option.qaid-q-multi.qaid-q-selected .qaid-q-option-marker:after{content:"";display:block;width:70%;height:70%;border-radius:0;background:var(--qaid-q-marker-icon);-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l4 4L19 7'/></svg>");-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;transform:none}.qaid-q-option-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-option-image{display:block;width:48px;height:48px;aspect-ratio:1 / 1;object-fit:cover;border-radius:.375rem;background:var(--qaid-q-progress-track);flex-shrink:0}.qaid-q-options--image-horizontal .qaid-q-option-body{flex-direction:row;align-items:center;gap:.75rem}.qaid-q-options--image-horizontal .qaid-q-option-body>:not(.qaid-q-option-image){flex:1;min-width:0;display:flex;flex-direction:column;gap:.125rem}.qaid-q-options--image-vertical{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option{flex-direction:column;align-items:stretch;text-align:center;padding:.75rem;gap:.5rem}.qaid-q-options--image-vertical .qaid-q-option-body{align-items:center;text-align:center}.qaid-q-options--image-vertical .qaid-q-option-image{width:100%;height:auto;max-width:100%}.qaid-q-options--image-vertical .qaid-q-option-marker{position:absolute;top:.5rem;right:.5rem;margin-top:0}.qaid-q-options--image-vertical .qaid-q-option{position:relative}.qaid-q-options--image-vertical .qaid-q-option-key{position:absolute;top:.5rem;left:.5rem;align-self:auto}.qaid-q-option-label{font-weight:500;line-height:1.3}.qaid-q-option-desc{font-size:.8125em;color:var(--qaid-q-muted-fg);line-height:1.4}.qaid-q-option-key{flex-shrink:0;align-self:center;font-size:.7em;font-weight:600;padding:.125rem .375rem;border-radius:.25rem;background:var(--qaid-q-progress-track);color:var(--qaid-q-muted-fg);font-variant-numeric:tabular-nums}.qaid-q-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:var(--qaid-q-section-gap)}.qaid-q-footer--inline-progress{justify-content:flex-start;gap:.75rem}.qaid-q-footer-left,.qaid-q-footer-right{display:flex;gap:.5rem}.qaid-q-btn{padding:var(--qaid-q-btn-padding-y) var(--qaid-q-btn-padding-x);border-radius:var(--qaid-q-btn-radius);font-size:var(--qaid-q-btn-font-size, .9375em);font-weight:var(--qaid-q-btn-font-weight);border:1px solid transparent;cursor:pointer;transition:filter .15s,background .15s,color .15s;-webkit-appearance:none;appearance:none}.qaid-q-btn:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--qaid-q-focus, #6366f1) 30%,transparent)}.qaid-q-btn-secondary{background:var(--qaid-q-btn-secondary-bg);border-color:var(--qaid-q-btn-secondary-border);color:var(--qaid-q-btn-secondary-fg)}.qaid-q-btn-secondary:hover{background:var(--qaid-q-btn-secondary-hover-bg)}.qaid-q-btn-primary{background:var(--qaid-q-btn-primary-bg);color:var(--qaid-q-btn-primary-fg);border-color:var(--qaid-q-btn-primary-border)}.qaid-q-btn-primary:hover{filter:brightness(.9)}.qaid-q-btn-primary:disabled{opacity:.5;cursor:not-allowed;filter:none}.qaid-q-done{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem;padding:1.5rem 0;flex:1;min-height:0}.qaid-q-done-icon{width:48px;height:48px;border-radius:50%;background:color-mix(in srgb,var(--qaid-q-accent, #10b981) 18%,transparent);color:var(--qaid-q-accent, #10b981);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.5rem}.qaid-q-done-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-done-message{color:var(--qaid-q-muted-fg);margin:0}.qaid-q-submit-error{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem;padding:1.5rem 0;flex:1;min-height:0}.qaid-q-submit-error-title{font-size:1.25em;font-weight:700;margin:0}.qaid-q-submit-error-message{color:var(--qaid-q-muted-fg);margin:0}.qaid-q-submit-error-actions{display:flex;justify-content:center;gap:.5rem;margin-top:1rem}.qaid-q-saving{display:inline-flex;align-items:center;gap:.375rem;font-size:.75em;color:var(--qaid-q-muted-fg);opacity:0;transition:opacity .2s}.qaid-q-saving.qaid-q-visible{opacity:1}.qaid-q-saving-dot{width:6px;height:6px;border-radius:50%;background:var(--qaid-q-accent, #10b981);animation:qaid-q-pulse 1.2s ease-in-out infinite}@keyframes qaid-q-pulse{0%,to{opacity:.3}50%{opacity:1}}:where(.qaid-q-root.qaid-q-unstyled) :where(.qaid-q-card,.qaid-q-header,.qaid-q-title,.qaid-q-description,.qaid-q-step,.qaid-q-label,.qaid-q-options,.qaid-q-option,.qaid-q-option-marker,.qaid-q-option-body,.qaid-q-option-label,.qaid-q-option-desc,.qaid-q-input,.qaid-q-textarea,.qaid-q-currency,.qaid-q-currency-prefix,.qaid-q-range,.qaid-q-range-wrap,.qaid-q-range-value,.qaid-q-btn,.qaid-q-footer,.qaid-q-progress,.qaid-q-progress-fill,.qaid-q-step-counter,.qaid-q-error,.qaid-q-saving,.qaid-q-done,.qaid-q-done-icon,.qaid-q-done-title,.qaid-q-done-message,.qaid-q-submit-error,.qaid-q-submit-error-title,.qaid-q-submit-error-message,.qaid-q-submit-error-actions){all:unset;display:revert;box-sizing:border-box}.qaid-q-input:focus-visible,.qaid-q-textarea:focus-visible,.qaid-q-option:focus-visible,.qaid-q-btn:focus-visible,.qaid-q-close:focus-visible,.qaid-q-range:focus-visible{outline:2px solid transparent;outline-offset:2px}@media(prefers-reduced-motion:reduce){.qaid-q-root *,.qaid-q-root *:before,.qaid-q-root *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.qaid-q-range::-webkit-slider-thumb{transition:none!important}.qaid-q-range::-moz-range-thumb{transition:none!important}}@media(forced-colors:active){.qaid-q-input:focus-visible,.qaid-q-textarea:focus-visible,.qaid-q-option:focus-visible,.qaid-q-btn:focus-visible,.qaid-q-close:focus-visible,.qaid-q-range:focus-visible{outline:2px solid Highlight;outline-offset:2px}.qaid-q-card{border:1px solid CanvasText}.qaid-q-input,.qaid-q-textarea,.qaid-q-option{border-color:CanvasText}.qaid-q-option.qaid-q-selected{border-color:Highlight}.qaid-q-option.qaid-q-selected .qaid-q-option-marker{forced-color-adjust:none;background:Highlight;border-color:Highlight}.qaid-q-option.qaid-q-selected .qaid-q-option-marker:after{background:HighlightText}.qaid-q-progress{forced-color-adjust:none;background:Canvas;border:1px solid CanvasText}.qaid-q-progress-fill{forced-color-adjust:none;background:Highlight}}`;
+const P = ":where(.qaid-q-root){--qaid-q-card-radius: 0;--qaid-q-card-shadow: none;--qaid-q-btn-radius: 0;--qaid-q-option-radius: 0;--qaid-q-option-bg-selected: transparent;--qaid-q-input-radius: 0}", z = ":where(.qaid-q-root){--qaid-q-card-radius: 1.5rem;--qaid-q-btn-radius: 9999px;--qaid-q-btn-padding-x: 1.5rem;--qaid-q-option-radius: 9999px;--qaid-q-option-padding: .75rem 1.125rem;--qaid-q-input-radius: 9999px;--qaid-q-input-padding: .75rem 1.125rem}", D = ":where(.qaid-q-root){--qaid-q-card-padding: 1rem;--qaid-q-btn-padding-y: .5rem;--qaid-q-btn-padding-x: .875rem;--qaid-q-option-padding: .5rem .625rem;--qaid-q-input-padding: .5rem .625rem;--qaid-q-gap: .5rem;--qaid-q-section-gap: .875rem}", H = {
   default: "",
-  minimal: D,
-  pill: H,
-  dense: O
+  minimal: P,
+  pill: z,
+  dense: D
 };
-function R(t) {
-  return V[t] ?? "";
+function V(t) {
+  return H[t] ?? "";
 }
-function P(t, e, i) {
-  const [a, n, r] = [t, e, i].map((s) => (s = s / 255, s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)));
-  return 0.2126 * a + 0.7152 * n + 0.0722 * r;
+function R(t, e, i) {
+  const [n, a, r] = [t, e, i].map((s) => (s = s / 255, s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4)));
+  return 0.2126 * n + 0.7152 * a + 0.0722 * r;
 }
 function j(t) {
   if (t.startsWith("#")) {
-    const i = t.slice(1), a = i.length === 3 ? i.split("").map((r) => r + r).join("") : i, n = parseInt(a, 16);
-    return { r: n >> 16 & 255, g: n >> 8 & 255, b: n & 255 };
+    const i = t.slice(1), n = i.length === 3 ? i.split("").map((r) => r + r).join("") : i, a = parseInt(n, 16);
+    return { r: a >> 16 & 255, g: a >> 8 & 255, b: a & 255 };
   }
   const e = t.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
   return e ? { r: parseInt(e[1]), g: parseInt(e[2]), b: parseInt(e[3]) } : null;
 }
 function k(t) {
   const e = j(t);
-  return e && P(e.r, e.g, e.b) > 0.4 ? "black" : "white";
+  return e && R(e.r, e.g, e.b) > 0.4 ? "black" : "white";
 }
 function U(t = {}) {
   const e = {};
   return t.accentColor !== void 0 && (e["--qaid-q-accent"] = t.accentColor, e["--qaid-q-accent-text"] = k(t.accentColor)), t.errorColor !== void 0 && (e["--qaid-q-error"] = t.errorColor), t.focusColor !== void 0 && (e["--qaid-q-focus"] = t.focusColor, e["--qaid-q-focus-text"] = k(t.focusColor)), t.modalWidth !== void 0 && (e["--qaid-modal-width"] = `${t.modalWidth}px`), t.backdropOpacity !== void 0 && (e["--qaid-backdrop-opacity"] = String(t.backdropOpacity)), t.fontFamily !== void 0 && (e["--qaid-font-family"] = t.fontFamily), t.fontSize !== void 0 && (e["--qaid-font-size"] = `${t.fontSize}px`), e;
 }
 function F(t, e) {
-  for (const [i, a] of Object.entries(e))
-    t.style.setProperty(i, a);
+  for (const [i, n] of Object.entries(e))
+    t.style.setProperty(i, n);
 }
-function M() {
-  return z;
+function $() {
+  return O;
 }
-function Q(t) {
-  return R(t);
+function M(t) {
+  return V(t);
 }
-function v(t) {
+function y(t) {
   let e = null;
   return {
     setInvalid(i) {
       t.setAttribute("aria-invalid", "true");
-      const a = (t.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
-      a.includes(i) || a.push(i), t.setAttribute("aria-describedby", a.join(" ")), e = i;
+      const n = (t.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean);
+      n.includes(i) || n.push(i), t.setAttribute("aria-describedby", n.join(" ")), e = i;
     },
     clearInvalid() {
       if (t.removeAttribute("aria-invalid"), e) {
-        const i = (t.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean).filter((a) => a !== e);
+        const i = (t.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean).filter((n) => n !== e);
         i.length ? t.setAttribute("aria-describedby", i.join(" ")) : t.removeAttribute("aria-describedby"), e = null;
       }
     }
   };
 }
-function $(t) {
+function Q(t) {
   switch (t.question.type) {
     case "text":
       return K(t.question, t);
@@ -70,41 +70,41 @@ function $(t) {
 }
 function K(t, e) {
   const i = typeof e.initialValue == "string" ? e.initialValue : "";
-  let a;
+  let n;
   if (t.multiline) {
-    const n = document.createElement("textarea");
-    n.className = "qaid-q-textarea", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), a = n;
+    const a = document.createElement("textarea");
+    a.className = "qaid-q-textarea", a.value = i, t.placeholder && (a.placeholder = t.placeholder), t.maxLength && (a.maxLength = t.maxLength), n = a;
   } else {
-    const n = document.createElement("input");
-    n.className = "qaid-q-input", n.type = t.inputType ?? "text", n.value = i, t.placeholder && (n.placeholder = t.placeholder), t.maxLength && (n.maxLength = t.maxLength), n.setAttribute("autocomplete", B(t.inputType)), a = n;
+    const a = document.createElement("input");
+    a.className = "qaid-q-input", a.type = t.inputType ?? "text", a.value = i, t.placeholder && (a.placeholder = t.placeholder), t.maxLength && (a.maxLength = t.maxLength), a.setAttribute("autocomplete", B(t.inputType)), n = a;
   }
-  return a.setAttribute("aria-label", t.label), t.required && a.setAttribute("aria-required", "true"), a.addEventListener("input", () => {
-    e.onChange(a.value);
-  }), a.addEventListener("keydown", ((n) => {
-    if (n.key === "Enter") {
+  return n.setAttribute("aria-label", t.label), t.required && n.setAttribute("aria-required", "true"), n.addEventListener("input", () => {
+    e.onChange(n.value);
+  }), n.addEventListener("keydown", ((a) => {
+    if (a.key === "Enter") {
       if (t.multiline) {
-        (n.metaKey || n.ctrlKey) && (n.preventDefault(), e.onSubmit());
+        (a.metaKey || a.ctrlKey) && (a.preventDefault(), e.onSubmit());
         return;
       }
-      n.isComposing || (n.preventDefault(), e.onSubmit());
+      a.isComposing || (a.preventDefault(), e.onSubmit());
     }
   })), {
-    element: a,
+    element: n,
     focus: () => {
-      a.focus();
-      const n = a.value.length;
+      n.focus();
+      const a = n.value.length;
       try {
-        a.setSelectionRange(n, n);
+        n.setSelectionRange(a, a);
       } catch {
       }
     },
-    getValue: () => a.value,
+    getValue: () => n.value,
     isValid: () => {
       if (!t.required) return !0;
-      const n = a.value.trim();
-      return !(n.length === 0 || t.minLength && n.length < t.minLength);
+      const a = n.value.trim();
+      return !(a.length === 0 || t.minLength && a.length < t.minLength);
     },
-    ...v(a)
+    ...y(n)
   };
 }
 function B(t) {
@@ -122,32 +122,32 @@ function B(t) {
 function Y(t, e) {
   const i = document.createElement("div");
   i.className = "qaid-q-currency";
-  const a = document.createElement("span");
-  a.className = "qaid-q-currency-prefix", a.textContent = _(t.currency ?? "USD", t.locale), i.appendChild(a);
-  const n = document.createElement("input");
-  return n.className = "qaid-q-input", n.type = "number", n.inputMode = "decimal", n.step = "0.01", typeof t.min == "number" && (n.min = String(t.min)), typeof t.max == "number" && (n.max = String(t.max)), t.placeholder && (n.placeholder = t.placeholder), typeof e.initialValue == "number" ? n.value = String(e.initialValue) : typeof e.initialValue == "string" && e.initialValue !== "" && (n.value = e.initialValue), n.setAttribute("aria-label", t.label), t.required && n.setAttribute("aria-required", "true"), n.addEventListener("input", () => {
-    const r = n.value;
+  const n = document.createElement("span");
+  n.className = "qaid-q-currency-prefix", n.textContent = _(t.currency ?? "USD", t.locale), i.appendChild(n);
+  const a = document.createElement("input");
+  return a.className = "qaid-q-input", a.type = "number", a.inputMode = "decimal", a.step = "0.01", typeof t.min == "number" && (a.min = String(t.min)), typeof t.max == "number" && (a.max = String(t.max)), t.placeholder && (a.placeholder = t.placeholder), typeof e.initialValue == "number" ? a.value = String(e.initialValue) : typeof e.initialValue == "string" && e.initialValue !== "" && (a.value = e.initialValue), a.setAttribute("aria-label", t.label), t.required && a.setAttribute("aria-required", "true"), a.addEventListener("input", () => {
+    const r = a.value;
     if (r === "")
       e.onChange(null);
     else {
       const s = Number(r);
       e.onChange(Number.isNaN(s) ? null : s);
     }
-  }), n.addEventListener("keydown", (r) => {
+  }), a.addEventListener("keydown", (r) => {
     r.key === "Enter" && !r.isComposing && (r.preventDefault(), e.onSubmit());
-  }), i.appendChild(n), {
+  }), i.appendChild(a), {
     element: i,
-    focus: () => n.focus(),
+    focus: () => a.focus(),
     getValue: () => {
-      if (n.value === "") return null;
-      const r = Number(n.value);
+      if (a.value === "") return null;
+      const r = Number(a.value);
       return Number.isNaN(r) ? null : r;
     },
     isValid: () => {
-      const r = n.value === "" ? null : Number(n.value);
+      const r = a.value === "" ? null : Number(a.value);
       return !(t.required && (r === null || Number.isNaN(r)) || r !== null && !Number.isNaN(r) && (typeof t.min == "number" && r < t.min || typeof t.max == "number" && r > t.max));
     },
-    ...v(n)
+    ...y(a)
   };
 }
 function _(t, e) {
@@ -165,101 +165,101 @@ function _(t, e) {
 function W(t, e) {
   const i = document.createElement("div");
   i.className = "qaid-q-range-wrap";
-  const a = document.createElement("div");
-  a.className = "qaid-q-range-value";
-  const n = document.createElement("span");
-  if (a.appendChild(n), t.unit) {
+  const n = document.createElement("div");
+  n.className = "qaid-q-range-value";
+  const a = document.createElement("span");
+  if (n.appendChild(a), t.unit) {
     const l = document.createElement("span");
-    l.className = "qaid-q-range-unit", l.textContent = t.unit, a.appendChild(l);
+    l.className = "qaid-q-range-unit", l.textContent = t.unit, n.appendChild(l);
   }
   const r = typeof e.initialValue == "number" ? e.initialValue : t.defaultValue ?? t.min, s = document.createElement("input");
   s.className = "qaid-q-range", s.type = "range", s.min = String(t.min), s.max = String(t.max), s.step = String(t.step ?? 1), s.value = String(r), s.setAttribute("aria-label", t.label), s.setAttribute("aria-valuemin", String(t.min)), s.setAttribute("aria-valuemax", String(t.max));
-  const d = () => {
-    n.textContent = s.value, s.setAttribute("aria-valuenow", s.value);
+  const o = () => {
+    a.textContent = s.value, s.setAttribute("aria-valuenow", s.value);
   };
-  d(), s.addEventListener("input", () => {
-    d(), e.onChange(Number(s.value));
+  o(), s.addEventListener("input", () => {
+    o(), e.onChange(Number(s.value));
   }), s.addEventListener("keydown", (l) => {
     l.key === "Enter" && (l.preventDefault(), e.onSubmit());
   });
-  const h = document.createElement("div");
-  h.className = "qaid-q-range-bounds";
+  const u = document.createElement("div");
+  u.className = "qaid-q-range-bounds";
   const q = document.createElement("span");
   q.textContent = `${t.min}${t.unit ?? ""}`;
   const m = document.createElement("span");
-  return m.textContent = `${t.max}${t.unit ?? ""}`, h.appendChild(q), h.appendChild(m), i.appendChild(a), i.appendChild(s), i.appendChild(h), queueMicrotask(() => e.onChange(Number(s.value))), {
+  return m.textContent = `${t.max}${t.unit ?? ""}`, u.appendChild(q), u.appendChild(m), i.appendChild(n), i.appendChild(s), i.appendChild(u), queueMicrotask(() => e.onChange(Number(s.value))), {
     element: i,
     focus: () => s.focus(),
     getValue: () => Number(s.value),
     isValid: () => !0,
-    ...v(s)
+    ...y(s)
   };
 }
 function G(t, e) {
   const i = document.createElement("input");
   return i.className = "qaid-q-input", i.type = "date", t.min && (i.min = t.min), t.max && (i.max = t.max), typeof e.initialValue == "string" && (i.value = e.initialValue), i.setAttribute("aria-label", t.label), t.required && i.setAttribute("aria-required", "true"), i.addEventListener("input", () => {
     e.onChange(i.value || null);
-  }), i.addEventListener("keydown", (a) => {
-    a.key === "Enter" && !a.isComposing && (a.preventDefault(), e.onSubmit());
+  }), i.addEventListener("keydown", (n) => {
+    n.key === "Enter" && !n.isComposing && (n.preventDefault(), e.onSubmit());
   }), {
     element: i,
     focus: () => i.focus(),
     getValue: () => i.value || null,
     isValid: () => t.required ? i.value !== "" : !0,
-    ...v(i)
+    ...y(i)
   };
 }
 function J(t, e) {
-  const i = document.createElement("div"), a = t.imageAlignment ?? "horizontal", r = t.options.some((l) => !!l.image) ? a === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
+  const i = document.createElement("div"), n = t.imageAlignment ?? "horizontal", r = t.options.some((l) => !!l.image) ? n === "vertical" ? " qaid-q-options--image-vertical" : " qaid-q-options--image-horizontal" : "";
   i.className = `qaid-q-options${r}`, i.setAttribute("role", t.multiple ? "group" : "radiogroup"), i.setAttribute("aria-label", t.label), t.required && i.setAttribute("aria-required", "true");
   const s = /* @__PURE__ */ new Set();
   if (t.multiple && Array.isArray(e.initialValue))
     for (const l of e.initialValue) s.add(l);
   else !t.multiple && typeof e.initialValue == "string" && s.add(e.initialValue);
-  const d = [];
-  t.options.forEach((l, u) => {
+  const o = [];
+  t.options.forEach((l, h) => {
     const c = document.createElement("button");
     c.type = "button", c.className = `qaid-q-option${t.multiple ? " qaid-q-multi" : ""}`, c.dataset.value = l.value, c.setAttribute("role", t.multiple ? "checkbox" : "radio"), c.setAttribute("aria-checked", s.has(l.value) ? "true" : "false"), s.has(l.value) && c.classList.add("qaid-q-selected");
     const p = document.createElement("span");
     p.className = "qaid-q-option-marker", p.setAttribute("aria-hidden", "true");
     const f = document.createElement("span");
     if (f.className = "qaid-q-option-body", l.image) {
-      const o = document.createElement("img");
-      o.className = "qaid-q-option-image", o.src = l.image, o.alt = "", o.loading = "lazy", o.decoding = "async", f.appendChild(o);
+      const d = document.createElement("img");
+      d.className = "qaid-q-option-image", d.src = l.image, d.alt = "", d.loading = "lazy", d.decoding = "async", f.appendChild(d);
     }
     const g = document.createElement("span");
     if (g.className = "qaid-q-option-label", g.textContent = l.label, f.appendChild(g), l.description) {
-      const o = document.createElement("span");
-      o.className = "qaid-q-option-desc", o.textContent = l.description, f.appendChild(o);
+      const d = document.createElement("span");
+      d.className = "qaid-q-option-desc", d.textContent = l.description, f.appendChild(d);
     }
-    if (c.appendChild(p), c.appendChild(f), u < 9) {
-      const o = document.createElement("span");
-      o.className = "qaid-q-option-key", o.textContent = String(u + 1), o.setAttribute("aria-hidden", "true"), c.appendChild(o);
+    if (c.appendChild(p), c.appendChild(f), h < 9) {
+      const d = document.createElement("span");
+      d.className = "qaid-q-option-key", d.textContent = String(h + 1), d.setAttribute("aria-hidden", "true"), c.appendChild(d);
     }
-    c.addEventListener("click", () => q(u)), c.addEventListener("keydown", (o) => {
-      if (o.key === "ArrowDown" || o.key === "ArrowRight") {
-        o.preventDefault(), h((u + 1) % d.length);
+    c.addEventListener("click", () => q(h)), c.addEventListener("keydown", (d) => {
+      if (d.key === "ArrowDown" || d.key === "ArrowRight") {
+        d.preventDefault(), u((h + 1) % o.length);
         return;
       }
-      if (o.key === "ArrowUp" || o.key === "ArrowLeft") {
-        o.preventDefault(), h((u - 1 + d.length) % d.length);
+      if (d.key === "ArrowUp" || d.key === "ArrowLeft") {
+        d.preventDefault(), u((h - 1 + o.length) % o.length);
         return;
       }
-      !t.multiple && o.key === "Enter" && s.size > 0 && (o.preventDefault(), e.onSubmit());
-    }), d.push(c), i.appendChild(c);
+      !t.multiple && d.key === "Enter" && s.size > 0 && (d.preventDefault(), e.onSubmit());
+    }), o.push(c), i.appendChild(c);
   }), i.addEventListener("keydown", (l) => {
-    const u = l.key;
-    if (u.length === 1 && u >= "1" && u <= "9") {
-      const c = parseInt(u, 10) - 1;
-      c < d.length && (l.preventDefault(), q(c), h(c));
+    const h = l.key;
+    if (h.length === 1 && h >= "1" && h <= "9") {
+      const c = parseInt(h, 10) - 1;
+      c < o.length && (l.preventDefault(), q(c), u(c));
     }
   });
-  function h(l) {
-    d[l]?.focus();
+  function u(l) {
+    o[l]?.focus();
   }
   function q(l) {
-    const u = t.options[l].value;
-    t.multiple ? s.has(u) ? s.delete(u) : s.add(u) : (s.clear(), s.add(u)), d.forEach((c) => {
+    const h = t.options[l].value;
+    t.multiple ? s.has(h) ? s.delete(h) : s.add(h) : (s.clear(), s.add(h)), o.forEach((c) => {
       const p = c.dataset.value, f = s.has(p);
       c.classList.toggle("qaid-q-selected", f), c.setAttribute("aria-checked", f ? "true" : "false");
     }), e.onChange(m()), !t.multiple && e.autoAdvance && setTimeout(() => e.onAutoAdvance(), 180);
@@ -272,66 +272,73 @@ function J(t, e) {
   return {
     element: i,
     focus: () => {
-      (d.find((u) => u.classList.contains("qaid-q-selected")) ?? d[0])?.focus();
+      (o.find((h) => h.classList.contains("qaid-q-selected")) ?? o[0])?.focus();
     },
     getValue: () => m(),
     isValid: () => t.required ? s.size > 0 : !0,
-    ...v(i)
+    ...y(i)
   };
 }
-function C(t, e) {
-  return t.questions.filter(
-    (i) => i.visibleIf ? w(i.visibleIf, e) : !0
-  );
-}
 function w(t, e) {
+  const i = /* @__PURE__ */ Object.create(null), n = [];
+  for (const a of t.questions)
+    a.visibleIf && !C(a.visibleIf, i) || (n.push(a), Object.prototype.hasOwnProperty.call(e, a.id) && (i[a.id] = e[a.id]));
+  return n;
+}
+function X(t, e) {
+  const i = {};
+  for (const n of w(t, e))
+    Object.prototype.hasOwnProperty.call(e, n.id) && (i[n.id] = e[n.id]);
+  return i;
+}
+function C(t, e) {
   if ("allOf" in t) {
-    for (const n of t.allOf)
-      if (!w(n, e)) return !1;
+    for (const a of t.allOf)
+      if (!C(a, e)) return !1;
     return !0;
   }
   if ("anyOf" in t) {
-    for (const n of t.anyOf)
-      if (w(n, e)) return !0;
+    for (const a of t.anyOf)
+      if (C(a, e)) return !0;
     return !1;
   }
-  const i = e[t.questionId], a = i != null && !(typeof i == "string" && i.trim() === "") && !(Array.isArray(i) && i.length === 0);
-  return "answered" in t ? t.answered ? a : !a : a ? "equals" in t ? x(i, t.equals) : "notEquals" in t ? !x(i, t.notEquals) : "in" in t ? t.in.some((n) => x(i, n)) : !1 : !1;
+  const i = e[t.questionId], n = i != null && !(typeof i == "string" && i.trim() === "") && !(Array.isArray(i) && i.length === 0);
+  return "answered" in t ? t.answered ? n : !n : n ? "equals" in t ? x(i, t.equals) : "notEquals" in t ? !x(i, t.notEquals) : "in" in t ? t.in.some((a) => x(i, a)) : !1 : !1;
 }
 function x(t, e) {
   return Array.isArray(t) ? t.some((i) => i === e) : t === e;
 }
-const X = 360, E = 2;
-function Z(t) {
+const Z = 360, E = 2;
+function ee(t) {
   const e = t.scrollHeight - t.clientHeight;
   return e <= E ? "none" : t.scrollTop <= E ? "top" : t.scrollTop >= e - E ? "bottom" : "middle";
 }
-function ee(t, e) {
-  const i = Z(t);
+function te(t, e) {
+  const i = ee(t);
   if (t.setAttribute("data-qaid-scroll", i), e) {
-    const a = i === "top" || i === "middle";
-    e.hidden = !a;
+    const n = i === "top" || i === "middle";
+    e.hidden = !n;
   }
   return i;
 }
-function te(t, e) {
-  const i = e > 0 && e < X ? "compact" : "roomy";
+function ie(t, e) {
+  const i = e > 0 && e < Z ? "compact" : "roomy";
   return t.setAttribute("data-qaid-fit", i), i;
 }
-function ie(t, e, i) {
-  const a = () => {
-    ee(t, i), te(e, t.clientHeight);
+function ae(t, e, i) {
+  const n = () => {
+    te(t, i), ie(e, t.clientHeight);
   };
-  t.addEventListener("scroll", a, { passive: !0 });
-  let n = null;
-  return typeof ResizeObserver == "function" && (n = new ResizeObserver(a), n.observe(t)), a(), {
-    refresh: a,
+  t.addEventListener("scroll", n, { passive: !0 });
+  let a = null;
+  return typeof ResizeObserver == "function" && (a = new ResizeObserver(n), a.observe(t)), n(), {
+    refresh: n,
     destroy() {
-      t.removeEventListener("scroll", a), n?.disconnect();
+      t.removeEventListener("scroll", n), a?.disconnect();
     }
   };
 }
-const A = "data-qaid-a11y-live", ae = "position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;", ne = [
+const A = "data-qaid-a11y-live", ne = "position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;", re = [
   "a[href]",
   "button",
   "input",
@@ -339,25 +346,25 @@ const A = "data-qaid-a11y-live", ae = "position:absolute;width:1px;height:1px;ma
   "select",
   "[tabindex]"
 ].join(",");
-function re(t) {
+function se(t) {
   return t.ownerDocument || document;
 }
-function se(t, e) {
-  const i = e ? "assertive" : "polite", a = t.querySelector(
+function oe(t, e) {
+  const i = e ? "assertive" : "polite", n = t.querySelector(
     `[${A}="${i}"]`
   );
-  if (a) return a;
-  const r = re(t).createElement("div");
-  return r.setAttribute(A, i), r.setAttribute("role", e ? "alert" : "status"), r.setAttribute("aria-live", e ? "assertive" : "polite"), r.setAttribute("aria-atomic", "true"), r.style.cssText = ae, t.appendChild(r), r;
+  if (n) return n;
+  const r = se(t).createElement("div");
+  return r.setAttribute(A, i), r.setAttribute("role", e ? "alert" : "status"), r.setAttribute("aria-live", e ? "assertive" : "polite"), r.setAttribute("aria-atomic", "true"), r.style.cssText = ne, t.appendChild(r), r;
 }
-function y(t, e, i = {}) {
-  const a = se(t, !!i.assertive);
-  a.textContent = "", a.textContent = e;
-}
-function oe(t) {
-  return t.hasAttribute("disabled") ? !0 : t.disabled === !0;
+function v(t, e, i = {}) {
+  const n = oe(t, !!i.assertive);
+  n.textContent = "", n.textContent = e;
 }
 function de(t) {
+  return t.hasAttribute("disabled") ? !0 : t.disabled === !0;
+}
+function le(t) {
   let e = t;
   for (; e; ) {
     if (e.hasAttribute("hidden")) return !0;
@@ -370,8 +377,8 @@ function de(t) {
 }
 function S(t) {
   return Array.from(
-    t.querySelectorAll(ne)
-  ).filter((i) => !(i.getAttribute("tabindex") === "-1" || i instanceof HTMLInputElement && i.type === "hidden" || i instanceof HTMLAnchorElement && !i.getAttribute("href") || oe(i) || de(i)));
+    t.querySelectorAll(re)
+  ).filter((i) => !(i.getAttribute("tabindex") === "-1" || i instanceof HTMLInputElement && i.type === "hidden" || i instanceof HTMLAnchorElement && !i.getAttribute("href") || de(i) || le(i)));
 }
 function N(t) {
   let e = t.activeElement;
@@ -379,72 +386,72 @@ function N(t) {
     e = e.shadowRoot.activeElement;
   return e instanceof HTMLElement ? e : null;
 }
-function le(t) {
+function ce(t) {
   const e = t.ownerDocument || document;
   let i = !1;
-  const a = (r) => {
+  const n = (r) => {
     if (r.key !== "Tab") return;
     const s = S(t);
     if (s.length === 0) {
       r.preventDefault(), t.focus();
       return;
     }
-    const d = s[0], h = s[s.length - 1], q = N(e), m = q ? s.indexOf(q) !== -1 : !1;
-    r.shiftKey ? (!m || q === d) && (r.preventDefault(), h.focus()) : (!m || q === h) && (r.preventDefault(), d.focus());
+    const o = s[0], u = s[s.length - 1], q = N(e), m = q ? s.indexOf(q) !== -1 : !1;
+    r.shiftKey ? (!m || q === o) && (r.preventDefault(), u.focus()) : (!m || q === u) && (r.preventDefault(), o.focus());
   };
-  t.addEventListener("keydown", a);
-  const n = S(t);
-  return n.length > 0 ? n[0].focus() : (t.hasAttribute("tabindex") || (t.setAttribute("tabindex", "-1"), i = !0), t.focus()), {
+  t.addEventListener("keydown", n);
+  const a = S(t);
+  return a.length > 0 ? a[0].focus() : (t.hasAttribute("tabindex") || (t.setAttribute("tabindex", "-1"), i = !0), t.focus()), {
     release() {
-      t.removeEventListener("keydown", a), i && (t.removeAttribute("tabindex"), i = !1);
+      t.removeEventListener("keydown", n), i && (t.removeAttribute("tabindex"), i = !1);
     }
   };
 }
-function ce() {
+function ue() {
   return N(document);
 }
-function ue(t) {
+function he(t) {
   if (!(!t || typeof t.focus != "function"))
     try {
       t.focus();
     } catch {
     }
 }
-function he(t, e = {}) {
+function pe(t, e = {}) {
   t.setAttribute("role", "dialog"), t.setAttribute("aria-modal", "true"), e.labelledbyId && t.setAttribute("aria-labelledby", e.labelledbyId), e.describedbyId && t.setAttribute("aria-describedby", e.describedbyId), e.label && t.setAttribute("aria-label", e.label);
 }
-function pe(t, e) {
+function qe(t, e) {
   let i = t;
   for (; i && i !== e; ) {
-    const a = i.parentNode;
-    if (a === e) return i;
-    if (a && a.host) {
-      i = a.host;
+    const n = i.parentNode;
+    if (n === e) return i;
+    if (n && n.host) {
+      i = n.host;
       continue;
     }
-    if (!a) return null;
-    i = a;
+    if (!n) return null;
+    i = n;
   }
   return null;
 }
-function qe(t) {
+function me(t) {
   const i = (t.ownerDocument || document).body;
   if (!i) return () => {
   };
-  const a = pe(t, i), n = [];
+  const n = qe(t, i), a = [];
   return Array.from(i.children).forEach((r) => {
-    if (!(r instanceof HTMLElement) || a && r === a) return;
-    const s = r.inert === !0, d = r.getAttribute("aria-hidden");
-    s && d === "true" || (r.inert = !0, r.setAttribute("aria-hidden", "true"), n.push({ el: r, prevInert: s, prevAriaHidden: d }));
+    if (!(r instanceof HTMLElement) || n && r === n) return;
+    const s = r.inert === !0, o = r.getAttribute("aria-hidden");
+    s && o === "true" || (r.inert = !0, r.setAttribute("aria-hidden", "true"), a.push({ el: r, prevInert: s, prevAriaHidden: o }));
   }), function() {
-    for (; n.length; ) {
-      const s = n.pop();
+    for (; a.length; ) {
+      const s = a.pop();
       s && (s.el.inert = s.prevInert, s.prevAriaHidden === null ? s.el.removeAttribute("aria-hidden") : s.el.setAttribute("aria-hidden", s.prevAriaHidden));
     }
   };
 }
 const I = "qaid_visitor_id";
-function me() {
+function fe() {
   try {
     let t = localStorage.getItem(I);
     return t || (t = crypto.randomUUID(), localStorage.setItem(I, t)), t;
@@ -452,8 +459,8 @@ function me() {
     return crypto.randomUUID();
   }
 }
-const fe = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', ge = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
-class be {
+const ge = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', be = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+class ve {
   config;
   questionnaire = null;
   inlineQuestionnaire;
@@ -485,6 +492,17 @@ class be {
   answers = {};
   responseId = null;
   visitorId;
+  // The create-response request, so submit() can wait for one still in
+  // flight, and whether it is still running (a save stops waiting for an
+  // id the moment the create has failed, instead of sitting out 5 s).
+  createPromise = null;
+  createPending = !1;
+  // Set when an autosave was dropped because there was no response id to
+  // PATCH. submit() then re-sends every visible answer once it has an id,
+  // since a server may store answers from the PATCHes alone.
+  droppedSaves = !1;
+  // Guards submit() against a double click or a retry while one runs.
+  submitting = !1;
   // Per-question pending autosave (text/currency are debounced)
   pendingSaveTimer = null;
   pendingSaveQuestionId = null;
@@ -579,7 +597,7 @@ class be {
       backdropOpacity: e.backdropOpacity,
       fontFamily: e.fontFamily,
       fontSize: e.fontSize
-    }, this.themeUrl = e.themeUrl, this.themeDocument = e.themeDocument, this.hostCss = e.css ?? "", this.metadata = e.metadata, this.onCompleteCb = e.onComplete, this.onCloseCb = e.onClose, this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = me(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
+    }, this.themeUrl = e.themeUrl, this.themeDocument = e.themeDocument, this.hostCss = e.css ?? "", this.metadata = e.metadata, this.onCompleteCb = e.onComplete, this.onCloseCb = e.onClose, this.inlineQuestionnaire = e.questionnaire, this.configUrl = e.configUrl, this.visitorId = fe(), this.boundKeyDown = this.handleKeyDown.bind(this), this.init();
   }
   async init() {
     this.cssVars = U(this.hostInlineVars), this.mountShell(), this.renderLoading();
@@ -591,12 +609,12 @@ class be {
       if (!e || !e.questions || e.questions.length === 0)
         throw new Error("Questionnaire is empty");
       if (this.questionnaire = this.pendingUpdate ?? e, this.pendingUpdate = null, this.applyResolvedTheme(i), this.recomputeVisible(), this.pendingGoToStep) {
-        const a = this.visibleQuestions.findIndex(
-          (n) => n.id === this.pendingGoToStep
+        const n = this.visibleQuestions.findIndex(
+          (a) => a.id === this.pendingGoToStep
         );
-        a !== -1 && (this.stepIndex = a), this.pendingGoToStep = null;
+        n !== -1 && (this.stepIndex = n), this.pendingGoToStep = null;
       }
-      this.createResponse(), this.state = "READY", this.renderHeader(), this.renderStep(), this.setupModalA11y();
+      this.startCreate(), this.state = "READY", this.renderHeader(), this.renderStep(), this.setupModalA11y();
     } catch (e) {
       this.state = "ERROR", this.renderError(e);
     }
@@ -632,24 +650,24 @@ class be {
    */
   applyResolvedTheme(e) {
     if (!this.shadowRoot || !this.rootEl) return;
-    const i = this.hostThemeOverrides.preset ? this.config.preset : e?.preset ?? this.config.preset, a = this.hostThemeOverrides.mode ? this.config.theme : e?.mode ?? this.config.theme, n = this.hostThemeOverrides.unstyled ? this.config.unstyled : e?.unstyled ?? this.config.unstyled;
+    const i = this.hostThemeOverrides.preset ? this.config.preset : e?.preset ?? this.config.preset, n = this.hostThemeOverrides.mode ? this.config.theme : e?.mode ?? this.config.theme, a = this.hostThemeOverrides.unstyled ? this.config.unstyled : e?.unstyled ?? this.config.unstyled;
     this.rootEl.classList.toggle(
       "qaid-q-theme-light",
-      a === "light"
+      n === "light"
     ), this.rootEl.classList.toggle(
       "qaid-q-theme-dark",
-      a === "dark"
-    ), this.rootEl.classList.toggle("qaid-q-unstyled", !!n);
+      n === "dark"
+    ), this.rootEl.classList.toggle("qaid-q-unstyled", !!a);
     const r = [];
     if (e?.tokens && Object.keys(e.tokens).length > 0) {
-      const s = Object.entries(e.tokens).filter(([, d]) => typeof d == "string" && d.trim() !== "").map(([d, h]) => `  ${d}: ${h};`).join(`
+      const s = Object.entries(e.tokens).filter(([, o]) => typeof o == "string" && o.trim() !== "").map(([o, u]) => `  ${o}: ${u};`).join(`
 `);
       s && r.push(`:where(.qaid-q-root) {
 ${s}
 }`);
     }
     if (i && i !== "default") {
-      const s = Q(i);
+      const s = M(i);
       s && r.push(s);
     }
     if (e?.css && e.css.trim() !== "" && r.push(e.css), this.hostCss && this.hostCss.trim() !== "" && r.push(this.hostCss), r.length > 0) {
@@ -679,9 +697,9 @@ ${s}
   mountShell() {
     this.shadowHost = document.createElement("div"), this.shadowHost.setAttribute("data-qaid-quests", "");
     const e = this.config.container ? document.querySelector(this.config.container) : null;
-    e ? (this.shadowHost.style.display = "block", this.shadowHost.style.height = "100%", this.shadowHost.style.minHeight = "0", e.appendChild(this.shadowHost), this.isUserContainer = !0) : (this.savedOpener = ce(), this.shadowHost.style.position = "fixed", this.shadowHost.style.inset = "0", this.shadowHost.style.zIndex = String(this.config.zIndex), this.shadowHost.style.pointerEvents = "none", document.body.appendChild(this.shadowHost)), this.shadowRoot = this.shadowHost.attachShadow({ mode: "open" });
+    e ? (this.shadowHost.style.display = "block", this.shadowHost.style.height = "100%", this.shadowHost.style.minHeight = "0", e.appendChild(this.shadowHost), this.isUserContainer = !0) : (this.savedOpener = ue(), this.shadowHost.style.position = "fixed", this.shadowHost.style.inset = "0", this.shadowHost.style.zIndex = String(this.config.zIndex), this.shadowHost.style.pointerEvents = "none", document.body.appendChild(this.shadowHost)), this.shadowRoot = this.shadowHost.attachShadow({ mode: "open" });
     const i = document.createElement("style");
-    if (i.textContent = M(), this.shadowRoot.appendChild(i), this.rootEl = document.createElement("div"), this.rootEl.className = [
+    if (i.textContent = $(), this.shadowRoot.appendChild(i), this.rootEl = document.createElement("div"), this.rootEl.className = [
       "qaid-q-root",
       this.isUserContainer ? "qaid-q-inline" : "",
       this.config.animate ? "" : "qaid-q-no-motion"
@@ -689,24 +707,24 @@ ${s}
       this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", this.rootEl.appendChild(this.cardEl);
     else {
       this.backdropEl = document.createElement("div"), this.backdropEl.className = "qaid-q-backdrop", this.backdropEl.addEventListener("click", () => this.close()), this.rootEl.appendChild(this.backdropEl);
-      const a = document.createElement("div");
-      a.className = "qaid-q-modal", this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", a.appendChild(this.cardEl), this.rootEl.appendChild(a);
+      const n = document.createElement("div");
+      n.className = "qaid-q-modal", this.cardEl = document.createElement("div"), this.cardEl.className = "qaid-q-card", n.appendChild(this.cardEl), this.rootEl.appendChild(n);
     }
-    this.shadowRoot.appendChild(this.rootEl), !this.isUserContainer && this.shadowHost && (this.shadowHost.style.pointerEvents = "auto"), !this.isUserContainer && this.cardEl && he(this.cardEl), document.addEventListener("keydown", this.boundKeyDown);
+    this.shadowRoot.appendChild(this.rootEl), !this.isUserContainer && this.shadowHost && (this.shadowHost.style.pointerEvents = "auto"), !this.isUserContainer && this.cardEl && pe(this.cardEl), document.addEventListener("keydown", this.boundKeyDown);
   }
   renderLoading() {
     if (!this.cardEl) return;
     this.cardEl.replaceChildren();
     const e = document.createElement("p");
-    e.className = "qaid-q-description", e.textContent = "Loading…", this.cardEl.appendChild(e), this.shadowRoot && y(this.shadowRoot, "Loading");
+    e.className = "qaid-q-description", e.textContent = "Loading…", this.cardEl.appendChild(e), this.shadowRoot && v(this.shadowRoot, "Loading");
   }
   renderError(e) {
     if (!this.cardEl) return;
     this.cardEl.replaceChildren();
     const i = document.createElement("h3");
     i.className = "qaid-q-title", i.textContent = "Couldn't load form";
-    const a = e instanceof Error ? e.message : String(e), n = document.createElement("p");
-    n.className = "qaid-q-description", n.textContent = a, this.cardEl.appendChild(i), this.cardEl.appendChild(n), this.shadowRoot && y(this.shadowRoot, `Couldn't load form. ${a}`, {
+    const n = e instanceof Error ? e.message : String(e), a = document.createElement("p");
+    a.className = "qaid-q-description", a.textContent = n, this.cardEl.appendChild(i), this.cardEl.appendChild(a), this.shadowRoot && v(this.shadowRoot, `Couldn't load form. ${n}`, {
       assertive: !0
     });
   }
@@ -716,24 +734,24 @@ ${s}
   renderHeader() {
     if (!this.cardEl || !this.questionnaire) return;
     this.cardEl.replaceChildren();
-    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", a = !!this.questionnaire.hideTitle, n = !!this.questionnaire.title && !a, r = !!this.questionnaire.description && !a, s = !this.isUserContainer, d = s || !i && !e;
+    const e = !!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1, i = !e && this.effectiveProgressPosition() === "bottom", n = !!this.questionnaire.hideTitle, a = !!this.questionnaire.title && !n, r = !!this.questionnaire.description && !n, s = !this.isUserContainer, o = s || !i && !e;
     this.savingEl = document.createElement("div"), this.savingEl.className = "qaid-q-saving";
-    const h = document.createElement("span");
-    h.className = "qaid-q-saving-dot";
+    const u = document.createElement("span");
+    u.className = "qaid-q-saving-dot";
     const q = document.createElement("span");
-    q.textContent = "Saving…", this.savingEl.appendChild(h), this.savingEl.appendChild(q), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
-    const m = n || d;
+    q.textContent = "Saving…", this.savingEl.appendChild(u), this.savingEl.appendChild(q), this.stepCounterEl = document.createElement("div"), this.stepCounterEl.className = "qaid-q-step-counter", this.progressEl = document.createElement("div"), this.progressEl.className = i ? "qaid-q-progress qaid-q-progress--inline" : "qaid-q-progress", this.progressFillEl = document.createElement("div"), this.progressFillEl.className = "qaid-q-progress-fill", this.progressEl.appendChild(this.progressFillEl);
+    const m = a || o;
     if (m) {
       const l = document.createElement("div");
       l.className = "qaid-q-header";
-      const u = document.createElement("div");
-      n && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, u.appendChild(this.titleEl));
+      const h = document.createElement("div");
+      a && (this.titleEl = document.createElement("h2"), this.titleEl.className = "qaid-q-title", this.titleEl.textContent = this.questionnaire.title, h.appendChild(this.titleEl));
       const c = document.createElement("div");
       if (c.style.display = "flex", c.style.alignItems = "center", c.style.gap = "0.5rem", i || (c.appendChild(this.savingEl), e || c.appendChild(this.stepCounterEl)), s) {
         const p = document.createElement("button");
-        p.type = "button", p.className = "qaid-q-close", p.setAttribute("aria-label", "Close form"), p.innerHTML = fe, p.addEventListener("click", () => this.close()), c.appendChild(p);
+        p.type = "button", p.className = "qaid-q-close", p.setAttribute("aria-label", "Close form"), p.innerHTML = ge, p.addEventListener("click", () => this.close()), c.appendChild(p);
       }
-      l.appendChild(u), l.appendChild(c), this.cardEl.appendChild(l);
+      l.appendChild(h), l.appendChild(c), this.cardEl.appendChild(l);
     }
     if (!this.isUserContainer && this.cardEl && (this.titleEl ? (this.titleEl.id = this.titleEl.id || "qaid-q-dialog-title", this.cardEl.setAttribute("aria-labelledby", this.titleEl.id), this.cardEl.removeAttribute("aria-label")) : (this.cardEl.removeAttribute("aria-labelledby"), this.cardEl.setAttribute(
       "aria-label",
@@ -742,7 +760,7 @@ ${s}
       const l = document.createElement("p");
       l.className = "qaid-q-description", l.textContent = this.questionnaire.description, l.style.marginTop = m ? "-0.5rem" : "0", l.style.marginBottom = "0.75rem", this.cardEl.appendChild(l);
     }
-    !i && !e && this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl), this.scrollCueEl = document.createElement("div"), this.scrollCueEl.className = "qaid-q-scroll-cue", this.scrollCueEl.setAttribute("aria-hidden", "true"), this.scrollCueEl.hidden = !0, this.scrollCueEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>', this.bodyEl.appendChild(this.scrollCueEl), this.overflow = ie(this.bodyEl, this.cardEl, this.scrollCueEl);
+    !i && !e && this.cardEl.appendChild(this.progressEl), this.bodyEl = document.createElement("div"), this.bodyEl.className = "qaid-q-body", this.cardEl.appendChild(this.bodyEl), this.footerEl = document.createElement("div"), this.footerEl.className = "qaid-q-footer", this.cardEl.appendChild(this.footerEl), this.scrollCueEl = document.createElement("div"), this.scrollCueEl.className = "qaid-q-scroll-cue", this.scrollCueEl.setAttribute("aria-hidden", "true"), this.scrollCueEl.hidden = !0, this.scrollCueEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>', this.bodyEl.appendChild(this.scrollCueEl), this.overflow = ae(this.bodyEl, this.cardEl, this.scrollCueEl);
   }
   // ------------------------------------------------------------------
   // Step rendering
@@ -756,51 +774,51 @@ ${s}
       return;
     }
     this.stepIndex >= i && (this.stepIndex = i - 1);
-    const a = this.stepIndex, n = this.visibleQuestions[a];
-    if (this.stepCounterEl && (this.stepCounterEl.textContent = `${a + 1} / ${i}`), this.progressFillEl) {
-      const o = (a + 1) / i * 100;
-      this.progressFillEl.style.width = `${o}%`;
+    const n = this.stepIndex, a = this.visibleQuestions[n];
+    if (this.stepCounterEl && (this.stepCounterEl.textContent = `${n + 1} / ${i}`), this.progressFillEl) {
+      const d = (n + 1) / i * 100;
+      this.progressFillEl.style.width = `${d}%`;
     }
-    this.progressEl && (this.progressEl.setAttribute("role", "progressbar"), this.progressEl.setAttribute("aria-label", "Progress"), this.progressEl.setAttribute("aria-valuemin", "0"), this.progressEl.setAttribute("aria-valuemax", String(i)), this.progressEl.setAttribute("aria-valuenow", String(a + 1)), this.progressEl.setAttribute(
+    this.progressEl && (this.progressEl.setAttribute("role", "progressbar"), this.progressEl.setAttribute("aria-label", "Progress"), this.progressEl.setAttribute("aria-valuemin", "0"), this.progressEl.setAttribute("aria-valuemax", String(i)), this.progressEl.setAttribute("aria-valuenow", String(n + 1)), this.progressEl.setAttribute(
       "aria-valuetext",
-      `Question ${a + 1} of ${i}`
-    )), this.shadowRoot && i > 1 && y(this.shadowRoot, `Step ${a + 1} of ${i}`);
+      `Question ${n + 1} of ${i}`
+    )), this.shadowRoot && i > 1 && v(this.shadowRoot, `Step ${n + 1} of ${i}`);
     const r = document.createElement("div");
-    r.className = "qaid-q-step", r.setAttribute("role", "group"), r.setAttribute("aria-labelledby", `qaid-q-label-${a}`);
+    r.className = "qaid-q-step", r.setAttribute("role", "group"), r.setAttribute("aria-labelledby", `qaid-q-label-${n}`);
     const s = document.createElement("label");
-    if (s.id = `qaid-q-label-${a}`, s.className = "qaid-q-label", s.textContent = n.label, n.required) {
-      const o = document.createElement("span");
-      o.className = "qaid-q-required", o.textContent = "*", o.setAttribute("aria-label", "required"), s.appendChild(o);
+    if (s.id = `qaid-q-label-${n}`, s.className = "qaid-q-label", s.textContent = a.label, a.required) {
+      const d = document.createElement("span");
+      d.className = "qaid-q-required", d.textContent = "*", d.setAttribute("aria-label", "required"), s.appendChild(d);
     }
-    if (r.appendChild(s), n.description) {
-      const o = document.createElement("p");
-      o.className = "qaid-q-description", o.textContent = n.description, r.appendChild(o);
+    if (r.appendChild(s), a.description) {
+      const d = document.createElement("p");
+      d.className = "qaid-q-description", d.textContent = a.description, r.appendChild(d);
     }
-    const d = document.createElement("p");
-    d.className = "qaid-q-error", d.id = `qaid-q-error-${a}`, d.setAttribute("aria-live", "polite");
-    const h = this.answers[n.id] ?? null, q = a === i - 1, m = $({
-      question: n,
-      initialValue: h,
-      onChange: (o) => {
-        this.handleAnswerChange(n, o), d.textContent && (d.textContent = "", this.currentInput?.clearInvalid());
+    const o = document.createElement("p");
+    o.className = "qaid-q-error", o.id = `qaid-q-error-${n}`, o.setAttribute("aria-live", "polite");
+    const u = this.answers[a.id] ?? null, q = n === i - 1, m = Q({
+      question: a,
+      initialValue: u,
+      onChange: (d) => {
+        this.handleAnswerChange(a, d), o.textContent && (o.textContent = "", this.currentInput?.clearInvalid());
       },
-      onSubmit: () => this.advance(n, d),
-      onAutoAdvance: () => this.advance(n, d),
+      onSubmit: () => this.advance(a, o),
+      onAutoAdvance: () => this.advance(a, o),
       autoAdvance: this.config.autoAdvance
     });
-    this.currentInput = m, r.appendChild(m.element), r.appendChild(d), this.bodyEl.replaceChildren(r), this.scrollCueEl && this.bodyEl.appendChild(this.scrollCueEl), this.bodyEl.scrollTop = 0, this.overflow?.refresh(), this.footerEl.replaceChildren();
-    const u = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = a > 0 ? (() => {
-      const o = document.createElement("button");
-      return o.type = "button", o.className = "qaid-q-btn qaid-q-btn-secondary", o.textContent = this.questionnaire.backLabel ?? "Back", o.addEventListener("click", () => this.back()), o;
+    this.currentInput = m, r.appendChild(m.element), r.appendChild(o), this.bodyEl.replaceChildren(r), this.scrollCueEl && this.bodyEl.appendChild(this.scrollCueEl), this.bodyEl.scrollTop = 0, this.overflow?.refresh(), this.footerEl.replaceChildren();
+    const h = !(!!this.questionnaire.hideProgress || this.questionnaire.questions.length <= 1) && this.effectiveProgressPosition() === "bottom", c = n > 0 ? (() => {
+      const d = document.createElement("button");
+      return d.type = "button", d.className = "qaid-q-btn qaid-q-btn-secondary", d.textContent = this.questionnaire.backLabel ?? "Back", d.addEventListener("click", () => this.back()), d;
     })() : null, p = document.createElement("button");
-    if (p.type = "button", p.className = "qaid-q-btn qaid-q-btn-primary", p.textContent = q ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", p.addEventListener("click", () => this.advance(n, d)), u)
+    if (p.type = "button", p.className = "qaid-q-btn qaid-q-btn-primary", p.textContent = q ? this.questionnaire.submitLabel ?? "Submit" : this.questionnaire.nextLabel ?? "Next", p.addEventListener("click", () => this.advance(a, o)), h)
       this.footerEl.classList.add("qaid-q-footer--inline-progress"), c && this.footerEl.appendChild(c), this.progressEl && this.footerEl.appendChild(this.progressEl), this.savingEl && this.footerEl.appendChild(this.savingEl), this.stepCounterEl && this.footerEl.appendChild(this.stepCounterEl), this.footerEl.appendChild(p);
     else {
       this.footerEl.classList.remove("qaid-q-footer--inline-progress");
-      const o = document.createElement("div");
-      o.className = "qaid-q-footer-left";
+      const d = document.createElement("div");
+      d.className = "qaid-q-footer-left";
       const b = document.createElement("div");
-      b.className = "qaid-q-footer-right", c && o.appendChild(c), b.appendChild(p), this.footerEl.appendChild(o), this.footerEl.appendChild(b);
+      b.className = "qaid-q-footer-right", c && d.appendChild(c), b.appendChild(p), this.footerEl.appendChild(d), this.footerEl.appendChild(b);
     }
     const f = !this.hasRenderedStep;
     this.hasRenderedStep = !0, !e && (!f || this.config.autoFocus) && requestAnimationFrame(() => m.focus());
@@ -811,11 +829,11 @@ ${s}
     const e = document.createElement("div");
     e.className = "qaid-q-done";
     const i = document.createElement("div");
-    i.className = "qaid-q-done-icon", i.innerHTML = ge, e.appendChild(i);
-    const a = document.createElement("h3");
-    a.className = "qaid-q-done-title";
-    const n = this.questionnaire.thankYouTitle ?? "Thank you!";
-    if (a.textContent = n, a.setAttribute("tabindex", "-1"), e.appendChild(a), this.questionnaire.thankYouMessage) {
+    i.className = "qaid-q-done-icon", i.innerHTML = be, e.appendChild(i);
+    const n = document.createElement("h3");
+    n.className = "qaid-q-done-title";
+    const a = this.questionnaire.thankYouTitle ?? "Thank you!";
+    if (n.textContent = a, n.setAttribute("tabindex", "-1"), e.appendChild(n), this.questionnaire.thankYouMessage) {
       const r = document.createElement("p");
       r.className = "qaid-q-done-message", r.textContent = this.questionnaire.thankYouMessage, e.appendChild(r);
     }
@@ -823,10 +841,40 @@ ${s}
       const r = document.createElement("button");
       r.type = "button", r.className = "qaid-q-btn qaid-q-btn-primary", r.textContent = "Close", r.style.marginTop = "1rem", r.addEventListener("click", () => this.close()), e.appendChild(r);
     }
-    if (this.cardEl.appendChild(e), requestAnimationFrame(() => a.focus()), this.shadowRoot) {
-      const r = this.questionnaire.thankYouMessage ? `${n}. ${this.questionnaire.thankYouMessage}` : n;
-      y(this.shadowRoot, r);
+    if (this.cardEl.appendChild(e), requestAnimationFrame(() => n.focus()), this.shadowRoot) {
+      const r = this.questionnaire.thankYouMessage ? `${a}. ${this.questionnaire.thankYouMessage}` : a;
+      v(this.shadowRoot, r);
     }
+  }
+  /**
+   * Shown instead of the thank-you screen when the response could not be
+   * created or the submit was refused. The answers stay in memory, so
+   * "Try again" re-runs the whole submit (re-creating the response first
+   * if needed) without the visitor re-entering anything.
+   */
+  renderSubmitError() {
+    if (this.state = "SUBMIT_FAILED", !this.cardEl) return;
+    this.cardEl.replaceChildren();
+    const e = document.createElement("div");
+    e.className = "qaid-q-submit-error";
+    const i = document.createElement("h3");
+    i.className = "qaid-q-submit-error-title";
+    const n = "Couldn't send your answers";
+    i.textContent = n, i.setAttribute("tabindex", "-1"), e.appendChild(i);
+    const a = document.createElement("p");
+    a.className = "qaid-q-submit-error-message";
+    const r = "Your answers are still here. Check your connection and try again.";
+    a.textContent = r, e.appendChild(a);
+    const s = document.createElement("div");
+    s.className = "qaid-q-submit-error-actions";
+    const o = document.createElement("button");
+    if (o.type = "button", o.className = "qaid-q-btn qaid-q-btn-primary", o.textContent = "Try again", o.addEventListener("click", () => {
+      this.submitting || (o.setAttribute("aria-disabled", "true"), o.textContent = "Sending…", this.submit());
+    }), s.appendChild(o), !this.isUserContainer) {
+      const u = document.createElement("button");
+      u.type = "button", u.className = "qaid-q-btn qaid-q-btn-secondary", u.textContent = "Close", u.addEventListener("click", () => this.close()), s.appendChild(u);
+    }
+    e.appendChild(s), this.cardEl.appendChild(e), requestAnimationFrame(() => i.focus()), this.shadowRoot && v(this.shadowRoot, `${n}. ${r}`, { assertive: !0 });
   }
   // ------------------------------------------------------------------
   // Navigation
@@ -834,7 +882,7 @@ ${s}
   advance(e, i) {
     if (!this.currentInput || !this.questionnaire) return;
     if (!this.currentInput.isValid()) {
-      i.textContent = ve(e), this.currentInput.setInvalid(i.id), this.currentInput.focus();
+      i.textContent = ye(e), this.currentInput.setInvalid(i.id), this.currentInput.focus();
       return;
     }
     if (this.handleAnswerChange(e, this.currentInput.getValue(), { immediate: !0 }), this.stepIndex === this.visibleQuestions.length - 1) {
@@ -850,12 +898,12 @@ ${s}
   // Answer handling + autosave
   // ------------------------------------------------------------------
   recomputeVisible() {
-    this.questionnaire && (this.visibleQuestions = C(this.questionnaire, this.answers));
+    this.questionnaire && (this.visibleQuestions = w(this.questionnaire, this.answers));
   }
-  handleAnswerChange(e, i, a = {}) {
+  handleAnswerChange(e, i, n = {}) {
     this.answers[e.id] = i, this.recomputeVisible();
-    const n = e.type === "text" || e.type === "currency" || e.type === "range";
-    if (a.immediate || !n) {
+    const a = e.type === "text" || e.type === "currency" || e.type === "range";
+    if (n.immediate || !a) {
       this.flushPendingSave(), this.saveAnswer(e.id, i);
       return;
     }
@@ -875,19 +923,30 @@ ${s}
     });
   }
   async doSave(e, i) {
-    let a = 0;
-    for (; this.responseId === null && a < 5e3; )
-      await new Promise((n) => setTimeout(n, 50)), a += 50;
-    if (this.responseId !== null)
-      try {
-        await fetch(`${this.config.endpoint}/${this.responseId}`, {
-          method: "PATCH",
-          headers: this.jsonHeaders(),
-          body: JSON.stringify({ questionId: e, value: i })
-        });
-      } catch (n) {
-        console.error("[quests-embed] failed to save answer:", n);
-      }
+    let n = 0;
+    for (; this.responseId === null && this.createPending && n < 5e3; )
+      await new Promise((a) => setTimeout(a, 50)), n += 50;
+    if (this.responseId === null) {
+      this.droppedSaves = !0;
+      return;
+    }
+    await this.patchAnswer(e, i);
+  }
+  async patchAnswer(e, i) {
+    try {
+      await fetch(`${this.config.endpoint}/${this.responseId}`, {
+        method: "PATCH",
+        headers: this.jsonHeaders(),
+        body: JSON.stringify({ questionId: e, value: i })
+      });
+    } catch (n) {
+      console.error("[quests-embed] failed to save answer:", n);
+    }
+  }
+  startCreate() {
+    return this.createPending = !0, this.createPromise = this.createResponse().finally(() => {
+      this.createPending = !1;
+    }), this.createPromise;
   }
   async createResponse() {
     try {
@@ -903,32 +962,62 @@ ${s}
           metadata: this.metadata
         })
       });
-      if (e.ok) {
-        const i = await e.json();
-        this.responseId = i.id;
+      if (!e.ok) {
+        console.error(
+          `[quests-embed] failed to create response (${e.status})`
+        );
+        return;
       }
+      const i = await e.json();
+      i && i.id !== null && i.id !== void 0 ? this.responseId = i.id : console.error("[quests-embed] create response returned no id");
     } catch (e) {
       console.error("[quests-embed] failed to create response:", e);
     }
   }
   async submit() {
-    for (this.flushPendingSave(); this.inflightSaves > 0; )
-      await new Promise((e) => setTimeout(e, 50));
-    if (this.responseId !== null)
+    if (!this.submitting) {
+      this.submitting = !0;
       try {
-        await fetch(`${this.config.endpoint}/${this.responseId}/submit`, {
-          method: "POST",
-          headers: this.jsonHeaders(),
-          body: JSON.stringify({ answers: this.answers })
-        });
-      } catch (e) {
-        console.error("[quests-embed] failed to submit:", e);
+        await this.trySubmit();
+      } finally {
+        this.submitting = !1;
       }
+    }
+  }
+  async trySubmit() {
+    for (this.flushPendingSave(); this.inflightSaves > 0; )
+      await new Promise((a) => setTimeout(a, 50));
+    if (this.createPromise && await this.createPromise, this.responseId === null && await this.startCreate(), this.responseId === null) {
+      this.renderSubmitError();
+      return;
+    }
+    const e = this.questionnaire ? X(this.questionnaire, this.answers) : {}, i = [];
+    if (this.droppedSaves)
+      for (const [a, r] of Object.entries(e))
+        i.push(this.patchAnswer(a, r));
+    for (const [a, r] of Object.entries(this.answers))
+      !Object.prototype.hasOwnProperty.call(e, a) && r !== null && i.push(this.patchAnswer(a, null));
+    await Promise.all(i), this.droppedSaves = !1;
+    let n = !1;
+    try {
+      const a = await fetch(`${this.config.endpoint}/${this.responseId}/submit`, {
+        method: "POST",
+        headers: this.jsonHeaders(),
+        body: JSON.stringify({ answers: e })
+      });
+      n = a.ok, n || console.error(`[quests-embed] submit was refused (${a.status})`);
+    } catch (a) {
+      console.error("[quests-embed] failed to submit:", a);
+    }
+    if (!n) {
+      this.renderSubmitError();
+      return;
+    }
     if (this.state = "DONE", this.renderDone(), this.onCompleteCb)
       try {
-        this.onCompleteCb({ ...this.answers });
-      } catch (e) {
-        console.error("[quests-embed] onComplete handler threw:", e);
+        this.onCompleteCb({ ...e });
+      } catch (a) {
+        console.error("[quests-embed] onComplete handler threw:", a);
       }
   }
   jsonHeaders() {
@@ -954,14 +1043,14 @@ ${s}
    * never trapped or isolated.
    */
   setupModalA11y() {
-    this.isUserContainer || !this.cardEl || this.focusTrap || (this.focusTrap = le(this.cardEl), this.inertRestore = qe(this.cardEl));
+    this.isUserContainer || !this.cardEl || this.focusTrap || (this.focusTrap = ce(this.cardEl), this.inertRestore = me(this.cardEl));
   }
   close() {
     this.flushPendingSave(), this.destroy();
   }
   /** Destroy the embed and clean up all resources */
   destroy() {
-    if (document.removeEventListener("keydown", this.boundKeyDown), this.pendingSaveTimer && (clearTimeout(this.pendingSaveTimer), this.pendingSaveTimer = null), this.focusTrap && (this.focusTrap.release(), this.focusTrap = null), this.inertRestore && (this.inertRestore(), this.inertRestore = null), !this.isUserContainer && this.savedOpener && ue(this.savedOpener), this.savedOpener = null, this.shadowHost && (this.shadowHost.remove(), this.shadowHost = null, this.shadowRoot = null), this.rootEl = null, this.cardEl = null, this.overflow?.destroy(), this.overflow = null, this.bodyEl = null, this.scrollCueEl = null, this.footerEl = null, this.titleEl = null, this.stepCounterEl = null, this.progressFillEl = null, this.savingEl = null, this.backdropEl = null, this.currentInput = null, !this.closed && (this.closed = !0, this.onCloseCb))
+    if (document.removeEventListener("keydown", this.boundKeyDown), this.pendingSaveTimer && (clearTimeout(this.pendingSaveTimer), this.pendingSaveTimer = null), this.focusTrap && (this.focusTrap.release(), this.focusTrap = null), this.inertRestore && (this.inertRestore(), this.inertRestore = null), !this.isUserContainer && this.savedOpener && he(this.savedOpener), this.savedOpener = null, this.shadowHost && (this.shadowHost.remove(), this.shadowHost = null, this.shadowRoot = null), this.rootEl = null, this.cardEl = null, this.overflow?.destroy(), this.overflow = null, this.bodyEl = null, this.scrollCueEl = null, this.footerEl = null, this.titleEl = null, this.stepCounterEl = null, this.progressFillEl = null, this.savingEl = null, this.backdropEl = null, this.currentInput = null, !this.closed && (this.closed = !0, this.onCloseCb))
       try {
         this.onCloseCb();
       } catch (e) {
@@ -1013,15 +1102,15 @@ ${s}
     if (!e?.questions || e.questions.length === 0 || this.state === "DONE") return !1;
     if (this.state === "LOADING")
       return this.pendingUpdate = e, !0;
-    const i = new Set(e.questions.map((d) => d.id)), a = {};
-    for (const [d, h] of Object.entries(this.answers))
-      i.has(d) && (a[d] = h);
-    const n = C(e, a);
-    if (n.length === 0) return !1;
+    const i = new Set(e.questions.map((o) => o.id)), n = {};
+    for (const [o, u] of Object.entries(this.answers))
+      i.has(o) && (n[o] = u);
+    const a = w(e, n);
+    if (a.length === 0) return !1;
     this.flushPendingSave();
     const r = this.getCurrentQuestionId();
-    this.questionnaire = e, this.inlineQuestionnaire && (this.inlineQuestionnaire = e), this.state = "READY", this.answers = a, this.visibleQuestions = n;
-    const s = r ? this.visibleQuestions.findIndex((d) => d.id === r) : -1;
+    this.questionnaire = e, this.inlineQuestionnaire && (this.inlineQuestionnaire = e), this.state = "READY", this.answers = n, this.visibleQuestions = a;
+    const s = r ? this.visibleQuestions.findIndex((o) => o.id === r) : -1;
     return this.stepIndex = s !== -1 ? s : Math.min(this.stepIndex, Math.max(0, this.visibleQuestions.length - 1)), this.suppressStepFocus = !0, this.renderHeader(), this.renderStep(), !0;
   }
   /**
@@ -1036,11 +1125,11 @@ ${s}
   goToStep(e) {
     if (this.state !== "READY" || !this.questionnaire)
       return this.pendingGoToStep = e, !1;
-    const i = this.visibleQuestions.findIndex((a) => a.id === e);
+    const i = this.visibleQuestions.findIndex((n) => n.id === e);
     return i === -1 ? !1 : (i === this.stepIndex || (this.flushPendingSave(), this.stepIndex = i, this.renderStep()), !0);
   }
 }
-function ve(t) {
+function ye(t) {
   switch (t.type) {
     case "text":
       return t.minLength ? `Please enter at least ${t.minLength} characters.` : "This field is required.";
@@ -1057,7 +1146,7 @@ function ve(t) {
 function T(t) {
   return document.querySelector(t)?.textContent?.trim() ?? "";
 }
-function ye() {
+function xe() {
   const t = document.querySelector(
     'script[type="application/json"][data-quests-config]'
   );
@@ -1071,44 +1160,45 @@ function ye() {
     return null;
   }
 }
-function xe(t) {
+function Ee(t) {
   const e = t.getAttribute("data-endpoint");
   if (!e) return null;
-  const i = t.getAttribute("data-config-url"), a = t.getAttribute("data-api-key"), n = t.getAttribute("data-container"), r = t.getAttribute("data-zindex"), s = t.getAttribute("data-positive-color"), d = t.getAttribute("data-negative-color"), h = t.getAttribute("data-marker-color"), q = t.getAttribute("data-modal-width"), m = t.getAttribute("data-backdrop-opacity"), l = t.getAttribute("data-font-family"), u = t.getAttribute("data-font-size"), c = t.getAttribute("data-css-selector"), p = t.getAttribute("data-auto-advance"), f = t.getAttribute("data-save-debounce-ms"), g = t.getAttribute("data-theme-url"), o = t.getAttribute("data-preset"), b = t.getAttribute("data-theme"), L = t.getAttribute("data-unstyled");
+  const i = t.getAttribute("data-config-url"), n = t.getAttribute("data-api-key"), a = t.getAttribute("data-container"), r = t.getAttribute("data-zindex"), s = t.getAttribute("data-positive-color"), o = t.getAttribute("data-negative-color"), u = t.getAttribute("data-marker-color"), q = t.getAttribute("data-modal-width"), m = t.getAttribute("data-backdrop-opacity"), l = t.getAttribute("data-font-family"), h = t.getAttribute("data-font-size"), c = t.getAttribute("data-css-selector"), p = t.getAttribute("data-auto-advance"), f = t.getAttribute("data-save-debounce-ms"), g = t.getAttribute("data-theme-url"), d = t.getAttribute("data-preset"), b = t.getAttribute("data-theme"), L = t.getAttribute("data-unstyled");
   return {
     endpoint: e,
     configUrl: i ?? void 0,
-    apiKey: a ?? void 0,
-    container: n ?? void 0,
+    apiKey: n ?? void 0,
+    container: a ?? void 0,
     zIndex: r ? parseInt(r, 10) : void 0,
     colors: {
       positive: s ?? void 0,
-      negative: d ?? void 0,
-      marker: h ?? void 0
+      negative: o ?? void 0,
+      marker: u ?? void 0
     },
     modalWidth: q ? parseInt(q, 10) : void 0,
     backdropOpacity: m ? parseFloat(m) : void 0,
     fontFamily: l ?? void 0,
-    fontSize: u ? parseInt(u, 10) : void 0,
+    fontSize: h ? parseInt(h, 10) : void 0,
     css: c ? T(c) : void 0,
     autoAdvance: p === "true" ? !0 : void 0,
     saveDebounceMs: f ? parseInt(f, 10) : void 0,
     themeUrl: g ?? void 0,
-    preset: o || void 0,
+    preset: d || void 0,
     theme: b || void 0,
     unstyled: L === "true" ? !0 : void 0
   };
 }
 if (typeof document < "u") {
   const t = () => {
-    const e = document.currentScript, i = ye(), a = e ? xe(e) : null, n = i ?? a;
-    n?.endpoint && (n.configUrl || n.questionnaire) && new be(n);
+    const e = document.currentScript, i = xe(), n = e ? Ee(e) : null, a = i ?? n;
+    a?.endpoint && (a.configUrl || a.questionnaire) && new ve(a);
   };
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", t) : t();
 }
 export {
-  be as QaidQuests,
-  w as evaluateRule,
-  C as getVisibleQuestions
+  ve as QaidQuests,
+  C as evaluateRule,
+  X as getVisibleAnswers,
+  w as getVisibleQuestions
 };
 //# sourceMappingURL=qaid-quests.js.map

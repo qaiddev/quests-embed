@@ -401,4 +401,52 @@ describe("embed: a11y behaviour", () => {
       expect(polite?.textContent).toContain("We appreciate it.");
     });
   });
+
+  describe("submit-failed screen focus + announcement", () => {
+    it("moves focus to the error heading and announces it assertively", async () => {
+      // Every submit is refused.
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (input: RequestInfo | URL) =>
+          String(input).endsWith("/submit")
+            ? new Response(JSON.stringify({ error: "refused" }), { status: 500 })
+            : new Response(JSON.stringify({ id: "resp-1" }), {
+                status: 200,
+                headers: { "content-type": "application/json" },
+              }),
+        ),
+      );
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      try {
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: {
+            id: "one",
+            questions: [{ id: "note", type: "text", label: "A note?" }],
+          },
+          container: "#mount",
+          autoFocus: false,
+        });
+        const shadow = getShadow();
+        await waitFor(() => shadow.querySelector(".qaid-q-step"));
+
+        shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+        const title = await waitFor(() =>
+          shadow.querySelector<HTMLElement>(".qaid-q-submit-error-title"),
+        );
+
+        expect(title.getAttribute("tabindex")).toBe("-1");
+        await waitFor(() => (shadow.activeElement === title ? true : null));
+        expect(shadow.activeElement).toBe(title);
+
+        const assertive = shadow.querySelector<HTMLElement>(
+          '[data-qaid-a11y-live="assertive"]',
+        );
+        expect(assertive?.getAttribute("role")).toBe("alert");
+        expect(assertive?.textContent).toContain("Couldn't send your answers");
+      } finally {
+        errorSpy.mockRestore();
+      }
+    });
+  });
 });

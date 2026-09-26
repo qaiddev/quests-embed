@@ -74,6 +74,36 @@ describe("QaidQuests", () => {
     throw new Error("waitFor timed out");
   }
 
+  /** Every request the embed made, with its JSON body parsed. */
+  function recordedCalls(): Array<{
+    url: string;
+    method: string;
+    body: Record<string, unknown>;
+  }> {
+    return vi.mocked(fetch).mock.calls.map(([url, opts]) => ({
+      url: String(url),
+      method: opts?.method ?? "GET",
+      body: opts?.body ? JSON.parse(opts.body as string) : {},
+    }));
+  }
+
+  function submitCalls() {
+    return recordedCalls().filter((c) => c.url.endsWith("/submit"));
+  }
+
+  function typeInto(shadow: ShadowRoot, value: string): void {
+    const input = shadow.querySelector<HTMLInputElement>(".qaid-q-input")!;
+    input.value = value;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  async function waitForLabel(shadow: ShadowRoot, text: string): Promise<Element> {
+    return waitFor(() => {
+      const l = shadow.querySelector(".qaid-q-label");
+      return l?.textContent?.includes(text) ? l : null;
+    });
+  }
+
   it("renders the first question with autofocus on the input", async () => {
     embed = new QaidQuests({
       endpoint: "/api/responses",
@@ -296,6 +326,121 @@ describe("QaidQuests", () => {
 
       await waitFor(() => shadow.querySelector(".qaid-q-done"));
       expect(embed!.getAnswers().what_loved).toBe("the colors");
+    });
+
+    it("leaves the answer to a since-hidden follow-up out of the submit, and clears it on the server", async () => {
+      const onComplete = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: branching,
+        container: "#mount",
+        onComplete,
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-options"));
+
+      // "bad" -> answer the bad-branch follow-up...
+      pickOption(shadow, "bad");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitForLabel(shadow, "What went wrong");
+      typeInto(shadow, "slow shipping");
+      // ...then go back and switch to "good", which hides it.
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-secondary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-options"));
+      pickOption(shadow, "good");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitForLabel(shadow, "What did you like");
+      typeInto(shadow, "the colors");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+
+      const submits = submitCalls();
+      expect(submits).toHaveLength(1);
+      expect(submits[0].body).toEqual({
+        answers: { experience: "good", what_loved: "the colors" },
+      });
+
+      // The hidden answer was PATCHed while it was visible; a server that
+      // keeps answers from the PATCHes needs it cleared, before the submit.
+      const calls = recordedCalls();
+      const clearIdx = calls.findIndex(
+        (c) =>
+          c.method === "PATCH" &&
+          c.body.questionId === "what_went_wrong" &&
+          c.body.value === null,
+      );
+      const submitIdx = calls.findIndex((c) => c.url.endsWith("/submit"));
+      expect(clearIdx).toBeGreaterThan(-1);
+      expect(clearIdx).toBeLessThan(submitIdx);
+
+      expect(onComplete).toHaveBeenCalledWith({
+        experience: "good",
+        what_loved: "the colors",
+      });
+    });
+
+    it("collapses a chain of follow-ups when its head is hidden", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          id: "chain",
+          questions: [
+            {
+              id: "gate",
+              type: "multiple-choice",
+              label: "Any problems?",
+              required: true,
+              options: [
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ],
+            },
+            {
+              id: "detail",
+              type: "text",
+              label: "What happened?",
+              visibleIf: { questionId: "gate", equals: "yes" },
+            },
+            {
+              id: "more",
+              type: "text",
+              label: "Anything else about it?",
+              visibleIf: { questionId: "detail", answered: true },
+            },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-options"));
+
+      pickOption(shadow, "yes");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitForLabel(shadow, "What happened");
+      typeInto(shadow, "it broke");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitForLabel(shadow, "Anything else");
+      typeInto(shadow, "twice");
+
+      // Back to the gate and answer "no".
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-secondary")!.click();
+      await waitForLabel(shadow, "What happened");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-secondary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-options"));
+      pickOption(shadow, "no");
+
+      // "detail" is hidden, so "more" must be too: the gate is now the
+      // last question and Next submits. Before the fix "detail"'s leftover
+      // answer kept "more" visible and Next went there instead.
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+
+      expect(submitCalls()[0].body).toEqual({ answers: { gate: "no" } });
+      const cleared = recordedCalls()
+        .filter((c) => c.method === "PATCH" && c.body.value === null)
+        .map((c) => c.body.questionId)
+        .sort();
+      expect(cleared).toEqual(["detail", "more"]);
     });
 
     it("goToStep jumps to the named visible question", async () => {
@@ -635,6 +780,278 @@ describe("QaidQuests", () => {
       // The unknown reference resolves to "not answered" → false → hidden.
       const counter = shadow.querySelector(".qaid-q-step-counter");
       expect(counter?.textContent).toBe("1 / 1");
+    });
+  });
+
+  describe("submit failures", () => {
+    const single: Questionnaire = {
+      id: "fail",
+      questions: [{ id: "q1", type: "text", label: "One?", required: true }],
+    };
+
+    /**
+     * A server whose create and submit replies are scripted in order.
+     * `create` / `submit` list the outcomes of successive calls; once a
+     * list runs out every further call succeeds. Everything else (the
+     * PATCHes) succeeds.
+     */
+    function stubServer(script: {
+      create?: number[];
+      submit?: Array<number | "network">;
+    }): void {
+      const create = [...(script.create ?? [])];
+      const submit = [...(script.submit ?? [])];
+      let creates = 0;
+      const json = (body: unknown, status = 200) =>
+        new Response(JSON.stringify(body), {
+          status,
+          headers: { "content-type": "application/json" },
+        });
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+          const url = String(input);
+          if (url === "/api/responses" && init?.method === "POST") {
+            creates++;
+            const status = create.shift() ?? 200;
+            return status === 200
+              ? json({ id: `resp-${creates}` })
+              : json({ error: "refused" }, status);
+          }
+          if (url.endsWith("/submit")) {
+            const outcome = submit.shift() ?? 200;
+            if (outcome === "network") throw new TypeError("Failed to fetch");
+            return outcome === 200
+              ? json({ ok: true })
+              : json({ error: "refused" }, outcome);
+          }
+          return json({ ok: true });
+        }),
+      );
+    }
+
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+    beforeEach(() => {
+      // The embed logs every failure; keep the test output readable.
+      errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => {
+      errorSpy.mockRestore();
+    });
+
+    async function answerAndSubmit(shadow: ShadowRoot): Promise<void> {
+      await waitFor(() => shadow.querySelector(".qaid-q-input"));
+      typeInto(shadow, "hi");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+    }
+
+    function retryButton(shadow: ShadowRoot): HTMLButtonElement {
+      return shadow.querySelector<HTMLButtonElement>(
+        ".qaid-q-submit-error .qaid-q-btn-primary",
+      )!;
+    }
+
+    it("shows an error instead of Thank you when the create is refused, and Try again recovers", async () => {
+      // The create at mount and the one submit retries both fail.
+      stubServer({ create: [500, 500] });
+      const onComplete = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        onComplete,
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+
+      const error = await waitFor(() =>
+        shadow.querySelector(".qaid-q-submit-error"),
+      );
+      expect(error.textContent).toContain("Couldn't send your answers");
+      expect(shadow.querySelector(".qaid-q-done")).toBeNull();
+      expect(onComplete).not.toHaveBeenCalled();
+      expect(submitCalls()).toHaveLength(0);
+      // The answers are kept for the retry.
+      expect(embed.getAnswers()).toEqual({ q1: "hi" });
+
+      retryButton(shadow).click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+
+      // Third create succeeded; the answer whose autosave was dropped is
+      // PATCHed to it before the submit.
+      const calls = recordedCalls();
+      const patchIdx = calls.findIndex(
+        (c) =>
+          c.method === "PATCH" &&
+          c.url === "/api/responses/resp-3" &&
+          c.body.questionId === "q1" &&
+          c.body.value === "hi",
+      );
+      const submitIdx = calls.findIndex(
+        (c) => c.url === "/api/responses/resp-3/submit",
+      );
+      expect(patchIdx).toBeGreaterThan(-1);
+      expect(submitIdx).toBeGreaterThan(patchIdx);
+      expect(calls[submitIdx].body).toEqual({ answers: { q1: "hi" } });
+      expect(onComplete).toHaveBeenCalledTimes(1);
+      expect(onComplete).toHaveBeenCalledWith({ q1: "hi" });
+    });
+
+    it("retries a failed create once on submit before giving up", async () => {
+      // Only the create at mount fails; submit's retry gets an id.
+      stubServer({ create: [503] });
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+      expect(shadow.querySelector(".qaid-q-submit-error")).toBeNull();
+      expect(submitCalls().map((c) => c.url)).toEqual([
+        "/api/responses/resp-2/submit",
+      ]);
+    });
+
+    it("shows an error when the submit is refused, keeps the answers, and sends them again on Try again", async () => {
+      stubServer({ submit: [500] });
+      const onComplete = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        onComplete,
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+      expect(shadow.querySelector(".qaid-q-done")).toBeNull();
+      expect(onComplete).not.toHaveBeenCalled();
+
+      retryButton(shadow).click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+
+      const submits = submitCalls();
+      expect(submits).toHaveLength(2);
+      expect(submits[0].body).toEqual({ answers: { q1: "hi" } });
+      expect(submits[1].body).toEqual({ answers: { q1: "hi" } });
+      // The response created at mount is reused, not replaced.
+      expect(submits[1].url).toBe("/api/responses/resp-1/submit");
+      expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+
+    it("shows an error when the submit request fails on the network", async () => {
+      stubServer({ submit: ["network"] });
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+      expect(shadow.querySelector(".qaid-q-done")).toBeNull();
+    });
+
+    it("stays on the error screen when Try again fails too", async () => {
+      stubServer({ submit: [502, 502] });
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+
+      retryButton(shadow).click();
+      await waitFor(() => (submitCalls().length === 2 ? true : null));
+      // The screen is rebuilt after the second failure, with a fresh button.
+      const retry = await waitFor(() => {
+        const b = retryButton(shadow);
+        return b && b.textContent === "Try again" ? b : null;
+      });
+      expect(retry.getAttribute("aria-disabled")).toBeNull();
+      expect(shadow.querySelector(".qaid-q-done")).toBeNull();
+    });
+
+    it("treats a create reply without an id as a failed create", async () => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async () =>
+          new Response(JSON.stringify({}), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          }),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+      // Never posts to ".../undefined/submit".
+      expect(submitCalls()).toHaveLength(0);
+    });
+
+    it("sends one submit when Submit is clicked twice", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-input"));
+      typeInto(shadow, "hi");
+      const submit = shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!;
+      submit.click();
+      submit.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+      expect(submitCalls()).toHaveLength(1);
+    });
+
+    it("offers Close on the error screen in modal mode", async () => {
+      stubServer({ submit: [500] });
+      const onClose = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        onClose,
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+
+      const close = shadow.querySelector<HTMLButtonElement>(
+        ".qaid-q-submit-error .qaid-q-btn-secondary",
+      );
+      expect(close?.textContent).toBe("Close");
+      close!.click();
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+
+    it("has no Close button on the error screen in inline mode", async () => {
+      stubServer({ submit: [500] });
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+      expect(
+        shadow.querySelector(".qaid-q-submit-error .qaid-q-btn-secondary"),
+      ).toBeNull();
     });
   });
 

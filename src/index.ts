@@ -35,7 +35,11 @@ import { QaidQuests } from "./embed";
 import type { QuestsConfig } from "./types";
 
 export { QaidQuests };
-export { getVisibleQuestions, evaluateRule } from "./visibility";
+export {
+  getVisibleQuestions,
+  getVisibleAnswers,
+  evaluateRule,
+} from "./visibility";
 export type {
   QuestsConfig,
   ResolvedQuestsConfig,
