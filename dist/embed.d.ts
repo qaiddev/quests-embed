@@ -1,4 +1,14 @@
 import type { Answers, Questionnaire, QuestsConfig } from "./types";
+/**
+ * A random v4 UUID.
+ *
+ * `crypto.randomUUID` exists only in secure contexts (HTTPS and localhost). On
+ * a plain http:// page it is undefined, and calling it threw while mounting, so
+ * the quest never appeared. `crypto.getRandomValues` has no such restriction;
+ * `Math.random` covers a runtime with no `crypto` at all. The id only groups
+ * one browser's responses, so it needs to be unique, not secret.
+ */
+export declare function randomId(): string;
 export declare class QaidQuests {
     private config;
     private questionnaire;
