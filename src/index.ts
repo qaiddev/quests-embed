@@ -137,8 +137,12 @@ function parseDataAttributes(
 }
 
 if (typeof document !== "undefined") {
+  // Read now, while this tag is running: `currentScript` is null again by the
+  // time DOMContentLoaded fires, so a plain (not deferred) tag that waited for
+  // it found no data-* attributes and never started.
+  const ownScript = document.currentScript as HTMLScriptElement | null;
   const initFromScript = (): void => {
-    const script = document.currentScript as HTMLScriptElement | null;
+    const script = ownScript;
     const jsonConfig = parseJsonConfig();
     const dataConfig = script ? parseDataAttributes(script) : null;
     const config = jsonConfig ?? dataConfig;
