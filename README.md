@@ -252,7 +252,7 @@ For programmatic embedding — e.g. launching a quest from another widget — th
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `metadata` | `Record<string, unknown>` | — | Extra key/value pairs sent verbatim in the create-response `POST` body. The server decides which keys it persists; unknown keys are ignored. Used, for example, by `@qaiddev/thumbs-embed` to pass `{ feedbackId }` so the QAid backend joins the quest answers to the feedback record. |
+| `metadata` | `Record<string, unknown>` or a `Promise` of one | — | Extra key/value pairs sent verbatim in the create-response `POST` body. The server decides which keys it persists; unknown keys are ignored. Used, for example, by `@qaiddev/thumbs-embed` to pass `{ feedbackId }` so the QAid backend joins the quest answers to the feedback record. A promise lets you open the quest before you have the ids: the form shows at once and only the create-response call waits for it. Check `QaidQuests.supports.asyncMetadata` first if you load the widget at runtime. |
 | `onComplete` | `(answers) => void` | — | Called once when the quest is completed and the server accepted the submit (just after the thank-you screen renders), with a copy of the submitted answers — answers to questions hidden by `visibleIf` are left out. Not called while the submit is failing. Fires in both modal and inline modes. |
 | `onClose` | `() => void` | — | Called once when the embed is torn down — visitor close, host `destroy()`, or teardown after completion. Lets a host that launched the quest drop its reference. |
 

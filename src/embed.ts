@@ -71,6 +71,12 @@ const CLOSE_ICON = `<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden=
 const CHECK_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
 
 export class QaidQuests {
+  /**
+   * What this build accepts, for hosts that load it at runtime and may get
+   * an older copy. asyncMetadata: `metadata` may be a promise.
+   */
+  static readonly supports = { asyncMetadata: true } as const;
+
   private config: ResolvedQuestsConfig;
   private questionnaire: Questionnaire | null = null;
   private inlineQuestionnaire: Questionnaire | undefined;
@@ -182,7 +188,7 @@ export class QaidQuests {
 
   // Host integration hooks (see QuestsConfig). Kept off the resolved
   // value-config since they're behaviour, not render tokens.
-  private metadata: Record<string, unknown> | undefined;
+  private metadata: QuestsConfig["metadata"];
   private onCompleteCb: ((answers: Answers) => void) | undefined;
   private onCloseCb: (() => void) | undefined;
   // Guards onClose to fire exactly once even if destroy() runs twice.
@@ -1157,6 +1163,14 @@ export class QaidQuests {
   }
 
   private async createResponse(): Promise<void> {
+    // The host may still be waiting on the ids it wants to send (see
+    // QuestsConfig.metadata). The form is already up; only this waits.
+    let metadata: Record<string, unknown> | undefined;
+    try {
+      metadata = await this.metadata;
+    } catch {
+      metadata = undefined;
+    }
     try {
       const res = await fetch(this.config.endpoint, {
         method: "POST",
@@ -1167,7 +1181,7 @@ export class QaidQuests {
           pageUrl: window.location.href,
           visitorId: this.visitorId,
           userAgent: navigator.userAgent,
-          metadata: this.metadata,
+          metadata,
         }),
       });
       if (!res.ok) {

@@ -473,6 +473,11 @@ function Le() {
 }
 const Oe = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>', Pe = '<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
 class ze {
+  /**
+   * What this build accepts, for hosts that load it at runtime and may get
+   * an older copy. asyncMetadata: `metadata` may be a promise.
+   */
+  static supports = { asyncMetadata: !0 };
   config;
   questionnaire = null;
   inlineQuestionnaire;
@@ -978,8 +983,14 @@ ${s}
     }), this.createPromise;
   }
   async createResponse() {
+    let e;
     try {
-      const e = await fetch(this.config.endpoint, {
+      e = await this.metadata;
+    } catch {
+      e = void 0;
+    }
+    try {
+      const i = await fetch(this.config.endpoint, {
         method: "POST",
         headers: this.jsonHeaders(),
         body: JSON.stringify({
@@ -988,19 +999,19 @@ ${s}
           pageUrl: window.location.href,
           visitorId: this.visitorId,
           userAgent: navigator.userAgent,
-          metadata: this.metadata
+          metadata: e
         })
       });
-      if (!e.ok) {
+      if (!i.ok) {
         console.error(
-          `[quests-embed] failed to create response (${e.status})`
+          `[quests-embed] failed to create response (${i.status})`
         );
         return;
       }
-      const i = await e.json();
-      i && i.id !== null && i.id !== void 0 ? this.responseId = i.id : console.error("[quests-embed] create response returned no id");
-    } catch (e) {
-      console.error("[quests-embed] failed to create response:", e);
+      const a = await i.json();
+      a && a.id !== null && a.id !== void 0 ? this.responseId = a.id : console.error("[quests-embed] create response returned no id");
+    } catch (i) {
+      console.error("[quests-embed] failed to create response:", i);
     }
   }
   async submit() {

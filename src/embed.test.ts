@@ -1548,6 +1548,48 @@ describe("QaidQuests", () => {
       expect("metadata" in createBody()).toBe(false);
     });
 
+    it("renders before promised metadata resolves, and the create waits for it", async () => {
+      let resolveMeta!: (m: Record<string, unknown>) => void;
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        metadata: new Promise((r) => (resolveMeta = r)),
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const creates = () =>
+        vi.mocked(fetch).mock.calls.filter(
+          ([url, opts]) => url === "/api/responses" && opts?.method === "POST",
+        );
+      // The form is up; the create has not gone out without its ids.
+      expect(creates()).toHaveLength(0);
+
+      resolveMeta({ feedbackId: "fb-late" });
+      await waitFor(() => creates().length === 1 || null);
+      expect(createBody().metadata).toEqual({ feedbackId: "fb-late" });
+    });
+
+    it("still creates the response, without metadata, when the promise rejects", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        metadata: Promise.reject(new Error("host lost its id")),
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      await waitFor(
+        () =>
+          vi.mocked(fetch).mock.calls.some(
+            ([url, opts]) => url === "/api/responses" && opts?.method === "POST",
+          ) || null,
+      );
+      expect("metadata" in createBody()).toBe(false);
+    });
+
+    it("says it accepts promised metadata", () => {
+      expect(QaidQuests.supports.asyncMetadata).toBe(true);
+    });
+
     it("fires onComplete once with a copy of the answers after submit", async () => {
       const onComplete = vi.fn();
       embed = new QaidQuests({

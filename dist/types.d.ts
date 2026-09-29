@@ -270,8 +270,14 @@ export interface QuestsConfig {
      * widget passes `{ feedbackId }` so the backend can join the quest
      * answers to the feedback record. The server decides which keys it
      * persists; unknown keys are ignored.
+     *
+     * May be a promise. Only the background create waits for it; the form
+     * renders at once. That lets a host open the quest before it has the ids
+     * to send (thumbs-embed opens it while its own feedback POST is still in
+     * flight). A rejected promise sends no metadata. Hosts can check
+     * `QaidQuests.supports.asyncMetadata` before passing one.
      */
-    metadata?: Record<string, unknown>;
+    metadata?: Record<string, unknown> | Promise<Record<string, unknown> | undefined>;
     /**
      * Called once when the quest is completed and the server accepted the
      * submit (right after the final "thank you" screen renders). Receives

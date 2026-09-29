@@ -10,6 +10,13 @@ import type { Answers, Questionnaire, QuestsConfig } from "./types";
  */
 export declare function randomId(): string;
 export declare class QaidQuests {
+    /**
+     * What this build accepts, for hosts that load it at runtime and may get
+     * an older copy. asyncMetadata: `metadata` may be a promise.
+     */
+    static readonly supports: {
+        readonly asyncMetadata: true;
+    };
     private config;
     private questionnaire;
     private inlineQuestionnaire;
