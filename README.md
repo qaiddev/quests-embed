@@ -253,6 +253,8 @@ For programmatic embedding — e.g. launching a quest from another widget — th
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `metadata` | `Record<string, unknown>` or a `Promise` of one | — | Extra key/value pairs sent verbatim in the create-response `POST` body. The server decides which keys it persists; unknown keys are ignored. Used, for example, by `@qaiddev/thumbs-embed` to pass `{ feedbackId }` so the QAid backend joins the quest answers to the feedback record. A promise lets you open the quest before you have the ids: the form shows at once and only the create-response call waits for it. Check `QaidQuests.supports.asyncMetadata` first if you load the widget at runtime. |
+| `pageUrl` | `string` | `window.location.href` | The page the response is about. It is stored with the response and checked against the project's Domain Restriction. Set it when the quest runs somewhere else, such as inside a native app's web view. |
+| `visitorId` | `string` | an id kept in this browser | The visitor id sent with the response. Pass your own to tie it to feedback you sent with the same id. |
 | `onComplete` | `(answers) => void` | — | Called once when the quest is completed and the server accepted the submit (just after the thank-you screen renders), with a copy of the submitted answers — answers to questions hidden by `visibleIf` are left out. Not called while the submit is failing. Fires in both modal and inline modes. |
 | `onClose` | `() => void` | — | Called once when the embed is torn down — visitor close, host `destroy()`, or teardown after completion. Lets a host that launched the quest drop its reference. |
 
@@ -332,6 +334,8 @@ Object options take JSON. In HTML, wrap the value in single quotes so the JSON's
 | `data-theme-url` | `themeUrl` |
 | `data-theme-document` | `themeDocument`, as a JSON object |
 | `data-metadata` | `metadata`, as a JSON object |
+| `data-page-url` | `pageUrl` |
+| `data-visitor-id` | `visitorId` |
 
 `onComplete` and `onClose` are functions, so they can only be passed from code (`new QaidQuests({ ... })`).
 

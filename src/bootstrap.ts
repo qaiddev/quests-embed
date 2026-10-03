@@ -157,6 +157,8 @@ export function parseDataAttributes(
     script.getAttribute("data-metadata"),
     "a JSON object",
   );
+  const pageUrl = script.getAttribute("data-page-url");
+  const visitorId = script.getAttribute("data-visitor-id");
 
   return {
     endpoint,
@@ -191,5 +193,7 @@ export function parseDataAttributes(
     theme: themeMode ? (themeMode as "light" | "dark" | "auto") : undefined,
     unstyled: unstyled === "true" ? true : undefined,
     metadata,
+    pageUrl: pageUrl || undefined,
+    visitorId: visitorId || undefined,
   };
 }

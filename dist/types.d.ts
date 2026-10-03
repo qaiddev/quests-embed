@@ -279,6 +279,19 @@ export interface QuestsConfig {
      */
     metadata?: Record<string, unknown> | Promise<Record<string, unknown> | undefined>;
     /**
+     * The page the response is about, stored with it and checked against the
+     * project's Domain Restriction. Default: `window.location.href`. Set it
+     * when the quest runs somewhere other than that page — inside a native
+     * app's web view, the page is qaid's, but the response is about the app.
+     */
+    pageUrl?: string;
+    /**
+     * The visitor id sent with the response. Default: one kept in this
+     * browser's storage. A host that already has an id (a native app that sent
+     * the feedback the quest follows) passes it so both rows name one visitor.
+     */
+    visitorId?: string;
+    /**
      * Called once when the quest is completed and the server accepted the
      * submit (right after the final "thank you" screen renders). Receives
      * a copy of the submitted answers — answers to questions hidden by
@@ -336,6 +349,8 @@ export interface ResolvedQuestsConfig {
     theme: "light" | "dark" | "auto";
     unstyled: boolean;
     preset: "default" | "minimal" | "pill" | "dense";
+    /** The host's page URL; empty means this page's own, read when the response is created. */
+    pageUrl: string;
 }
 /** Initial payload sent to create the response */
 export interface CreateResponsePayload {

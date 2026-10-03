@@ -225,6 +225,7 @@ export class QaidQuests {
       theme: config.theme ?? "auto",
       unstyled: config.unstyled ?? false,
       preset: config.preset ?? "default",
+      pageUrl: config.pageUrl ?? "",
     };
 
     this.hostThemeOverrides = {
@@ -252,7 +253,7 @@ export class QaidQuests {
 
     this.inlineQuestionnaire = config.questionnaire;
     this.configUrl = config.configUrl;
-    this.visitorId = getOrCreateVisitorId();
+    this.visitorId = config.visitorId || getOrCreateVisitorId();
     this.boundKeyDown = this.handleKeyDown.bind(this);
 
     this.init();
@@ -1178,7 +1179,7 @@ export class QaidQuests {
         body: JSON.stringify({
           apiKey: this.config.apiKey || undefined,
           questId: this.questionnaire?.id,
-          pageUrl: window.location.href,
+          pageUrl: this.config.pageUrl || window.location.href,
           visitorId: this.visitorId,
           userAgent: navigator.userAgent,
           metadata,

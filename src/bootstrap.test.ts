@@ -117,6 +117,8 @@ describe("parseDataAttributes", () => {
     ["data-progress-position", "top", { progressPosition: "top" }],
     ["data-theme-document", JSON.stringify(themeDocument), { themeDocument } as Partial<QuestsConfig>],
     ["data-metadata", '{"feedbackId":"clx1","plan":"pro"}', { metadata: { feedbackId: "clx1", plan: "pro" } }],
+    ["data-page-url", "app://com.example.app/settings", { pageUrl: "app://com.example.app/settings" }],
+    ["data-visitor-id", "v-123", { visitorId: "v-123" }],
   ];
 
   it.each(added)("%s=%s", (attr, value, expected) => {

@@ -1538,6 +1538,31 @@ describe("QaidQuests", () => {
       expect(createBody().metadata).toEqual({ feedbackId: "fb-123" });
     });
 
+    it("sends the host's pageUrl and visitorId instead of its own", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+        pageUrl: "app://com.example.app/settings",
+        visitorId: "native-visitor",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(createBody()).toMatchObject({
+        pageUrl: "app://com.example.app/settings",
+        visitorId: "native-visitor",
+      });
+    });
+
+    it("defaults pageUrl to this page", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: single,
+        container: "#mount",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(createBody().pageUrl).toBe(window.location.href);
+    });
+
     it("omits metadata when the host didn't provide any", async () => {
       embed = new QaidQuests({
         endpoint: "/api/responses",
