@@ -175,6 +175,14 @@ describe("evaluateRule", () => {
       evaluateRule({ questionId: "ghost", answered: false }, {}),
     ).toBe(true);
   });
+
+  it("a rule with no operator it knows hides the question", () => {
+    // An inline questionnaire written against a newer schema, say.
+    const rule = { questionId: "a", startsWith: "x" } as unknown as Parameters<
+      typeof evaluateRule
+    >[0];
+    expect(evaluateRule(rule, { a: "xyz" })).toBe(false);
+  });
 });
 
 describe("getVisibleQuestions", () => {

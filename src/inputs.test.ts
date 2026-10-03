@@ -759,3 +759,91 @@ describe("multiple-choice input", () => {
     });
   });
 });
+
+describe("invalid-state edge cases", () => {
+  function textControl() {
+    const question: TextQuestion = { id: "t", type: "text", label: "Name" };
+    const input = createInput(makeOpts(question));
+    const el = input.element.querySelector("input") ?? (input.element as HTMLInputElement);
+    return { input, el: el as HTMLInputElement };
+  }
+
+  it("setInvalid twice with the same error id links it only once", () => {
+    const { input, el } = textControl();
+    input.setInvalid("err-1");
+    input.setInvalid("err-1");
+    expect(el.getAttribute("aria-describedby")).toBe("err-1");
+  });
+
+  it("clearInvalid before any setInvalid only drops aria-invalid", () => {
+    const { input, el } = textControl();
+    el.setAttribute("aria-invalid", "true");
+    el.setAttribute("aria-describedby", "hint");
+    input.clearInvalid();
+    expect(el.hasAttribute("aria-invalid")).toBe(false);
+    expect(el.getAttribute("aria-describedby")).toBe("hint");
+  });
+
+  it("clearInvalid copes with aria-describedby removed in the meantime", () => {
+    const { input, el } = textControl();
+    input.setInvalid("err-1");
+    el.removeAttribute("aria-describedby");
+    input.clearInvalid();
+    expect(el.hasAttribute("aria-invalid")).toBe(false);
+    expect(el.hasAttribute("aria-describedby")).toBe(false);
+  });
+});
+
+describe("currency input: unparseable values", () => {
+  function build() {
+    const question: CurrencyQuestion = { id: "c", type: "currency", label: "Budget" };
+    const opts = makeOpts(question);
+    const input = createInput(opts);
+    const el = input.element.querySelector("input") as HTMLInputElement;
+    return { input, opts, el };
+  }
+
+  it("reports null, not NaN, when the field holds something that is not a number", () => {
+    const { input, opts, el } = build();
+    // A browser sanitizes this away; force the raw value to reach the parser.
+    Object.defineProperty(el, "value", { configurable: true, get: () => "1e" });
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    expect(opts.onChange).toHaveBeenLastCalledWith(null);
+    expect(input.getValue()).toBeNull();
+  });
+
+  it("falls back to the currency code when the formatter yields no symbol", () => {
+    // A regular function, so `new Intl.NumberFormat(...)` can construct it.
+    const spy = vi.spyOn(Intl, "NumberFormat").mockImplementation(function () {
+      return {
+        formatToParts: () => [{ type: "integer", value: "0" }],
+      } as unknown as Intl.NumberFormat;
+    });
+    try {
+      const question: CurrencyQuestion = {
+        id: "c",
+        type: "currency",
+        label: "Budget",
+        currency: "XTS",
+      };
+      const input = createInput(makeOpts(question));
+      expect(
+        input.element.querySelector(".qaid-q-currency-prefix")?.textContent,
+      ).toBe("XTS");
+    } finally {
+      spy.mockRestore();
+    }
+  });
+});
+
+describe("range input: keys", () => {
+  it("a key other than Enter does not submit", () => {
+    const question: RangeQuestion = { id: "r", type: "range", label: "Rate", min: 0, max: 5 };
+    const opts = makeOpts(question);
+    const input = createInput(opts);
+    const el = input.element.querySelector("input") as HTMLInputElement;
+    const e = keydown(el, { key: "ArrowRight" });
+    expect(opts.onSubmit).not.toHaveBeenCalled();
+    expect(e.defaultPrevented).toBe(false);
+  });
+});

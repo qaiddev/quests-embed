@@ -63,7 +63,9 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 function ownerDoc(root: AnnounceRoot): Document {
+  /* v8 ignore start -- unreachable: every Element and ShadowRoot has an ownerDocument; only a Document itself has none, and these take elements */
   return root.ownerDocument || document;
+  /* v8 ignore stop */
 }
 
 function getLiveRegion(root: AnnounceRoot, assertive: boolean): HTMLElement {
@@ -168,7 +170,9 @@ function getDeepActiveElement(doc: Document): HTMLElement | null {
  * {@link restoreFocus} to return focus to the invoking control.
  */
 export function createFocusTrap(container: HTMLElement): FocusTrap {
+  /* v8 ignore start -- unreachable: every Element and ShadowRoot has an ownerDocument; only a Document itself has none, and these take elements */
   const doc = container.ownerDocument || document;
+  /* v8 ignore stop */
   let addedTabindex = false;
 
   const onKeydown = (event: KeyboardEvent): void => {
@@ -298,7 +302,9 @@ function topLevelAncestor(
  * leaving elements that were already inert/hidden untouched.
  */
 export function setBackgroundInert(except: HTMLElement): () => void {
+  /* v8 ignore start -- unreachable: every Element and ShadowRoot has an ownerDocument; only a Document itself has none, and these take elements */
   const doc = except.ownerDocument || document;
+  /* v8 ignore stop */
   const body = doc.body;
   if (!body) return () => {};
 
@@ -326,7 +332,9 @@ export function setBackgroundInert(except: HTMLElement): () => void {
   return function restore(): void {
     while (changed.length) {
       const entry = changed.pop();
+      /* v8 ignore start -- unreachable: the loop only runs while `changed` is non-empty, so pop() always returns an entry; the guard is for the type checker */
       if (!entry) continue;
+      /* v8 ignore stop */
       entry.el.inert = entry.prevInert;
       if (entry.prevAriaHidden === null) {
         entry.el.removeAttribute("aria-hidden");

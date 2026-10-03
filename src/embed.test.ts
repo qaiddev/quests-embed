@@ -5,7 +5,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { QaidQuests } from "./embed";
-import type { Questionnaire } from "./types";
+import type { Question, Questionnaire, QuestsConfig } from "./types";
 
 const sampleQuestionnaire: Questionnaire = {
   id: "smoke",
@@ -1682,6 +1682,941 @@ describe("QaidQuests", () => {
       expect(onClose).toHaveBeenCalledTimes(1);
       // Host shadow host is gone despite the throwing handler.
       expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+  });
+  // ------------------------------------------------------------------
+  // Shared helpers for the blocks below
+  // ------------------------------------------------------------------
+
+  const jsonRes = (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), {
+      status,
+      headers: { "content-type": "application/json" },
+    });
+
+  /** A promise plus the handles to settle it from the test. */
+  function deferred<T>() {
+    let resolve!: (v: T) => void;
+    let reject!: (e: unknown) => void;
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  }
+
+  /** Let pending promise callbacks and zero-delay timers run. */
+  const settle = () => new Promise((r) => setTimeout(r, 20));
+
+  const oneText: Questionnaire = {
+    id: "one",
+    title: "One",
+    questions: [{ id: "q1", type: "text", label: "One?", required: true }],
+  };
+
+  const oneChoice: Questionnaire = {
+    id: "pick",
+    // A title gives the header row that carries the saving indicator.
+    title: "Pick",
+    questions: [
+      {
+        id: "pick",
+        type: "multiple-choice",
+        label: "Pick one",
+        options: [
+          { value: "a", label: "A" },
+          { value: "b", label: "B" },
+        ],
+      },
+    ],
+  };
+
+  function patchCalls() {
+    return recordedCalls().filter((c) => c.method === "PATCH");
+  }
+
+  describe("loading the questionnaire", () => {
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+    beforeEach(() => {
+      errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => errorSpy.mockRestore());
+
+    function loadError(shadow: ShadowRoot) {
+      return waitFor(() => {
+        const t = shadow.querySelector(".qaid-q-title");
+        return t?.textContent === "Couldn't load form" ? t : null;
+      });
+    }
+
+    it("fetches the questionnaire from configUrl, and update() works on it", async () => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (url: string) =>
+          url === "/quests/abc.json" ? jsonRes(sampleQuestionnaire) : jsonRes({ id: "resp-1" }),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/quests/abc.json",
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      const get = vi.mocked(fetch).mock.calls.find(([u]) => u === "/quests/abc.json");
+      expect(get?.[1]).toEqual({ headers: { Accept: "application/json" } });
+
+      const applied = embed.update({
+        ...sampleQuestionnaire,
+        questions: [{ id: "name", type: "text", label: "Full name?" }],
+      });
+      expect(applied).toBe(true);
+      await waitForLabel(shadow, "Full name?");
+    });
+
+    it("shows the status when configUrl answers with a failure", async () => {
+      vi.stubGlobal("fetch", vi.fn(async () => new Response("nope", { status: 404 })));
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/quests/missing.json",
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await loadError(shadow);
+      expect(shadow.querySelector(".qaid-q-description")?.textContent).toBe(
+        "Failed to load questionnaire (404)",
+      );
+      // Load failures go through the assertive region.
+      expect(
+        shadow.querySelector('[data-qaid-a11y-live="assertive"]')?.textContent,
+      ).toBe("Couldn't load form. Failed to load questionnaire (404)");
+      expect(embed.getCurrentQuestionId()).toBeNull();
+    });
+
+    it("says so when given neither a questionnaire nor a configUrl", async () => {
+      embed = new QaidQuests({ endpoint: "/api/responses", container: "#mount" });
+      const shadow = getShadow();
+      await loadError(shadow);
+      expect(shadow.querySelector(".qaid-q-description")?.textContent).toBe(
+        "No questionnaire or configUrl provided",
+      );
+    });
+
+    it("refuses a questionnaire with no questions", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { id: "empty", questions: [] },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await loadError(shadow);
+      expect(shadow.querySelector(".qaid-q-description")?.textContent).toBe(
+        "Questionnaire is empty",
+      );
+      expect(vi.mocked(fetch)).not.toHaveBeenCalled();
+    });
+
+    it("shows a non-Error rejection as text", async () => {
+      vi.stubGlobal("fetch", vi.fn(() => Promise.reject("offline")));
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/quests/abc.json",
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await loadError(shadow);
+      expect(shadow.querySelector(".qaid-q-description")?.textContent).toBe("offline");
+    });
+
+    it("draws nothing when destroyed before the questionnaire arrives", async () => {
+      const load = deferred<Response>();
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((url: string) =>
+          url === "/quests/abc.json" ? load.promise : Promise.resolve(jsonRes({ id: "r" })),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/quests/abc.json",
+        themeDocument: { preset: "minimal", mode: "dark", unstyled: false, tokens: null, css: "" },
+      });
+      expect(document.querySelector("[data-qaid-quests]")).toBeTruthy();
+      embed.destroy();
+      load.resolve(jsonRes(sampleQuestionnaire));
+      await settle();
+
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+      // Nothing was left inert behind a dialog that no longer exists.
+      expect(mount.inert).toBe(false);
+    });
+
+    it("draws no error when destroyed before a failing load settles", async () => {
+      const load = deferred<Response>();
+      vi.stubGlobal("fetch", vi.fn(() => load.promise));
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/quests/abc.json",
+        container: "#mount",
+      });
+      embed.destroy();
+      load.reject(new TypeError("Failed to fetch"));
+      await settle();
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+      expect(mount.children).toHaveLength(0);
+    });
+  });
+
+  describe("theme edge cases", () => {
+    function themeStyle(): HTMLStyleElement | null {
+      return getShadow().querySelector("style[data-qaid-q-theme]");
+    }
+
+    it("renders with defaults when the theme request fails on the network", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (url: string) => {
+          if (url === "/themes/t1") throw new TypeError("Failed to fetch");
+          return jsonRes({ id: "resp-1" });
+        }),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        themeUrl: "/themes/t1",
+      });
+      await waitForLabel(getShadow(), "Your name?");
+      expect(warn).toHaveBeenCalledWith(
+        "[quests-embed] theme fetch error — rendering with defaults",
+        expect.any(TypeError),
+      );
+      expect(themeStyle()).toBeNull();
+      warn.mockRestore();
+    });
+
+    it("adds no style block when every theme token is blank", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        themeDocument: {
+          preset: "default",
+          mode: "auto",
+          unstyled: false,
+          tokens: { "--qaid-q-card-radius": "   " },
+          css: "  ",
+        },
+      });
+      await waitForLabel(getShadow(), "Your name?");
+      expect(themeStyle()).toBeNull();
+    });
+
+    it("adds no preset CSS for a preset name it does not know", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        preset: "neon" as unknown as QuestsConfig["preset"],
+      });
+      await waitForLabel(getShadow(), "Your name?");
+      expect(themeStyle()).toBeNull();
+    });
+  });
+
+  describe("layout options", () => {
+    it("turns motion off when animate is false", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        animate: false,
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      expect(shadow.querySelector(".qaid-q-root")?.classList.contains("qaid-q-no-motion")).toBe(
+        true,
+      );
+    });
+
+    it("shows the questionnaire description under the header", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { ...sampleQuestionnaire, description: "Two quick ones." },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      const desc = shadow.querySelector<HTMLElement>(".qaid-q-header + .qaid-q-description");
+      expect(desc?.textContent).toBe("Two quick ones.");
+      expect(desc?.style.marginTop).toBe("-0.5rem");
+    });
+
+    it("sits the description flush at the top when there is no header row", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          id: "flush",
+          description: "Just this.",
+          hideProgress: true,
+          questions: sampleQuestionnaire.questions,
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      expect(shadow.querySelector(".qaid-q-header")).toBeNull();
+      const desc = shadow.querySelector<HTMLElement>(".qaid-q-card > .qaid-q-description");
+      expect(desc?.textContent).toBe("Just this.");
+      expect(["0", "0px"]).toContain(desc?.style.marginTop);
+    });
+
+    it("hides the description along with the title when hideTitle is set", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { ...sampleQuestionnaire, description: "Hidden", hideTitle: true },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      expect(shadow.querySelector(".qaid-q-title")).toBeNull();
+      expect(shadow.textContent).not.toContain("Hidden");
+    });
+
+    it("shows a question's own description inside its step", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          id: "qd",
+          questions: [
+            { id: "q1", type: "text", label: "Name?", description: "As on your card." },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Name?");
+      expect(shadow.querySelector(".qaid-q-step .qaid-q-description")?.textContent).toBe(
+        "As on your card.",
+      );
+    });
+
+    it("moves progress, saving and the counter into the footer when progress is at the bottom", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        progressPosition: "bottom",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+
+      const footer = shadow.querySelector(".qaid-q-footer")!;
+      expect(footer.classList.contains("qaid-q-footer--inline-progress")).toBe(true);
+      const kids = () => Array.from(footer.children).map((c) => c.className);
+      expect(kids()).toEqual([
+        "qaid-q-progress qaid-q-progress--inline",
+        "qaid-q-saving",
+        "qaid-q-step-counter",
+        "qaid-q-btn qaid-q-btn-primary",
+      ]);
+      // The header keeps the title but no longer carries the counter.
+      expect(shadow.querySelector(".qaid-q-header .qaid-q-step-counter")).toBeNull();
+
+      typeInto(shadow, "Ann");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitForLabel(shadow, "Favorite color?");
+      // Step 2 puts Back first in the same row.
+      expect(kids()[0]).toBe("qaid-q-btn qaid-q-btn-secondary");
+      expect(shadow.querySelector(".qaid-q-step-counter")?.textContent).toBe("2 / 2");
+    });
+  });
+
+  describe("modal controls", () => {
+    async function openModal(onClose = vi.fn(), q: Questionnaire = sampleQuestionnaire) {
+      embed = new QaidQuests({ endpoint: "/api/responses", questionnaire: q, onClose });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      return { shadow, onClose };
+    }
+
+    it("closes when the backdrop is clicked", async () => {
+      const { shadow, onClose } = await openModal();
+      shadow.querySelector<HTMLElement>(".qaid-q-backdrop")!.click();
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+
+    it("closes from the header close button", async () => {
+      const { shadow, onClose } = await openModal();
+      const close = shadow.querySelector<HTMLButtonElement>(".qaid-q-close")!;
+      expect(close.getAttribute("aria-label")).toBe("Close form");
+      close.click();
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+
+    it("closes on Escape, and ignores other keys", async () => {
+      const { onClose } = await openModal();
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+      expect(onClose).not.toHaveBeenCalled();
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+
+    it("keeps the thank-you screen up on Escape; its Close button closes", async () => {
+      const { shadow, onClose } = await openModal(vi.fn(), oneText);
+      typeInto(shadow, "hi");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      expect(onClose).not.toHaveBeenCalled();
+      expect(shadow.querySelector(".qaid-q-done")).toBeTruthy();
+
+      const close = shadow.querySelector<HTMLButtonElement>(".qaid-q-done .qaid-q-btn-primary")!;
+      expect(close.textContent).toBe("Close");
+      close.click();
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+
+    it("does not close an inline embed on Escape", async () => {
+      const onClose = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        onClose,
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      expect(onClose).not.toHaveBeenCalled();
+      expect(document.querySelector("[data-qaid-quests]")).toBeTruthy();
+    });
+  });
+
+  describe("advancing", () => {
+    it("Enter in a text field advances like Next", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      typeInto(shadow, "Ann");
+      shadow
+        .querySelector(".qaid-q-input")!
+        .dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }));
+      await waitForLabel(shadow, "Favorite color?");
+      expect(embed.getAnswers()).toEqual({ name: "Ann" });
+    });
+
+    it("autoAdvance moves on after a single-choice pick", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          id: "auto",
+          questions: [
+            oneChoice.questions[0],
+            { id: "why", type: "text", label: "Why?" },
+          ],
+        },
+        container: "#mount",
+        autoAdvance: true,
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Pick one");
+      shadow.querySelectorAll<HTMLButtonElement>(".qaid-q-option")[1].click();
+      await waitForLabel(shadow, "Why?");
+      expect(embed.getAnswers()).toEqual({ pick: "b" });
+    });
+
+    it("a Next button kept from before destroy() does nothing", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      typeInto(shadow, "Ann");
+      const next = shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!;
+      await settle();
+      embed.destroy();
+      const before = vi.mocked(fetch).mock.calls.length;
+      next.click();
+      await settle();
+      expect(vi.mocked(fetch).mock.calls.length).toBe(before);
+    });
+
+    it.each<[string, Question, string]>([
+      [
+        "text with a minimum length",
+        { id: "t", type: "text", label: "T", required: true, minLength: 3 },
+        "Please enter at least 3 characters.",
+      ],
+      [
+        "currency",
+        { id: "c", type: "currency", label: "C", required: true },
+        "Please enter a valid amount.",
+      ],
+      ["date", { id: "d", type: "date", label: "D", required: true }, "Please pick a date."],
+      [
+        "single choice",
+        { ...oneChoice.questions[0], required: true } as Question,
+        "Please select an option.",
+      ],
+      [
+        "multiple choice",
+        { ...oneChoice.questions[0], required: true, multiple: true } as Question,
+        "Please select at least one option.",
+      ],
+    ])("explains a missing %s answer", async (_name, question, message) => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: { id: "v", questions: [question] },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-step"));
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      const err = await waitFor(() => {
+        const e = shadow.querySelector(".qaid-q-error");
+        return e?.textContent ? e : null;
+      });
+      expect(err.textContent).toBe(message);
+      expect(submitCalls()).toHaveLength(0);
+    });
+  });
+
+  describe("autosave", () => {
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+    beforeEach(() => {
+      errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => errorSpy.mockRestore());
+
+    it("collapses quick typing into one PATCH once the debounce runs out", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+        saveDebounceMs: 30,
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      await settle();
+      typeInto(shadow, "A");
+      typeInto(shadow, "An");
+      typeInto(shadow, "Ann");
+      expect(patchCalls()).toHaveLength(0);
+      await waitFor(() => (patchCalls().length ? true : null));
+      await settle();
+      expect(patchCalls()).toEqual([
+        { url: "/api/responses/resp-1", method: "PATCH", body: { questionId: "name", value: "Ann" } },
+      ]);
+    });
+
+    it("holds a save until the response id arrives, then PATCHes it", async () => {
+      const create = deferred<Response>();
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((url: string, init?: RequestInit) =>
+          url === "/api/responses" && init?.method === "POST"
+            ? create.promise
+            : Promise.resolve(jsonRes({ ok: true })),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneChoice,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Pick one");
+      shadow.querySelectorAll<HTMLButtonElement>(".qaid-q-option")[0].click();
+      const saving = shadow.querySelector(".qaid-q-saving")!;
+      expect(saving.classList.contains("qaid-q-visible")).toBe(true);
+      await new Promise((r) => setTimeout(r, 120));
+      expect(patchCalls()).toHaveLength(0);
+
+      create.resolve(jsonRes({ id: 42 }));
+      await waitFor(() => (patchCalls().length ? true : null));
+      expect(patchCalls()[0]).toEqual({
+        url: "/api/responses/42",
+        method: "PATCH",
+        body: { questionId: "pick", value: "a" },
+      });
+      await waitFor(() => (!saving.classList.contains("qaid-q-visible") ? true : null));
+    });
+
+    it("drops a save after waiting 5 s for an id that never comes", async () => {
+      vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+      try {
+        vi.stubGlobal(
+          "fetch",
+          vi.fn((url: string, init?: RequestInit) =>
+            url === "/api/responses" && init?.method === "POST"
+              ? new Promise<Response>(() => {})
+              : Promise.resolve(jsonRes({ ok: true })),
+          ),
+        );
+        embed = new QaidQuests({
+          endpoint: "/api/responses",
+          questionnaire: oneChoice,
+          container: "#mount",
+        });
+        const shadow = getShadow();
+        await vi.advanceTimersByTimeAsync(0);
+        shadow.querySelectorAll<HTMLButtonElement>(".qaid-q-option")[0].click();
+        const saving = shadow.querySelector(".qaid-q-saving")!;
+        expect(saving.classList.contains("qaid-q-visible")).toBe(true);
+
+        await vi.advanceTimersByTimeAsync(4900);
+        expect(saving.classList.contains("qaid-q-visible")).toBe(true);
+        await vi.advanceTimersByTimeAsync(200);
+        expect(saving.classList.contains("qaid-q-visible")).toBe(false);
+        expect(patchCalls()).toHaveLength(0);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("logs a failed PATCH and carries on to the thank-you screen", async () => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (_url: string, init?: RequestInit) => {
+          if (init?.method === "PATCH") throw new TypeError("Failed to fetch");
+          return jsonRes({ id: "resp-1" });
+        }),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneChoice,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Pick one");
+      await settle();
+      shadow.querySelectorAll<HTMLButtonElement>(".qaid-q-option")[1].click();
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+      expect(errorSpy).toHaveBeenCalledWith(
+        "[quests-embed] failed to save answer:",
+        expect.any(TypeError),
+      );
+      expect(submitCalls()[0].body).toEqual({ answers: { pick: "b" } });
+    });
+
+    it("survives destroy() while a save is still in flight", async () => {
+      const patch = deferred<Response>();
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((_url: string, init?: RequestInit) =>
+          init?.method === "PATCH" ? patch.promise : Promise.resolve(jsonRes({ id: "resp-1" })),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneChoice,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Pick one");
+      await settle();
+      shadow.querySelectorAll<HTMLButtonElement>(".qaid-q-option")[0].click();
+      await waitFor(() => (patchCalls().length ? true : null));
+      embed.destroy();
+      patch.resolve(jsonRes({ ok: true }));
+      await settle();
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+  });
+
+  describe("creating the response", () => {
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+    beforeEach(() => {
+      errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => errorSpy.mockRestore());
+
+    it("logs a create lost on the network and retries it on submit", async () => {
+      let creates = 0;
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (url: string, init?: RequestInit) => {
+          if (url === "/api/responses" && init?.method === "POST") {
+            creates++;
+            if (creates === 1) throw new TypeError("Failed to fetch");
+            return jsonRes({ id: "resp-2" });
+          }
+          return jsonRes({ ok: true });
+        }),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneText,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-input"));
+      typeInto(shadow, "hi");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+      expect(errorSpy).toHaveBeenCalledWith(
+        "[quests-embed] failed to create response:",
+        expect.any(TypeError),
+      );
+      expect(submitCalls().map((c) => c.url)).toEqual(["/api/responses/resp-2/submit"]);
+    });
+
+    it("sends the API key as a header and in the create body", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        apiKey: "pk_test",
+        questionnaire: oneText,
+        container: "#mount",
+      });
+      await waitFor(() => (vi.mocked(fetch).mock.calls.length ? true : null));
+      const [, init] = vi.mocked(fetch).mock.calls[0];
+      expect((init!.headers as Record<string, string>)["X-API-Key"]).toBe("pk_test");
+      expect(JSON.parse(init!.body as string).apiKey).toBe("pk_test");
+    });
+
+    describe("visitor id", () => {
+      function storage(initial: Record<string, string> = {}) {
+        const data = new Map(Object.entries(initial));
+        return {
+          getItem: (k: string) => data.get(k) ?? null,
+          setItem: (k: string, v: string) => void data.set(k, v),
+          data,
+        };
+      }
+
+      async function sentVisitorId(): Promise<unknown> {
+        await waitFor(() => (vi.mocked(fetch).mock.calls.length ? true : null));
+        return JSON.parse(vi.mocked(fetch).mock.calls[0][1]!.body as string).visitorId;
+      }
+
+      it("makes up an id on the first visit and remembers it", async () => {
+        const store = storage();
+        vi.stubGlobal("localStorage", store);
+        embed = new QaidQuests({ endpoint: "/api/responses", questionnaire: oneText, container: "#mount" });
+        const id = await sentVisitorId();
+        expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+        expect(store.data.get("qaid_visitor_id")).toBe(id);
+      });
+
+      it("reuses the id it remembered", async () => {
+        vi.stubGlobal("localStorage", storage({ qaid_visitor_id: "seen-before" }));
+        embed = new QaidQuests({ endpoint: "/api/responses", questionnaire: oneText, container: "#mount" });
+        expect(await sentVisitorId()).toBe("seen-before");
+      });
+    });
+  });
+
+  describe("submit edge cases", () => {
+    let errorSpy: ReturnType<typeof vi.spyOn>;
+    beforeEach(() => {
+      errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => errorSpy.mockRestore());
+
+    function stubSubmit(submit: () => Promise<Response>) {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((url: string) =>
+          url.endsWith("/submit") ? submit() : Promise.resolve(jsonRes({ id: "resp-1" })),
+        ),
+      );
+    }
+
+    async function answerAndSubmit(shadow: ShadowRoot) {
+      await waitFor(() => shadow.querySelector(".qaid-q-input"));
+      typeInto(shadow, "hi");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => (submitCalls().length ? true : null));
+    }
+
+    it("still reports completion when destroyed while an accepted submit was in flight", async () => {
+      const reply = deferred<Response>();
+      stubSubmit(() => reply.promise);
+      const onComplete = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneText,
+        container: "#mount",
+        onComplete,
+      });
+      await answerAndSubmit(getShadow());
+      embed.destroy();
+      reply.resolve(jsonRes({ ok: true }));
+      await settle();
+      expect(onComplete).toHaveBeenCalledWith({ q1: "hi" });
+      expect(document.querySelector("[data-qaid-quests]")).toBeNull();
+    });
+
+    it("draws no error screen when destroyed while a refused submit was in flight", async () => {
+      const reply = deferred<Response>();
+      stubSubmit(() => reply.promise);
+      const onComplete = vi.fn();
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneText,
+        container: "#mount",
+        onComplete,
+      });
+      await answerAndSubmit(getShadow());
+      embed.destroy();
+      reply.resolve(jsonRes({ error: "no" }, 500));
+      await settle();
+      expect(onComplete).not.toHaveBeenCalled();
+      expect(mount.children).toHaveLength(0);
+    });
+
+    it("ignores Try again while a retry is already running", async () => {
+      const second = deferred<Response>();
+      let n = 0;
+      stubSubmit(() => (++n === 1 ? Promise.resolve(jsonRes({}, 500)) : second.promise));
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneText,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await answerAndSubmit(shadow);
+      const retry = await waitFor(() =>
+        shadow.querySelector<HTMLButtonElement>(".qaid-q-submit-error .qaid-q-btn-primary"),
+      );
+      retry.click();
+      expect(retry.textContent).toBe("Sending…");
+      expect(retry.getAttribute("aria-disabled")).toBe("true");
+      retry.click();
+      await waitFor(() => (submitCalls().length === 2 ? true : null));
+      await settle();
+      expect(submitCalls()).toHaveLength(2);
+      second.resolve(jsonRes({ ok: true }));
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+    });
+
+    it("submits straight away, with no answers, when every question is gated off", async () => {
+      const create = deferred<Response>();
+      vi.stubGlobal(
+        "fetch",
+        vi.fn((url: string, init?: RequestInit) =>
+          url === "/api/responses" && init?.method === "POST"
+            ? create.promise
+            : Promise.resolve(jsonRes({ ok: true })),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: {
+          id: "gated",
+          questions: [
+            {
+              id: "only",
+              type: "text",
+              label: "Only?",
+              visibleIf: { questionId: "elsewhere", answered: true },
+            },
+          ],
+        },
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await settle();
+      // Ready, but there is no question to be on.
+      expect(shadow.querySelector(".qaid-q-step")).toBeNull();
+      expect(embed.getCurrentQuestionId()).toBeNull();
+
+      create.resolve(jsonRes({ id: "resp-9" }));
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+      expect(submitCalls()).toEqual([
+        { url: "/api/responses/resp-9/submit", method: "POST", body: { answers: {} } },
+      ]);
+    });
+  });
+
+  describe("host API edge cases", () => {
+    it("getCurrentQuestionId is null while loading and after completion", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneText,
+        container: "#mount",
+      });
+      expect(embed.getCurrentQuestionId()).toBeNull();
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-input"));
+      expect(embed.getCurrentQuestionId()).toBe("q1");
+      typeInto(shadow, "hi");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-done"));
+      expect(embed.getCurrentQuestionId()).toBeNull();
+    });
+
+    it("goToStep to the question already on screen leaves it alone", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      typeInto(shadow, "typed");
+      const input = shadow.querySelector(".qaid-q-input");
+      expect(embed.goToStep("name")).toBe(true);
+      // Same element, same text: no redraw.
+      expect(shadow.querySelector(".qaid-q-input")).toBe(input);
+      expect((input as HTMLInputElement).value).toBe("typed");
+    });
+
+    it("a goToStep latched for an unknown question leaves the form on its first step", async () => {
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: sampleQuestionnaire,
+        container: "#mount",
+      });
+      expect(embed.goToStep("nope")).toBe(false);
+      const shadow = getShadow();
+      await waitForLabel(shadow, "Your name?");
+      expect(embed.getCurrentQuestionId()).toBe("name");
+    });
+
+    it("update() on the submit-error screen puts the form back, answers intact", async () => {
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (url: string) =>
+          url.endsWith("/submit") ? jsonRes({}, 500) : jsonRes({ id: "resp-1" }),
+        ),
+      );
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        questionnaire: oneText,
+        container: "#mount",
+      });
+      const shadow = getShadow();
+      await waitFor(() => shadow.querySelector(".qaid-q-input"));
+      typeInto(shadow, "hi");
+      shadow.querySelector<HTMLButtonElement>(".qaid-q-btn-primary")!.click();
+      await waitFor(() => shadow.querySelector(".qaid-q-submit-error"));
+
+      expect(
+        embed.update({
+          ...oneText,
+          questions: [{ id: "q1", type: "text", label: "One, reworded?", required: true }],
+        }),
+      ).toBe(true);
+      expect(shadow.querySelector(".qaid-q-submit-error")).toBeNull();
+      await waitForLabel(shadow, "One, reworded?");
+      expect(shadow.querySelector<HTMLInputElement>(".qaid-q-input")!.value).toBe("hi");
+      expect(embed.getCurrentQuestionId()).toBe("q1");
+      errorSpy.mockRestore();
     });
   });
 });

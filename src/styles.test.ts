@@ -164,4 +164,9 @@ describe("getPresetCss", () => {
     // The default preset is an explicit empty rule, not literally "".
     expect(typeof getPresetCss("default")).toBe("string");
   });
+
+  it("returns an empty string for an unknown preset name", () => {
+    // Hosts pass `preset` as a plain string from JSON config.
+    expect(getPresetCss("neon" as Parameters<typeof getPresetCss>[0])).toBe("");
+  });
 });

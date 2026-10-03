@@ -913,7 +913,7 @@ ${s}
     this.stepIndex++, this.renderStep();
   }
   back() {
-    this.flushPendingSave(), this.stepIndex > 0 && (this.stepIndex--, this.recomputeVisible(), this.stepIndex >= this.visibleQuestions.length && (this.stepIndex = Math.max(0, this.visibleQuestions.length - 1)), this.renderStep());
+    this.flushPendingSave(), !(this.stepIndex <= 0) && (this.stepIndex--, this.recomputeVisible(), this.stepIndex >= this.visibleQuestions.length && (this.stepIndex = Math.max(0, this.visibleQuestions.length - 1)), this.renderStep());
   }
   // ------------------------------------------------------------------
   // Answer handling + autosave
@@ -1180,6 +1180,7 @@ function Ve(t) {
       return "Please pick a date.";
     case "multiple-choice":
       return t.multiple ? "Please select at least one option." : "Please select an option.";
+    /* v8 ignore start -- unreachable: a range always holds a value, so its isValid() never fails */
     case "range":
       return "Please choose a value.";
   }

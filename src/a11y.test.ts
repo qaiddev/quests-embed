@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   announce,
   getFocusable,
@@ -506,6 +506,103 @@ describe("a11y", () => {
       expect(sib.inert).toBe(true);
       restore();
       expect(sib.inert).toBe(false);
+    });
+
+    it("inerts every body child when the dialog is not attached to the page", () => {
+      const sib1 = document.createElement("div");
+      const sib2 = document.createElement("div");
+      document.body.append(sib1, sib2);
+      // Never attached: there is no top-level element to keep.
+      const detached = document.createElement("div");
+
+      const restore = setBackgroundInert(detached);
+      expect(sib1.inert).toBe(true);
+      expect(sib2.inert).toBe(true);
+      restore();
+      expect(sib1.inert).toBe(false);
+      expect(sib2.inert).toBe(false);
+    });
+
+    it("keeps nothing when handed the body itself", () => {
+      const sib = document.createElement("div");
+      document.body.append(sib);
+      const restore = setBackgroundInert(document.body);
+      expect(sib.inert).toBe(true);
+      expect(sib.getAttribute("aria-hidden")).toBe("true");
+      restore();
+      expect(sib.hasAttribute("aria-hidden")).toBe(false);
+    });
+
+    it("skips non-HTML body children such as an inline SVG", () => {
+      const dialog = document.createElement("div");
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      document.body.append(dialog, svg);
+      const restore = setBackgroundInert(dialog);
+      expect(svg.hasAttribute("aria-hidden")).toBe(false);
+      restore();
+    });
+
+    it("is a no-op in a document with no body", () => {
+      const doc = document.implementation.createHTMLDocument("");
+      doc.documentElement.removeChild(doc.body);
+      expect(doc.body).toBeNull();
+      const el = doc.createElement("div");
+      doc.documentElement.appendChild(el);
+      const sib = document.createElement("div");
+      document.body.append(sib);
+
+      const restore = setBackgroundInert(el);
+      // Nothing to isolate, and the live page is not touched.
+      expect(sib.inert).toBe(false);
+      expect(() => restore()).not.toThrow();
+    });
+  });
+
+  describe("edge cases", () => {
+    it("getFocusable excludes an anchor that is focusable only via tabindex but has no href", () => {
+      const container = document.createElement("div");
+      const link = document.createElement("a");
+      link.setAttribute("tabindex", "0");
+      link.textContent = "fake link";
+      const btn = makeButton("real");
+      container.append(link, btn);
+      document.body.appendChild(container);
+      expect(getFocusable(container)).toEqual([btn]);
+    });
+
+    it("Shift+Tab in the middle of the trap is left to the browser", () => {
+      const container = document.createElement("div");
+      const a = makeButton("a");
+      const b = makeButton("b");
+      const c = makeButton("c");
+      container.append(a, b, c);
+      document.body.appendChild(container);
+      const trap = createFocusTrap(container);
+      b.focus();
+      const ev = tabEvent(true);
+      b.dispatchEvent(ev);
+      expect(ev.defaultPrevented).toBe(false);
+      expect(document.activeElement).toBe(b);
+      trap.release();
+    });
+
+    it("Tab with no active element pulls focus to the first control", () => {
+      const container = document.createElement("div");
+      const a = makeButton("a");
+      const b = makeButton("b");
+      container.append(a, b);
+      document.body.appendChild(container);
+      const trap = createFocusTrap(container);
+      b.focus();
+      const spy = vi
+        .spyOn(document, "activeElement", "get")
+        .mockReturnValue(null);
+      const ev = tabEvent(false);
+      container.dispatchEvent(ev);
+      spy.mockRestore();
+      expect(ev.defaultPrevented).toBe(true);
+      expect(document.activeElement).toBe(a);
+      trap.release();
     });
   });
 });

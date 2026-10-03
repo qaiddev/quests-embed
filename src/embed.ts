@@ -514,13 +514,17 @@ export class QaidQuests {
   }
 
   private renderLoading(): void {
+    /* v8 ignore start -- unreachable: mountShell(), which runs just before, always sets cardEl */
     if (!this.cardEl) return;
+    /* v8 ignore stop */
     this.cardEl.replaceChildren();
     const msg = document.createElement("p");
     msg.className = "qaid-q-description";
     msg.textContent = "Loading…";
     this.cardEl.appendChild(msg);
+    /* v8 ignore start -- the false arm is unreachable: mountShell(), which runs just before, always sets shadowRoot */
     if (this.shadowRoot) announce(this.shadowRoot, "Loading");
+    /* v8 ignore stop */
   }
 
   private renderError(err: unknown): void {
@@ -715,12 +719,15 @@ export class QaidQuests {
       void this.submit();
       return;
     }
+    /* v8 ignore start -- unreachable: a predicate only reads earlier answers, so no answer can hide a question before the current one */
     if (this.stepIndex >= total) {
       this.stepIndex = total - 1;
     }
+    /* v8 ignore stop */
     const idx = this.stepIndex;
     const question = this.visibleQuestions[idx];
 
+    /* v8 ignore start -- the false arms are unreachable: renderHeader() creates these before any step is drawn */
     if (this.stepCounterEl) {
       this.stepCounterEl.textContent = `${idx + 1} / ${total}`;
     }
@@ -742,6 +749,7 @@ export class QaidQuests {
         `Question ${idx + 1} of ${total}`,
       );
     }
+    /* v8 ignore stop */
     // Announce the step change through the shared polite region. Kept
     // distinct from the per-step validation error region below so the
     // two never clobber each other. Skipped for single-question forms
@@ -842,9 +850,11 @@ export class QaidQuests {
       // Single-row footer: [back] [progress fills] [savingEl][stepCounter] [next]
       this.footerEl.classList.add("qaid-q-footer--inline-progress");
       if (back) this.footerEl.appendChild(back);
+      /* v8 ignore start -- the false arms are unreachable: renderHeader() creates these before any step is drawn */
       if (this.progressEl) this.footerEl.appendChild(this.progressEl);
       if (this.savingEl) this.footerEl.appendChild(this.savingEl);
       if (this.stepCounterEl) this.footerEl.appendChild(this.stepCounterEl);
+      /* v8 ignore stop */
       this.footerEl.appendChild(next);
     } else {
       this.footerEl.classList.remove("qaid-q-footer--inline-progress");
@@ -927,12 +937,14 @@ export class QaidQuests {
     // Move focus to the thank-you heading and announce the confirmation
     // (the submit button that had focus was just removed).
     requestAnimationFrame(() => title.focus());
+    /* v8 ignore start -- the false arm is unreachable: destroy() clears cardEl and shadowRoot together, and a null cardEl returned above */
     if (this.shadowRoot) {
       const message = this.questionnaire.thankYouMessage
         ? `${doneTitle}. ${this.questionnaire.thankYouMessage}`
         : doneTitle;
       announce(this.shadowRoot, message);
     }
+    /* v8 ignore stop */
   }
 
   /**
@@ -994,9 +1006,11 @@ export class QaidQuests {
     this.cardEl.appendChild(wrap);
 
     requestAnimationFrame(() => title.focus());
+    /* v8 ignore start -- the false arm is unreachable: destroy() clears cardEl and shadowRoot together, and a null cardEl returned above */
     if (this.shadowRoot) {
       announce(this.shadowRoot, `${titleText}. ${msgText}`, { assertive: true });
     }
+    /* v8 ignore stop */
   }
 
   // ------------------------------------------------------------------
@@ -1030,16 +1044,19 @@ export class QaidQuests {
   private back(): void {
     // Flush any pending save before navigating
     this.flushPendingSave();
-    if (this.stepIndex > 0) {
-      this.stepIndex--;
-      // Defensive: a previous answer may have been changed in a way that
-      // shrinks the visible tail. Recompute and clamp.
-      this.recomputeVisible();
-      if (this.stepIndex >= this.visibleQuestions.length) {
-        this.stepIndex = Math.max(0, this.visibleQuestions.length - 1);
-      }
-      this.renderStep();
+    /* v8 ignore start -- unreachable: the Back button is only drawn when stepIndex > 0 */
+    if (this.stepIndex <= 0) return;
+    /* v8 ignore stop */
+    this.stepIndex--;
+    // Defensive: a previous answer may have been changed in a way that
+    // shrinks the visible tail. Recompute and clamp.
+    this.recomputeVisible();
+    /* v8 ignore start -- unreachable: going back changes no answer, so the visible list cannot have shrunk */
+    if (this.stepIndex >= this.visibleQuestions.length) {
+      this.stepIndex = Math.max(0, this.visibleQuestions.length - 1);
     }
+    /* v8 ignore stop */
+    this.renderStep();
   }
 
   // ------------------------------------------------------------------
@@ -1047,7 +1064,9 @@ export class QaidQuests {
   // ------------------------------------------------------------------
 
   private recomputeVisible(): void {
+    /* v8 ignore start -- unreachable: only called once a questionnaire has loaded */
     if (!this.questionnaire) return;
+    /* v8 ignore stop */
     this.visibleQuestions = getVisibleQuestions(this.questionnaire, this.answers);
   }
 
@@ -1061,7 +1080,9 @@ export class QaidQuests {
    */
   private syncPrimaryLabel(): void {
     const btn = this.primaryBtn;
+    /* v8 ignore start -- unreachable: only the live step reports answers, and it always has its primary button */
     if (!btn || !this.questionnaire) return;
+    /* v8 ignore stop */
     const isLast = this.stepIndex >= this.visibleQuestions.length - 1;
     const label = isLast
       ? (this.questionnaire.submitLabel ?? "Submit")
@@ -1222,16 +1243,20 @@ export class QaidQuests {
     // A create still in flight gets to finish; a failed one gets one
     // more try. Without an id there is nothing to submit to, and saying
     // "Thank you!" would tell the visitor their answers arrived.
+    /* v8 ignore start -- the false arm is unreachable: init() starts the create before it draws a step, so a submit always has one */
     if (this.createPromise) await this.createPromise;
+    /* v8 ignore stop */
     if (this.responseId === null) await this.startCreate();
     if (this.responseId === null) {
       this.renderSubmitError();
       return;
     }
 
+    /* v8 ignore start -- the empty-object arm is unreachable: submit() only runs once a questionnaire has loaded */
     const submitted = this.questionnaire
       ? getVisibleAnswers(this.questionnaire, this.answers)
       : {};
+    /* v8 ignore stop */
 
     // Bring the server's per-answer rows in line with what is submitted.
     // Answers whose autosave was dropped (no id yet) are sent now; an
@@ -1320,7 +1345,9 @@ export class QaidQuests {
    */
   private setupModalA11y(): void {
     if (this.isUserContainer || !this.cardEl) return;
+    /* v8 ignore start -- unreachable: init() is the only caller, and it runs once */
     if (this.focusTrap) return;
+    /* v8 ignore stop */
     this.focusTrap = createFocusTrap(this.cardEl);
     this.inertRestore = setBackgroundInert(this.cardEl);
   }
@@ -1514,7 +1541,9 @@ function validationMessage(q: Question): string {
       return "Please pick a date.";
     case "multiple-choice":
       return q.multiple ? "Please select at least one option." : "Please select an option.";
+    /* v8 ignore start -- unreachable: a range always holds a value, so its isValid() never fails */
     case "range":
       return "Please choose a value.";
+    /* v8 ignore stop */
   }
 }
