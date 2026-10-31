@@ -41,7 +41,7 @@ new QaidQuests({
 
 The embed auto-initializes when it detects a `data-endpoint` attribute on its script tag and either `data-config-url` or an inline JSON config.
 
-`dist/embed.js` is a 0.7 KB loader (gzipped). It loads the quest code (about 16 KB) when the container comes within a screen's height of the viewport, or once the page has loaded and the browser is idle, whichever is first. Without a `data-container` it loads at once. Pointing the tag straight at `dist/qaid-quests.umd.cjs` still works and loads everything up front.
+`dist/embed.js` is a 0.8 KB loader (gzipped). It loads the quest code (about 16 KB) when the container comes within a screen's height of the viewport, or once the page has loaded and the browser is idle, whichever is first. Without a `data-container` it loads at once. It starts fetching the questions (`data-config-url`) and theme (`data-theme-url`) at the same moment as the quest code, so they arrive together. A questionnaire may also carry its theme as `themeDocument`, so one request brings both; a `themeUrl` or `themeDocument` set on the tag still wins. Pointing the tag straight at `dist/qaid-quests.umd.cjs` still works and loads everything up front.
 
 ### JSON Config (Script Tag)
 

@@ -8,6 +8,7 @@ import type {
   ResolvedQuestsConfig,
   ResolvedQuestTheme,
 } from "./types";
+import { fetchJson } from "./prefetch";
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleAnswers, getVisibleQuestions } from "./visibility";
@@ -282,7 +283,8 @@ export class QaidQuests {
       // it is newer than the one we were already loading.
       this.questionnaire = this.pendingUpdate ?? q;
       this.pendingUpdate = null;
-      this.applyResolvedTheme(themeDoc);
+      // A theme sent with the questions applies when the host named none.
+      this.applyResolvedTheme(themeDoc ?? q.themeDocument ?? null);
       this.recomputeVisible();
       // Apply any goToStep request that came in before init finished.
       if (this.pendingGoToStep) {
@@ -318,9 +320,7 @@ export class QaidQuests {
     if (this.themeDocument) return this.themeDocument;
     if (!this.themeUrl) return null;
     try {
-      const res = await fetch(this.themeUrl, {
-        headers: { Accept: "application/json" },
-      });
+      const res = await fetchJson(this.themeUrl);
       if (!res.ok) {
         console.warn(
           `[quests-embed] theme fetch failed (${res.status}) — rendering with defaults`,
@@ -413,9 +413,7 @@ export class QaidQuests {
     if (!this.configUrl) {
       throw new Error("No questionnaire or configUrl provided");
     }
-    const res = await fetch(this.configUrl, {
-      headers: { Accept: "application/json" },
-    });
+    const res = await fetchJson(this.configUrl);
     if (!res.ok) {
       throw new Error(`Failed to load questionnaire (${res.status})`);
     }

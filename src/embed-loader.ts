@@ -12,6 +12,11 @@
  *   - right away, when there is no container to watch (the modal install) or
  *     the browser has no IntersectionObserver.
  *
+ * When it injects the bundle it also starts fetching the quest's questions
+ * (`data-config-url`) and theme (`data-theme-url`), so they download beside
+ * the code instead of after it. The bundle picks the requests up from
+ * `window.__qaidQuestsPrefetch` (see prefetch.ts).
+ *
  * The injected bundle initializes itself from the `data-*` attributes copied
  * across from this tag (or from a `<script type="application/json">` config
  * block already on the page), exactly as if the page had loaded it directly.
@@ -67,6 +72,21 @@
     }
     entry.src = base + "qaid-quests.umd.cjs";
     (document.head || document.documentElement).appendChild(entry);
+    prefetch(tag.getAttribute("data-config-url"));
+    prefetch(tag.getAttribute("data-theme-url"));
+  }
+
+  // Must match PREFETCH_KEY and the request in prefetch.ts.
+  function prefetch(url: string | null): void {
+    if (!url || typeof fetch !== "function") return;
+    var w = window as unknown as Record<string, Record<string, Promise<Response> | undefined> | undefined>;
+    var store = w.__qaidQuestsPrefetch || (w.__qaidQuestsPrefetch = {});
+    if (store[url]) return;
+    var request = fetch(url, { headers: { Accept: "application/json" } });
+    // The embed handles a failure (it retries); this only stops a request
+    // nobody picks up from reporting an unhandled rejection.
+    request.catch(function () {});
+    store[url] = request;
   }
 
   function whenIdleAfterLoad(): void {

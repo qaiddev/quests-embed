@@ -74,6 +74,33 @@ describe("single-tag quest loader (embed-loader.ts)", () => {
     expect(entry.hasAttribute("src")).toBe(true);
   });
 
+  it("starts fetching the questions and theme alongside the code", async () => {
+    const fetchMock = vi.fn(() => Promise.resolve(new Response("{}")));
+    vi.stubGlobal("fetch", fetchMock);
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+    setCurrentScript(
+      addLoaderTag(EMBED_SRC, { "data-endpoint": "/r", "data-config-url": "/q.json", "data-theme-url": "/t.json" }),
+    );
+    await runLoader();
+    expect(fetchMock.mock.calls.map((c) => (c as unknown[])[0])).toEqual(["/q.json", "/t.json"]);
+    const store = (window as unknown as { __qaidQuestsPrefetch: Record<string, unknown> }).__qaidQuestsPrefetch;
+    expect(Object.keys(store)).toEqual(["/q.json", "/t.json"]);
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+  });
+
+  it("does not fetch the questions before the quest code is wanted", async () => {
+    const fetchMock = vi.fn(() => Promise.resolve(new Response("{}")));
+    vi.stubGlobal("fetch", fetchMock);
+    vi.stubGlobal("requestIdleCallback", vi.fn());
+    document.body.innerHTML = '<div id="m"></div>';
+    setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r", "data-config-url": "/q.json", "data-container": "#m" }));
+    await runLoader();
+    expect(fetchMock).not.toHaveBeenCalled();
+    FakeObserver.last!.cb([{ isIntersecting: true }]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+  });
+
   it("waits for the container to near the viewport, then loads once", async () => {
     vi.stubGlobal("requestIdleCallback", vi.fn());
     document.body.innerHTML = '<div id="m"></div>';

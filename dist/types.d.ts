@@ -144,6 +144,12 @@ export interface Questionnaire {
     /** Back button label. Default "Back" */
     backLabel?: string;
     questions: Question[];
+    /**
+     * A theme document sent with the questionnaire, so one request brings
+     * both (qaid.dev's `/definition?theme=<id>`). Used when the host set no
+     * `themeUrl` or `themeDocument` of its own.
+     */
+    themeDocument?: ResolvedQuestTheme | null;
 }
 /**
  * Configuration for the QaidQuests embed.

@@ -1401,6 +1401,78 @@ describe("QaidQuests", () => {
       expect(css).toContain("outline: 1px solid red");
     });
 
+    it("applies a theme sent inside the questionnaire, with one request", async () => {
+      stubFetch([
+        [
+          "/q.json",
+          () =>
+            new Response(
+              JSON.stringify({
+                ...sampleQuestionnaire,
+                themeDocument: { mode: "dark", tokens: { "--qaid-q-card-radius": "3px" } },
+              }),
+              { status: 200, headers: { "content-type": "application/json" } },
+            ),
+        ],
+      ]);
+      embed = new QaidQuests({ endpoint: "/api/responses", configUrl: "/q.json", container: "#mount" });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-theme-dark")).toBe(true);
+      expect(getThemeStyle()?.textContent ?? "").toContain("--qaid-q-card-radius: 3px");
+      const urls = vi.mocked(fetch).mock.calls.map((c) => String(c[0]));
+      expect(urls.filter((u) => u.includes("/q.json"))).toHaveLength(1);
+    });
+
+    it("lets the host's themeUrl win over a theme sent with the questionnaire", async () => {
+      stubFetch([
+        ["/q.json", () => new Response(JSON.stringify({ ...sampleQuestionnaire, themeDocument: { mode: "dark" } }))],
+        ["/themes/abc", () => new Response(JSON.stringify({ mode: "light" }))],
+      ]);
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/q.json",
+        themeUrl: "/themes/abc",
+        container: "#mount",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-theme-light")).toBe(true);
+    });
+
+    it("uses the questions and theme the loader already started fetching", async () => {
+      stubFetch([]);
+      const early = (body: unknown) => Promise.resolve(new Response(JSON.stringify(body)));
+      (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch = {
+        "/q.json": early(sampleQuestionnaire),
+        "/themes/abc": early({ mode: "dark" }),
+      };
+      embed = new QaidQuests({
+        endpoint: "/api/responses",
+        configUrl: "/q.json",
+        themeUrl: "/themes/abc",
+        container: "#mount",
+      });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      expect(getRoot().classList.contains("qaid-q-theme-dark")).toBe(true);
+      const urls = vi.mocked(fetch).mock.calls.map((c) => String(c[0]));
+      expect(urls).not.toContain("/q.json");
+      expect(urls).not.toContain("/themes/abc");
+      // Taken once: the store no longer holds them.
+      expect((window as unknown as { __qaidQuestsPrefetch: object }).__qaidQuestsPrefetch).toEqual({});
+      delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+    });
+
+    it("fetches again when the loader's early request failed", async () => {
+      stubFetch([["/q.json", () => new Response(JSON.stringify(sampleQuestionnaire))]]);
+      (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch = {
+        "/q.json": Promise.reject(new Error("offline")),
+      };
+      embed = new QaidQuests({ endpoint: "/api/responses", configUrl: "/q.json", container: "#mount" });
+      await waitFor(() => getShadow().querySelector(".qaid-q-step"));
+      const urls = vi.mocked(fetch).mock.calls.map((c) => String(c[0]));
+      expect(urls).toContain("/q.json");
+      delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+    });
+
     it("accepts a pre-fetched themeDocument without making a fetch", async () => {
       embed = new QaidQuests({
         endpoint: "/api/responses",

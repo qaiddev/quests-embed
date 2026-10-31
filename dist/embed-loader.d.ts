@@ -12,6 +12,11 @@
  *   - right away, when there is no container to watch (the modal install) or
  *     the browser has no IntersectionObserver.
  *
+ * When it injects the bundle it also starts fetching the quest's questions
+ * (`data-config-url`) and theme (`data-theme-url`), so they download beside
+ * the code instead of after it. The bundle picks the requests up from
+ * `window.__qaidQuestsPrefetch` (see prefetch.ts).
+ *
  * The injected bundle initializes itself from the `data-*` attributes copied
  * across from this tag (or from a `<script type="application/json">` config
  * block already on the page), exactly as if the page had loaded it directly.
