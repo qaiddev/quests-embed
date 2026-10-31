@@ -49,16 +49,16 @@ The embed auto-initializes when it detects a `data-endpoint` attribute on its sc
 
 ### What loads when
 
-Sizes are gzipped, for 1.10. Times are rough estimates for a first visit on a typical 4G phone (100 ms round trip, 9 Mbps).
+Sizes are gzipped, for 1.10.
 
-| When | Size | What it brings | About |
-|------|------|----------------|-------|
-| Before paint | 0 KB | nothing; the tag waits (`defer`) | 0 s |
-| After paint | 0.8 KB | the tag (`embed.js`) | 0.5 s |
-| Quest near the screen, or browser idle | 16 KB | the quest code | 0.1 s |
-| Same moment | +1 KB | the questions and theme, in one request | 0.3 s |
+| When | Size | What it brings |
+|------|------|----------------|
+| Before paint | 0 KB | nothing; the tag waits (`defer`) |
+| After paint | 0.8 KB | the tag (`embed.js`) |
+| Quest near the screen, or browser idle | 16 KB | the quest code |
+| Same moment | +1 KB | the questions and theme, in one request |
 
-The quest is ready about 0.9 s after paint. The questions come from your server on a new connection, so they finish a little after the code even though they start together.
+The questions come from your server, so they finish a little after the code even though they start together.
 
 ### JSON Config (Script Tag)
 
