@@ -5,6 +5,10 @@
 
 A zero-dependency, lightweight questionnaire embed that renders step-by-step forms from a JSON definition. Drop it inline on a page or open it as a modal — answers are autosaved as the user types and submitted to your API endpoint or the [QAid.dev hosted dashboard](https://qaid.dev).
 
+It needs 16.8 KB (gzipped) to show a quest: a 0.8 KB tag, then the quest code once the quest is near the screen. See [What loads when](#what-loads-when).
+
+![A quest inline on a shop page, asking how often you brew at home](https://raw.githubusercontent.com/qaiddev/quests-embed/prod/docs/screenshots/step.png)
+
 ## Install
 
 ### npm
@@ -42,6 +46,19 @@ new QaidQuests({
 The embed auto-initializes when it detects a `data-endpoint` attribute on its script tag and either `data-config-url` or an inline JSON config.
 
 `dist/embed.js` is a 0.8 KB loader (gzipped). It loads the quest code (about 16 KB) when the container comes within a screen's height of the viewport, or once the page has loaded and the browser is idle, whichever is first. Without a `data-container` it loads at once. It starts fetching the questions (`data-config-url`) and theme (`data-theme-url`) at the same moment as the quest code, so they arrive together. A questionnaire may also carry its theme as `themeDocument`, so one request brings both; a `themeUrl` or `themeDocument` set on the tag still wins. Pointing the tag straight at `dist/qaid-quests.umd.cjs` still works and loads everything up front.
+
+### What loads when
+
+Sizes are gzipped, for 1.10. Times are rough estimates for a first visit on a typical 4G phone (100 ms round trip, 9 Mbps).
+
+| When | Size | What it brings | About |
+|------|------|----------------|-------|
+| Before paint | 0 KB | nothing; the tag waits (`defer`) | 0 s |
+| After paint | 0.8 KB | the tag (`embed.js`) | 0.5 s |
+| Quest near the screen, or browser idle | 16 KB | the quest code | 0.1 s |
+| Same moment | +1 KB | the questions and theme, in one request | 0.3 s |
+
+The quest is ready about 0.9 s after paint. The questions come from your server on a new connection, so they finish a little after the code even though they start together.
 
 ### JSON Config (Script Tag)
 
@@ -85,6 +102,8 @@ For complex configurations or inline questionnaires, use a separate JSON config 
 6. A "thank you" screen appears once the server accepts the submit. If the create or the submit fails (a network error or a non-2xx reply), the embed shows "Couldn't send your answers" with a **Try again** button instead; the answers are kept, and Try again re-creates the response first if it has to
 
 If `container` is set, the form renders inline inside that element. If not, it opens as a centered modal with a backdrop.
+
+![The thank-you screen after the last question](https://raw.githubusercontent.com/qaiddev/quests-embed/prod/docs/screenshots/done.png)
 
 ## Questionnaire Definition
 
@@ -513,6 +532,10 @@ The embed renders inside a Shadow DOM, so your page's CSS can't leak in. To them
 
 The variable names are shared with `@qaiddev/thumbs-embed`, so a single theme can drive both embeds.
 
+For a quick change, the tag takes a preset, a light or dark theme and an accent color. This is `data-preset="pill" data-theme="dark" data-accent-color="#d97706"`:
+
+![The same quest with the pill preset, dark theme and an amber accent](https://raw.githubusercontent.com/qaiddev/quests-embed/prod/docs/screenshots/dark.png)
+
 ## Hosted Dashboard
 
 [Qaid](https://qaid.dev) provides a hosted dashboard for managing responses collected by this embed:
@@ -525,15 +548,7 @@ The variable names are shared with `@qaiddev/thumbs-embed`, so a single theme ca
 
 ### Plans
 
-| | Cadet (Free) | Commander ($9/mo) | Admiral (Enterprise) |
-|---|---|---|---|
-| Projects | 1 | Unlimited | Unlimited |
-| Responses | 100/mo | Unlimited | Unlimited |
-| Data retention | 7 days | 1 year | Unlimited |
-| Notifications | - | Email/Text | Email/Text |
-| Integrations | - | GitHub + more | Custom |
-
-Sign up at [qaid.dev](https://qaid.dev). You can also self-host — the embed works with any endpoint that accepts the protocol described above.
+There is a free Cadet plan, a Commander plan at $9 per seat per month, and an Admiral plan for larger teams. See [qaid.dev/pricing](https://qaid.dev/pricing) for what each includes. Sign up at [qaid.dev](https://qaid.dev). You can also self-host — the embed works with any endpoint that accepts the protocol described above.
 
 ## Self-Hosting
 
