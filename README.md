@@ -30,7 +30,8 @@ new QaidQuests({
 <div id="form"></div>
 
 <script
-  src="https://unpkg.com/@qaiddev/quests-embed/dist/qaid-quests.umd.cjs"
+  src="https://unpkg.com/@qaiddev/quests-embed/dist/embed.js"
+  defer
   data-endpoint="https://qaid.dev/api/responses"
   data-api-key="YOUR_API_KEY"
   data-config-url="/forms/intake.json"
@@ -39,6 +40,8 @@ new QaidQuests({
 ```
 
 The embed auto-initializes when it detects a `data-endpoint` attribute on its script tag and either `data-config-url` or an inline JSON config.
+
+`dist/embed.js` is a 0.7 KB loader (gzipped). It loads the quest code (about 16 KB) when the container comes within a screen's height of the viewport, or once the page has loaded and the browser is idle, whichever is first. Without a `data-container` it loads at once. Pointing the tag straight at `dist/qaid-quests.umd.cjs` still works and loads everything up front.
 
 ### JSON Config (Script Tag)
 
@@ -69,7 +72,7 @@ For complex configurations or inline questionnaires, use a separate JSON config 
   }
 }
 </script>
-<script src="https://unpkg.com/@qaiddev/quests-embed/dist/qaid-quests.umd.cjs"></script>
+<script src="https://unpkg.com/@qaiddev/quests-embed/dist/embed.js" defer></script>
 ```
 
 ## How It Works
