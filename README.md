@@ -132,9 +132,10 @@ require-trusted-types-for 'script';
 - `script-src`: the exact versioned folder, not all of unpkg. Self-host and `'self'` is enough.
 - `style-src 'unsafe-inline'`: the embed styles itself with `<style>` elements inside its shadow root, which CSP treats as inline styles.
 - `connect-src`: the origin of `data-endpoint` and `data-config-url` (and `data-theme-url`, if you use one).
-- `img-src`: option images in a questionnaire load from wherever their URLs point; narrow `https:` to your image hosts if you can.
+- `img-src`: option images in a questionnaire load from wherever their URLs point; narrow `https:` to your image hosts if you can. The embed draws only `https:` option images, and sends no `Referer` with them.
 - `trusted-types qaid-embed`: on a page that sets `require-trusted-types-for 'script'`, the embed sets the bundle's `src` through one Trusted Types policy named `qaid-embed`, which signs only the URL the embed worked out itself. List it in your `trusted-types` directive, or the embed prints a warning and does not load. thumbs-embed uses the same policy name, so one entry covers both.
 - The embed writes no HTML strings (`innerHTML`): its icons are built as DOM nodes.
+- A quest theme's tokens and CSS come from qaid's server, so the embed filters them before use: a token value must be a plain CSS value, and theme CSS loses `@import`, any `url()` other than `url(#id)`, `image-set()`, `expression()`, `behavior`, `-moz-binding` and `position: fixed|sticky`. Your own `css` option is not filtered. The full list is in `src/theme-css-safety.ts`.
 
 ### Self-hosting the files
 
