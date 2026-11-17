@@ -92,6 +92,54 @@ For complex configurations or inline questionnaires, use a separate JSON config 
 <script src="https://unpkg.com/@qaiddev/quests-embed/dist/embed.js" defer></script>
 ```
 
+## Security: pinning, integrity and CSP
+
+The script runs on your page with your page's rights, so treat it like any other third-party script: pin it, hash it, and fence it in.
+
+### Pin a version and check its hash
+
+```html
+<script
+  src="https://unpkg.com/@qaiddev/quests-embed@1.11.0/dist/embed.js"
+  integrity="sha384-DkDosPq0xXgb/fPj+/Cq4KGo1onTdfUBLuKeqCR9BYFQupqNLQlzlQKoHLXUqbsU"
+  crossorigin="anonymous"
+  defer
+  data-endpoint="https://qaid.dev/api/responses"
+  data-api-key="YOUR_API_KEY"
+  data-config-url="https://qaid.dev/api/quests/QUEST_ID/definition"
+  data-container="#form"
+></script>
+```
+
+- The `@1.11.0` pins the release. Without it unpkg serves the newest release, and a hash can never match for long.
+- `integrity` is the sha384 of `dist/embed.js` for that release. It is printed in each release's notes; to work it out yourself: `curl -s https://unpkg.com/@qaiddev/quests-embed@1.11.0/dist/embed.js | openssl dgst -sha384 -binary | openssl base64 -A`.
+- When the tag carries `integrity`, `embed.js` gives the bundle it loads (`qaid-quests.umd.cjs`) that file's own sha384, baked in when the release was built. Your one hash covers every byte of the embed's JavaScript: if either file on the CDN changes, the browser refuses to run it.
+- `crossorigin="anonymous"` is required for the browser to check a hash on a file from another origin.
+
+### Content Security Policy
+
+A policy that lets the embed work and nothing else from its side:
+
+```
+script-src 'self' https://unpkg.com/@qaiddev/quests-embed@1.11.0/;
+style-src 'self' 'unsafe-inline';
+connect-src 'self' https://qaid.dev;
+img-src 'self' data: https:;
+trusted-types qaid-embed;
+require-trusted-types-for 'script';
+```
+
+- `script-src`: the exact versioned folder, not all of unpkg. Self-host and `'self'` is enough.
+- `style-src 'unsafe-inline'`: the embed styles itself with `<style>` elements inside its shadow root, which CSP treats as inline styles.
+- `connect-src`: the origin of `data-endpoint` and `data-config-url` (and `data-theme-url`, if you use one).
+- `img-src`: option images in a questionnaire load from wherever their URLs point; narrow `https:` to your image hosts if you can.
+- `trusted-types qaid-embed`: on a page that sets `require-trusted-types-for 'script'`, the embed sets the bundle's `src` through one Trusted Types policy named `qaid-embed`, which signs only the URL the embed worked out itself. List it in your `trusted-types` directive, or the embed prints a warning and does not load. thumbs-embed uses the same policy name, so one entry covers both.
+- The embed writes no HTML strings (`innerHTML`): its icons are built as DOM nodes.
+
+### Self-hosting the files
+
+Copy `dist/embed.js` and `dist/qaid-quests.umd.cjs` from the npm package into one folder on your own origin and point the tag at that `embed.js`. It loads the bundle from the same folder. The integrity rules above still apply, with your own URLs.
+
 ## How It Works
 
 1. The embed loads the questionnaire — either inline via `questionnaire`, or fetched from `configUrl`

@@ -27,7 +27,13 @@
  *           data-endpoint="/api/responses" data-config-url="/forms/intake.json"
  *           data-container="#quest-mount"></script>
  *
+ * Pinned with Subresource Integrity (`integrity="sha384-…"` on this tag), it
+ * gives the bundle its own sha384, baked in at build time
+ * (vite.config.embed.ts), so the customer's one hash covers every byte of
+ * the embed's JavaScript.
+ *
  * IMPORTANT: this file must stay ES5-clean and dependency-free, like the
  * thumbs-embed loader it mirrors: it is the first thing to run on every
  * browser. Written with var/function on purpose.
  */
+export {};

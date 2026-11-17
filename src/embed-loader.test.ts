@@ -182,4 +182,65 @@ describe("single-tag quest loader (embed-loader.ts)", () => {
     await runLoader();
     expect(injected()).toHaveLength(0);
   });
+
+  describe("pinned with integrity", () => {
+    const UMD_HASH = "sha384-umdhashumdhashumdhashumdhashumdhashumdhashumdhashumdhashumdhash";
+
+    it("gives the bundle its baked-in hash and CORS when the tag carries integrity", async () => {
+      vi.stubGlobal("__QAID_UMD_INTEGRITY__", UMD_HASH);
+      setCurrentScript(
+        addLoaderTag(EMBED_SRC, { "data-endpoint": "/r", integrity: "sha384-customer", crossorigin: "anonymous" }),
+      );
+      await runLoader();
+      const [entry] = injected();
+      expect(entry.integrity).toBe(UMD_HASH);
+      expect(entry.crossOrigin).toBe("anonymous");
+    });
+
+    it("adds no hash when the tag has no integrity", async () => {
+      vi.stubGlobal("__QAID_UMD_INTEGRITY__", UMD_HASH);
+      setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r" }));
+      await runLoader();
+      expect(injected()[0].integrity).toBe("");
+    });
+
+    it("adds no hash when the build baked none in", async () => {
+      setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r", integrity: "sha384-customer" }));
+      await runLoader();
+      expect(injected()[0].integrity).toBe("");
+    });
+  });
+
+  describe("Trusted Types", () => {
+    afterEach(() => {
+      delete (window as unknown as Record<string, unknown>).__qaidEmbedTrustedTypes;
+    });
+
+    it("sets the src through the qaid-embed policy", async () => {
+      const createPolicy = vi.fn((_name: string, rules: { createScriptURL: (u: string) => string }) => ({
+        createScriptURL: (u: string) => rules.createScriptURL(u),
+      }));
+      vi.stubGlobal("trustedTypes", { createPolicy });
+      setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r" }));
+      await runLoader();
+      expect(createPolicy).toHaveBeenCalledWith("qaid-embed", expect.any(Object));
+      expect(injected()[0].src).toBe(BUNDLE_SRC);
+    });
+
+    it("warns and loads nothing when the page refuses the URL", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      vi.stubGlobal("trustedTypes", {
+        createPolicy: () => ({
+          createScriptURL: () => {
+            throw new TypeError("refused");
+          },
+        }),
+      });
+      setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r" }));
+      await runLoader();
+      expect(injected()).toHaveLength(0);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("trusted-types qaid-embed"));
+      warn.mockRestore();
+    });
+  });
 });

@@ -13,6 +13,7 @@ import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styl
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleAnswers, getVisibleQuestions } from "./visibility";
 import { watchOverflow, type OverflowWatcher } from "./overflow";
+import { svgIcon, CLOSE_ICON, CHECK_ICON, SCROLL_CUE_ICON } from "./svg";
 import {
   announce,
   applyDialog,
@@ -67,9 +68,6 @@ function getOrCreateVisitorId(): string {
     return randomId();
   }
 }
-
-const CLOSE_ICON = `<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`;
-const CHECK_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
 
 export class QaidQuests {
   /**
@@ -635,7 +633,7 @@ export class QaidQuests {
         closeBtn.type = "button";
         closeBtn.className = "qaid-q-close";
         closeBtn.setAttribute("aria-label", "Close form");
-        closeBtn.innerHTML = CLOSE_ICON;
+        closeBtn.appendChild(svgIcon(CLOSE_ICON));
         closeBtn.addEventListener("click", () => this.close());
         right.appendChild(closeBtn);
       }
@@ -690,9 +688,7 @@ export class QaidQuests {
     this.scrollCueEl.className = "qaid-q-scroll-cue";
     this.scrollCueEl.setAttribute("aria-hidden", "true");
     this.scrollCueEl.hidden = true;
-    this.scrollCueEl.innerHTML =
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"' +
-      ' stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+    this.scrollCueEl.appendChild(svgIcon(SCROLL_CUE_ICON));
     this.bodyEl.appendChild(this.scrollCueEl);
 
     this.overflow = watchOverflow(this.bodyEl, this.cardEl, this.scrollCueEl);
@@ -901,7 +897,7 @@ export class QaidQuests {
 
     const icon = document.createElement("div");
     icon.className = "qaid-q-done-icon";
-    icon.innerHTML = CHECK_ICON;
+    icon.appendChild(svgIcon(CHECK_ICON));
     done.appendChild(icon);
 
     const title = document.createElement("h3");

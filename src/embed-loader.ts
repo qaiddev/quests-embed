@@ -27,10 +27,20 @@
  *           data-endpoint="/api/responses" data-config-url="/forms/intake.json"
  *           data-container="#quest-mount"></script>
  *
+ * Pinned with Subresource Integrity (`integrity="sha384-…"` on this tag), it
+ * gives the bundle its own sha384, baked in at build time
+ * (vite.config.embed.ts), so the customer's one hash covers every byte of
+ * the embed's JavaScript.
+ *
  * IMPORTANT: this file must stay ES5-clean and dependency-free, like the
  * thumbs-embed loader it mirrors: it is the first thing to run on every
  * browser. Written with var/function on purpose.
  */
+
+import { trustedScriptUrl } from "./trusted-types";
+
+/** sha384 of qaid-quests.umd.cjs, set by vite.config.embed.ts. Empty in tests. */
+declare const __QAID_UMD_INTEGRITY__: string | undefined;
 
 (function () {
   if (typeof document === "undefined") return;
@@ -70,7 +80,23 @@
       var a = attrs[j];
       if (a.name.indexOf("data-") === 0) entry.setAttribute(a.name, a.value);
     }
-    entry.src = base + "qaid-quests.umd.cjs";
+    var url = base + "qaid-quests.umd.cjs";
+    var umdIntegrity = typeof __QAID_UMD_INTEGRITY__ === "string" ? __QAID_UMD_INTEGRITY__ : "";
+    if (umdIntegrity && tag.getAttribute("integrity")) {
+      entry.integrity = umdIntegrity;
+      entry.crossOrigin = "anonymous";
+    }
+    try {
+      entry.src = trustedScriptUrl(url);
+    } catch (e) {
+      // A Trusted Types page that doesn't allow the qaid-embed policy.
+      /* v8 ignore start -- the guard is for old browsers, which have no console while devtools are shut */
+      if (typeof console !== "undefined") {
+        console.warn("[quests-embed] Trusted Types blocked " + url + ". Add `trusted-types qaid-embed` to the page's CSP.");
+      }
+      /* v8 ignore stop */
+      return;
+    }
     (document.head || document.documentElement).appendChild(entry);
     prefetch(tag.getAttribute("data-config-url"));
     prefetch(tag.getAttribute("data-theme-url"));
