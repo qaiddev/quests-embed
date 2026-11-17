@@ -5,6 +5,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { QaidQuests } from "./embed";
+import { themeCssText } from "./theme-css-safety";
 import type { Question, Questionnaire, QuestsConfig } from "./types";
 
 const sampleQuestionnaire: Questionnaire = {
@@ -1277,10 +1278,7 @@ describe("QaidQuests", () => {
         preset: "minimal",
       });
       await waitFor(() => getShadow().querySelector(".qaid-q-step"));
-      const styleTags = Array.from(getShadow().querySelectorAll("style"));
-      const hasPresetCss = styleTags.some((s) =>
-        (s.textContent ?? "").includes("--qaid-q-card-radius: 0"),
-      );
+      const hasPresetCss = (themeCssText(getShadow()) ?? "").includes("--qaid-q-card-radius: 0");
       expect(hasPresetCss).toBe(true);
     });
 
@@ -1292,10 +1290,7 @@ describe("QaidQuests", () => {
         preset: "pill",
       });
       await waitFor(() => getShadow().querySelector(".qaid-q-step"));
-      const styleTags = Array.from(getShadow().querySelectorAll("style"));
-      const hasPillCss = styleTags.some((s) =>
-        (s.textContent ?? "").includes("--qaid-q-btn-radius: 9999px"),
-      );
+      const hasPillCss = (themeCssText(getShadow()) ?? "").includes("--qaid-q-btn-radius: 9999px");
       expect(hasPillCss).toBe(true);
     });
 
@@ -1320,6 +1315,7 @@ describe("QaidQuests", () => {
         );
       });
       expect(hasOverrides).toBe(false);
+      expect(themeCssText(getShadow())).toBeNull();
     });
 
     it("colors.accent flows through --qaid-q-accent on the root", async () => {
@@ -1341,10 +1337,9 @@ describe("QaidQuests", () => {
       return host.shadowRoot!.querySelector(".qaid-q-root") as HTMLElement;
     }
 
-    function getThemeStyle(): HTMLStyleElement | null {
-      return getShadow().querySelector(
-        "style[data-qaid-q-theme]",
-      ) as HTMLStyleElement | null;
+    function getThemeStyle(): { textContent: string } | null {
+      const text = themeCssText(getShadow());
+      return text === null ? null : { textContent: text };
     }
 
     /** Build a fetch stub that branches on URL substring. */
@@ -1940,8 +1935,8 @@ describe("QaidQuests", () => {
   });
 
   describe("theme edge cases", () => {
-    function themeStyle(): HTMLStyleElement | null {
-      return getShadow().querySelector("style[data-qaid-q-theme]");
+    function themeStyle(): string | null {
+      return themeCssText(getShadow());
     }
 
     it("renders with defaults when the theme request fails on the network", async () => {

@@ -10,6 +10,7 @@ import type {
 } from "./types";
 import { fetchJson } from "./prefetch";
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
+import { installThemeCss, sanitizeThemeCss, tokensToCss } from "./theme-css-safety";
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleAnswers, getVisibleQuestions } from "./visibility";
 import { watchOverflow, type OverflowWatcher } from "./overflow";
@@ -373,32 +374,26 @@ export class QaidQuests {
     // there's something to add so the shadow root stays clean.
     const layers: string[] = [];
 
-    if (themeDoc?.tokens && Object.keys(themeDoc.tokens).length > 0) {
-      const body = Object.entries(themeDoc.tokens)
-        .filter(([, v]) => typeof v === "string" && v.trim() !== "")
-        .map(([k, v]) => `  ${k}: ${v};`)
-        .join("\n");
-      if (body) layers.push(`:where(.qaid-q-root) {\n${body}\n}`);
-    }
+    // Tokens and theme CSS come from qaid's server and were written by a
+    // project member: both go through theme-css-safety before they reach the
+    // partner's page. The host's own `css` is the partner's code.
+    const tokenCss = tokensToCss(themeDoc?.tokens);
+    if (tokenCss) layers.push(tokenCss);
 
     if (finalPreset && finalPreset !== "default") {
       const presetCss = getPresetCss(finalPreset);
       if (presetCss) layers.push(presetCss);
     }
 
-    if (themeDoc?.css && themeDoc.css.trim() !== "") {
-      layers.push(themeDoc.css);
-    }
+    const themeCss = sanitizeThemeCss(themeDoc?.css);
+    if (themeCss) layers.push(themeCss);
 
     if (this.hostCss && this.hostCss.trim() !== "") {
       layers.push(this.hostCss);
     }
 
     if (layers.length > 0) {
-      const themeStyle = document.createElement("style");
-      themeStyle.setAttribute("data-qaid-q-theme", "");
-      themeStyle.textContent = layers.join("\n\n");
-      this.shadowRoot.appendChild(themeStyle);
+      installThemeCss(this.shadowRoot, layers.join("\n\n"));
     }
   }
 

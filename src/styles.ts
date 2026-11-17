@@ -14,6 +14,7 @@
 
 import shadowStyles from "./styles-shadow.css?inline";
 import { getPresetCss as getPresetCssImpl, type PresetName } from "./themes";
+import { isSafeTokenValue } from "./theme-css-safety";
 
 export interface BuildCssVarsOptions {
   /** Primary CTA / progress fill / selected option ring */
@@ -99,6 +100,9 @@ export function buildCssVars(
 
 export function applyCssVars(el: HTMLElement, vars: Record<string, string>): void {
   for (const [name, value] of Object.entries(vars)) {
+    // Same rule as a theme's tokens: the snippet a partner pastes may carry
+    // values a qaid project member typed.
+    if (!isSafeTokenValue(value)) continue;
     el.style.setProperty(name, value);
   }
 }

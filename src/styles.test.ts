@@ -117,6 +117,18 @@ describe("applyCssVars", () => {
     expect(el.style.getPropertyValue("--qaid-font-size")).toBe("16px");
   });
 
+  it("skips a value that is not a plain CSS value (a pasted snippet may carry one)", () => {
+    const el = document.createElement("div");
+    applyCssVars(el, {
+      "--qaid-q-accent": "url(https://evil.example/pixel.gif)",
+      "--qaid-q-error": "image-set('https://evil.example/x' 1x)",
+      "--qaid-q-focus": "#123456",
+    });
+    expect(el.style.getPropertyValue("--qaid-q-accent")).toBe("");
+    expect(el.style.getPropertyValue("--qaid-q-error")).toBe("");
+    expect(el.style.getPropertyValue("--qaid-q-focus")).toBe("#123456");
+  });
+
   it("does nothing with an empty map", () => {
     const el = document.createElement("div");
     applyCssVars(el, {});
