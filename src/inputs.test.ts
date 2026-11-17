@@ -8,7 +8,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createInput, type QuestionInputOptions } from "./inputs";
+import { createInput, safeOptionImageUrl, type QuestionInputOptions } from "./inputs";
 import type {
   AnswerValue,
   CurrencyQuestion,
@@ -562,17 +562,44 @@ describe("multiple-choice input", () => {
     expect(img).toBeTruthy();
     expect(img.getAttribute("src")).toBe("https://x/a.png");
     expect(img.loading).toBe("lazy");
+    expect(img.decoding).toBe("async");
+    expect(img.referrerPolicy).toBe("no-referrer");
+    expect(img.hasAttribute("crossorigin")).toBe(false);
+  });
+
+  it.each([
+    "http://tracker.example/p.gif",
+    "data:image/svg+xml,<svg onload=alert(1)>",
+    "blob:https://x/1",
+    "javascript:alert(1)",
+    "JaVaScRiPt:alert(1)",
+    "//tracker.example/p.gif",
+    "/relative.png",
+    "x",
+    "",
+  ])("draws no image and no image layout for %s", (image) => {
+    const { wrap, buttons } = build({ options: [{ value: "a", label: "A", image }] });
+    expect(buttons[0].querySelector("img")).toBeNull();
+    expect(wrap.className).toBe("qaid-q-options");
+    expect(buttons[0].querySelector(".qaid-q-option-label")?.textContent).toBe("A");
+  });
+
+  it("safeOptionImageUrl allows only absolute https URLs", () => {
+    expect(safeOptionImageUrl(" https://cdn.example/a.png ")).toBe("https://cdn.example/a.png");
+    expect(safeOptionImageUrl("HTTPS://cdn.example/a.png")).toBe("https://cdn.example/a.png");
+    expect(safeOptionImageUrl("http://cdn.example/a.png")).toBeNull();
+    expect(safeOptionImageUrl(42)).toBeNull();
   });
 
   it("adds image-horizontal layout class by default when any option has an image", () => {
-    const { wrap } = build({ options: [{ value: "a", label: "A", image: "x" }] });
+    const { wrap } = build({ options: [{ value: "a", label: "A", image: "https://cdn.example/x.png" }] });
     expect(wrap.className).toContain("qaid-q-options--image-horizontal");
   });
 
   it("adds image-vertical layout class when imageAlignment is vertical", () => {
     const { wrap } = build({
       imageAlignment: "vertical",
-      options: [{ value: "a", label: "A", image: "x" }],
+      options: [{ value: "a", label: "A", image: "https://cdn.example/x.png" }],
     });
     expect(wrap.className).toContain("qaid-q-options--image-vertical");
   });

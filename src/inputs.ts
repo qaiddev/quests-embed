@@ -406,13 +406,31 @@ function createDateInput(q: DateQuestion, opts: QuestionInputOptions): QuestionI
 // Multiple choice
 // ====================================================================
 
+/**
+ * An option image's URL, or null when it may not be shown. Option images are
+ * set by a qaid project member and load on a partner's page for every
+ * visitor, so only absolute `https:` URLs are allowed: no `http:` (mixed
+ * content, readable on the wire), `data:`, `blob:`, `javascript:` or relative
+ * paths (which would hit the partner's own origin).
+ */
+export function safeOptionImageUrl(raw: unknown): string | null {
+  if (typeof raw !== "string" || raw.trim() === "") return null;
+  let url: URL;
+  try {
+    url = new URL(raw.trim());
+  } catch {
+    return null;
+  }
+  return url.protocol === "https:" ? url.href : null;
+}
+
 function createMultipleChoiceInput(
   q: MultipleChoiceQuestion,
   opts: QuestionInputOptions,
 ): QuestionInput {
   const wrap = document.createElement("div");
   const alignment = q.imageAlignment ?? "horizontal";
-  const hasAnyImage = q.options.some((o) => !!o.image);
+  const hasAnyImage = q.options.some((o) => safeOptionImageUrl(o.image) !== null);
   const layoutClass = hasAnyImage
     ? alignment === "vertical"
       ? " qaid-q-options--image-vertical"
@@ -449,13 +467,18 @@ function createMultipleChoiceInput(
     const body = document.createElement("span");
     body.className = "qaid-q-option-body";
 
-    if (opt.image) {
+    const imageUrl = safeOptionImageUrl(opt.image);
+    if (imageUrl) {
       const img = document.createElement("img");
       img.className = "qaid-q-option-image";
-      img.src = opt.image;
+      // Set before src so the very first request carries them: no Referer
+      // (the partner's page URL stays with the partner), and no crossOrigin,
+      // so no CORS request and no cookies offered to the image host.
+      img.referrerPolicy = "no-referrer";
       img.alt = "";
       img.loading = "lazy";
       img.decoding = "async";
+      img.src = imageUrl;
       body.appendChild(img);
     }
 

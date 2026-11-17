@@ -187,6 +187,62 @@ describe("a quest theme from qaid's server cannot reach the partner page", () =>
   });
 });
 
+describe("option images cannot track or script a partner's visitors", () => {
+  let mount: HTMLDivElement;
+  let embed: QaidQuests | null = null;
+
+  beforeEach(() => {
+    mount = document.createElement("div");
+    mount.id = "mount";
+    document.body.appendChild(mount);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ id: "r1" }), { status: 200 })),
+    );
+  });
+
+  afterEach(() => {
+    embed?.destroy();
+    embed = null;
+    mount.remove();
+    vi.unstubAllGlobals();
+  });
+
+  it("draws only https images, with no Referer and no CORS", async () => {
+    const images = [
+      "http://tracker.example/p.gif",
+      "data:image/svg+xml,<svg onload=alert(1)>",
+      "javascript:alert(1)",
+      "blob:https://tracker.example/1",
+      "https://cdn.example/ok.png",
+    ];
+    embed = new QaidQuests({
+      endpoint: "/api/responses",
+      container: "#mount",
+      questionnaire: {
+        id: "q",
+        title: "t",
+        questions: [
+          {
+            id: "c",
+            type: "multiple-choice",
+            label: "Pick",
+            options: images.map((image, i) => ({ value: `v${i}`, label: `L${i}`, image })),
+          },
+        ],
+      } as Questionnaire,
+    });
+    const shadow = (document.querySelector("[data-qaid-quests]") as HTMLElement).shadowRoot!;
+    for (let i = 0; i < 100 && !shadow.querySelector(".qaid-q-step"); i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    const imgs = Array.from(shadow.querySelectorAll("img"));
+    expect(imgs.map((img) => img.getAttribute("src"))).toEqual(["https://cdn.example/ok.png"]);
+    expect(imgs[0].referrerPolicy).toBe("no-referrer");
+    expect(imgs[0].hasAttribute("crossorigin")).toBe(false);
+  });
+});
+
 describe("no raw-HTML or eval sink in the embed's source", () => {
   // Built DOM only. A string handed to the HTML parser or to eval on a partner
   // page is exactly the hole this audit closed; this keeps it closed.
