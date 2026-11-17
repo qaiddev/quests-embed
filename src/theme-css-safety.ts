@@ -260,8 +260,8 @@ export function themeSheetsIn(root: ShadowRoot): CSSStyleSheet[] {
 export function themeCssText(root: ShadowRoot): string | null {
   const sheets = themeSheetsIn(root);
   if (sheets.length > 0) {
-    return sheets.map((s) => themeSheets.get(s) ?? "").join("\n");
+    return sheets.map((s) => themeSheets.get(s)).join("\n");
   }
   const style = root.querySelector("style[data-qaid-q-theme]");
-  return style ? (style.textContent ?? "") : null;
+  return style ? style.textContent : null;
 }

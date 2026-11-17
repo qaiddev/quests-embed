@@ -8,7 +8,7 @@ import {
 } from "./theme-css-safety";
 
 describe("isSafeTokenValue", () => {
-  it.each(["#10b981", "0", "12px", "rgb(1 2 3 / 50%)", "calc(1rem + 2px)", '"Inter", sans-serif', "none", "var(--x)"])(
+  it.each(["#10b981", "attr(data-x[y])", "0", "12px", "rgb(1 2 3 / 50%)", "calc(1rem + 2px)", '"Inter", sans-serif', "none", "var(--x)"])(
     "keeps %s",
     (v) => expect(isSafeTokenValue(v)).toBe(true),
   );
@@ -141,6 +141,29 @@ describe("sanitizeThemeCss", () => {
     );
     expect(css).not.toMatch(/url\(/);
     expect(css).toContain("color: red;");
+  });
+
+  it("decodes every kind of escape before checking", () => {
+    // \t is a plain escaped letter, \0 is not a code point, \<newline> is a
+    // line continuation; none may hide a banned word.
+    expect(sanitizeThemeCss(":host { posi\\tion: fixed; color: red }")).toBe(":host {\n  color: red;\n}");
+    expect(sanitizeThemeCss('.a { content: "\\0" }')).toContain('content: "\\0";');
+    expect(sanitizeThemeCss(".a { background: u\\\nrl(x) }")).toBe(".a {\n\n}");
+  });
+
+  it("reads past an escaped quote inside a string", () => {
+    expect(sanitizeThemeCss('.a { content: "a\\"; b" ; color: red }')).toContain("color: red;");
+  });
+
+  it("keeps an @layer statement, drops other statement at-rules and junk", () => {
+    const css = sanitizeThemeCss("@layer base, theme; @foo bar; .a { junk; :x; color: red }");
+    expect(css).toBe("@layer base, theme;\n.a {\n  color: red;\n}");
+  });
+
+  it("drops an @import written with a block, and a block with no selector", () => {
+    expect(sanitizeThemeCss("@import url(x) { .a { color: red } } { color: blue } .b { color: green }")).toBe(
+      ".b {\n  color: green;\n}",
+    );
   });
 
   it("is empty for non-strings and blank input", () => {
