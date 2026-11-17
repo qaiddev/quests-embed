@@ -22,17 +22,24 @@
 
 interface ScriptUrlPolicy {
   createScriptURL(url: string): unknown;
+  /** Absent on a policy an older embed release created on this page. */
+  createScript?: (text: string) => unknown;
 }
 
 interface SharedPolicy {
   policy: ScriptUrlPolicy | null;
   allowed: Record<string, boolean>;
+  /** Inline script texts (embed.js's import map) registered a moment before. */
+  allowedScripts?: Record<string, boolean>;
 }
 
 interface TrustedTypesFactory {
   createPolicy(
     name: string,
-    rules: { createScriptURL: (url: string) => string }
+    rules: {
+      createScriptURL: (url: string) => string;
+      createScript: (text: string) => string;
+    }
   ): ScriptUrlPolicy;
 }
 
@@ -48,6 +55,7 @@ function shared(): SharedPolicy | null {
   if (existing) return existing;
 
   var allowed: Record<string, boolean> = Object.create(null);
+  var allowedScripts: Record<string, boolean> = Object.create(null);
   var policy: ScriptUrlPolicy | null = null;
   try {
     policy = tt.createPolicy(POLICY_NAME, {
@@ -55,12 +63,16 @@ function shared(): SharedPolicy | null {
         if (allowed[url] === true) return url;
         throw new TypeError("qaid-embed: refused script URL " + url);
       },
+      createScript: function (text: string): string {
+        if (allowedScripts[text] === true) return text;
+        throw new TypeError("qaid-embed: refused inline script");
+      },
     });
   } catch (e) {
     // The page's trusted-types directive does not list qaid-embed.
     policy = null;
   }
-  var state: SharedPolicy = { policy: policy, allowed: allowed };
+  var state: SharedPolicy = { policy: policy, allowed: allowed, allowedScripts: allowedScripts };
   try {
     Object.defineProperty(w, KEY, { value: state, configurable: true });
   } catch (e) {
@@ -78,6 +90,22 @@ export function trustedScriptUrl(url: string): string {
   if (!s || !s.policy) return url;
   s.allowed[url] = true;
   return s.policy.createScriptURL(url) as string;
+}
+
+/**
+ * A value for an inline script's `text`: a TrustedScript from the `qaid-embed`
+ * policy when one exists, else the string itself. Only embed.js's import map
+ * uses it. Throws when the page's policy can't sign scripts (one an older
+ * release created); the caller then takes its fallback.
+ */
+export function trustedScript(text: string): string {
+  var s = shared();
+  if (!s || !s.policy) return text;
+  if (!s.allowedScripts || typeof s.policy.createScript !== "function") {
+    throw new TypeError("qaid-embed: this page's policy cannot sign scripts");
+  }
+  s.allowedScripts[text] = true;
+  return s.policy.createScript(text) as string;
 }
 
 /** @internal Test seam: forget the page's policy. */

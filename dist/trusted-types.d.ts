@@ -25,5 +25,12 @@ export declare var POLICY_NAME: string;
  * when one exists, else the string itself.
  */
 export declare function trustedScriptUrl(url: string): string;
+/**
+ * A value for an inline script's `text`: a TrustedScript from the `qaid-embed`
+ * policy when one exists, else the string itself. Only embed.js's import map
+ * uses it. Throws when the page's policy can't sign scripts (one an older
+ * release created); the caller then takes its fallback.
+ */
+export declare function trustedScript(text: string): string;
 /** @internal Test seam: forget the page's policy. */
 export declare function _resetTrustedTypes(): void;

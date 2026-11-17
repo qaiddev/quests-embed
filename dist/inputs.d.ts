@@ -41,3 +41,11 @@ export interface QuestionInputOptions {
     autoAdvance: boolean;
 }
 export declare function createInput(options: QuestionInputOptions): QuestionInput;
+/**
+ * An option image's URL, or null when it may not be shown. Option images are
+ * set by a qaid project member and load on a partner's page for every
+ * visitor, so only absolute `https:` URLs are allowed: no `http:` (mixed
+ * content, readable on the wire), `data:`, `blob:`, `javascript:` or relative
+ * paths (which would hit the partner's own origin).
+ */
+export declare function safeOptionImageUrl(raw: unknown): string | null;
