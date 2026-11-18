@@ -10,7 +10,15 @@ import type {
 } from "./types";
 import { fetchJson } from "./prefetch";
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
-import { installThemeCss, sanitizeThemeCss, tokensToCss } from "./theme-css-safety";
+import {
+  BACKDROP_LOCK,
+  HOST_CONTAINMENT,
+  MODAL_LOCK,
+  installThemeCss,
+  lockStyles,
+  sanitizeThemeCss,
+  tokensToCss,
+} from "./theme-css-safety";
 import { createInput, type QuestionInput } from "./inputs";
 import { getVisibleAnswers, getVisibleQuestions } from "./visibility";
 import { watchOverflow, type OverflowWatcher } from "./overflow";
@@ -447,6 +455,15 @@ export class QaidQuests {
       document.body.appendChild(this.shadowHost);
     }
 
+    // Nothing the quest draws may paint outside this element: theme CSS
+    // comes from qaid's server, not the partner, and could otherwise use
+    // position: absolute, negative margins or a transform to cover their page
+    // (a fake sign-in form over their site). `contain: paint` clips to the
+    // host and contains absolute and fixed children. In modal mode the host
+    // is the viewport, which the partner chose to cover, so nothing changes
+    // there. Why the host and why !important: theme-css-safety.ts, CONTAINMENT.
+    lockStyles(this.shadowHost, HOST_CONTAINMENT);
+
     this.shadowRoot = this.shadowHost.attachShadow({ mode: "open" });
 
     const baseStyle = document.createElement("style");
@@ -472,11 +489,15 @@ export class QaidQuests {
     if (!this.isUserContainer) {
       this.backdropEl = document.createElement("div");
       this.backdropEl.className = "qaid-q-backdrop";
+      // A theme may recolour the backdrop and the dialog frame but not move
+      // or resize them; see theme-css-safety.ts, CONTAINMENT.
+      lockStyles(this.backdropEl, BACKDROP_LOCK);
       this.backdropEl.addEventListener("click", () => this.close());
       this.rootEl.appendChild(this.backdropEl);
 
       const modal = document.createElement("div");
       modal.className = "qaid-q-modal";
+      lockStyles(modal, MODAL_LOCK);
       this.cardEl = document.createElement("div");
       this.cardEl.className = "qaid-q-card";
       modal.appendChild(this.cardEl);

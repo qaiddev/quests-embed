@@ -2687,3 +2687,100 @@ describe("QaidQuests", () => {
     });
   });
 });
+
+// Theme CSS comes from qaid's server, not the partner. Whatever it does with
+// position: absolute, negative margins or transforms, it must not paint
+// outside the quest's own element, which is the shadow host. See
+// theme-css-safety.ts, CONTAINMENT.
+describe("QaidQuests containment", () => {
+  let mount: HTMLDivElement;
+  let embed: QaidQuests | null = null;
+  const hostileTheme = {
+    preset: "default" as const,
+    mode: "light" as const,
+    unstyled: false,
+    tokens: null,
+    css: [
+      ".qaid-q-card { position: absolute; z-index: 2147483647; width: 100vw; height: 100vh; margin: -500px; transform: scale(4) }",
+      ".qaid-q-backdrop { inset: 40% !important; width: 10px !important; transform: scale(0) !important }",
+      ".qaid-q-modal { position: absolute !important; top: 0 !important; left: 0 !important; width: 100vw !important; max-width: none !important; transform: none !important }",
+      ":host { contain: none !important; overflow: visible !important; outline: 9999px solid white !important }",
+    ].join("\n"),
+  };
+
+  beforeEach(() => {
+    mount = document.createElement("div");
+    mount.id = "mount";
+    document.body.appendChild(mount);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ id: "resp-1" }), { status: 200 })),
+    );
+  });
+
+  afterEach(() => {
+    embed?.destroy();
+    embed = null;
+    mount.remove();
+    vi.unstubAllGlobals();
+  });
+
+  async function host(): Promise<HTMLElement> {
+    const h = document.querySelector<HTMLElement>("[data-qaid-quests]")!;
+    const start = Date.now();
+    while (!h.shadowRoot?.querySelector(".qaid-q-step") && Date.now() - start < 1000) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    return h;
+  }
+
+  function expectLocked(el: HTMLElement, prop: string, value: string): void {
+    expect(el.style.getPropertyValue(prop)).toBe(value);
+    expect(el.style.getPropertyPriority(prop)).toBe("important");
+  }
+
+  it("puts paint containment on the host inline, where theme CSS can't undo it", async () => {
+    embed = new QaidQuests({
+      endpoint: "/api/responses",
+      questionnaire: sampleQuestionnaire,
+      container: "#mount",
+      themeDocument: hostileTheme,
+    });
+    const h = await host();
+    expectLocked(h, "contain", "paint");
+    // The theme's :host rule lost everything that could undo or escape it.
+    const css = themeCssText(h.shadowRoot!) ?? "";
+    expect(css).not.toMatch(/contain:\s*none|overflow:\s*visible|outline:\s*9999px/);
+  });
+
+  it("contains the modal host too, and pins the backdrop and dialog frame", async () => {
+    embed = new QaidQuests({
+      endpoint: "/api/responses",
+      questionnaire: sampleQuestionnaire,
+      modalWidth: 520,
+      themeDocument: hostileTheme,
+    });
+    const h = await host();
+    expectLocked(h, "contain", "paint");
+    // The modal still covers the viewport: the partner chose it.
+    expect(h.style.position).toBe("fixed");
+    expect(h.style.inset).toBe("0");
+
+    const backdrop = h.shadowRoot!.querySelector<HTMLElement>(".qaid-q-backdrop")!;
+    expectLocked(backdrop, "position", "fixed");
+    expectLocked(backdrop, "inset", "0");
+    expectLocked(backdrop, "width", "auto");
+    expectLocked(backdrop, "transform", "none");
+
+    const modal = h.shadowRoot!.querySelector<HTMLElement>(".qaid-q-modal")!;
+    expectLocked(modal, "position", "fixed");
+    expectLocked(modal, "top", "50%");
+    expectLocked(modal, "left", "50%");
+    expectLocked(modal, "transform", "translate(-50%, -50%)");
+    expectLocked(modal, "width", "var(--qaid-modal-width, 480px)");
+    expectLocked(modal, "max-width", "calc(100vw - 32px)");
+    // The partner's modalWidth still reaches the frame through the variable.
+    const root = h.shadowRoot!.querySelector<HTMLElement>(".qaid-q-root")!;
+    expect(root.style.getPropertyValue("--qaid-modal-width")).toBe("520px");
+  });
+});

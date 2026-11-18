@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  BACKDROP_LOCK,
+  HOST_CONTAINMENT,
+  MODAL_LOCK,
   installThemeCss,
+  lockStyles,
   isSafeTokenValue,
   sanitizeThemeCss,
   themeCssText,
@@ -166,6 +170,75 @@ describe("sanitizeThemeCss", () => {
     );
   });
 
+  // The host carries the containment (contain: paint, inline !important),
+  // and a shadow-tree !important beats it, so a :host rule may only set
+  // inherited text and colour properties and custom properties.
+  it.each([
+    "contain: none !important",
+    "overflow: visible",
+    "clip-path: none",
+    "clip: auto",
+    "width: 100vw",
+    "height: 100vh",
+    "margin: -500px",
+    "transform: scale(10)",
+    "translate: -50vw",
+    "z-index: 2147483647",
+    "position: absolute",
+    "outline: 9999px solid white",
+    "box-shadow: 0 0 0 9999px white",
+    "display: contents",
+    "con\\74 ain: none",
+  ])("drops `%s` from a :host rule", (decl) => {
+    expect(sanitizeThemeCss(`:host { ${decl}; color: blue; --qaid-q-accent: red }`)).toBe(
+      ":host {\n  color: blue;\n  --qaid-q-accent: red;\n}",
+    );
+  });
+
+  it.each([
+    ":host(.x)",
+    ":host-context(body)",
+    ":is(:host, .a)",
+    ":\\68 ost",
+    "@media all { :host",
+  ])("treats `%s` as the host", (sel) => {
+    const close = sel.startsWith("@media") ? "} }" : "}";
+    const css = sanitizeThemeCss(`${sel} { width: 100vw; font-family: serif ${close}`);
+    expect(css).not.toContain("width");
+    expect(css).toContain("font-family: serif;");
+  });
+
+  it("keeps the safe :host properties", () => {
+    const css = sanitizeThemeCss(
+      ":host { --qaid-q-card-bg: #fff; color: red; color-scheme: dark; font: 14px serif; font-size: 15px; line-height: 1.4; letter-spacing: 0.01em }",
+    );
+    for (const decl of ["--qaid-q-card-bg: #fff;", "color: red;", "color-scheme: dark;", "font: 14px serif;", "font-size: 15px;", "line-height: 1.4;", "letter-spacing: 0.01em;"]) {
+      expect(css).toContain(decl);
+    }
+  });
+
+  it("follows the host into nested rules that still mean it, not into descendants", () => {
+    const css = sanitizeThemeCss(
+      ":host { &:hover { margin: -9px } @media all { transform: scale(3) } .qaid-q-card { margin: 4px } }",
+    );
+    expect(css).not.toContain("-9px");
+    expect(css).not.toContain("scale");
+    expect(css).toContain("margin: 4px;");
+  });
+
+  it("leaves geometry alone on elements inside the shadow root (containment clips them)", () => {
+    expect(sanitizeThemeCss(".qaid-q-card { position: absolute; width: 100vw; margin: -50px }")).toBe(
+      ".qaid-q-card {\n  position: absolute;\n  width: 100vw;\n  margin: -50px;\n}",
+    );
+  });
+
+  it("drops @scope rules, whose :scope can be the shadow host", () => {
+    expect(sanitizeThemeCss("@scope { :scope { outline: 9999px solid red } } .a { color: red }")).toBe(
+      ".a {\n  color: red;\n}",
+    );
+    expect(sanitizeThemeCss("@\\73 cope (.x) { .y { color: red } }")).toBe("");
+  });
+
   it("is empty for non-strings and blank input", () => {
     expect(sanitizeThemeCss(undefined)).toBe("");
     expect(sanitizeThemeCss("   ")).toBe("");
@@ -195,5 +268,21 @@ describe("installThemeCss", () => {
   it("reports no theme CSS when none was installed", () => {
     const root = document.createElement("div").attachShadow({ mode: "open" });
     expect(themeCssText(root)).toBeNull();
+  });
+});
+
+describe("lockStyles", () => {
+  it("sets each style inline with !important", () => {
+    const el = document.createElement("div");
+    lockStyles(el, { contain: "paint", inset: "0" });
+    expect(el.style.getPropertyValue("contain")).toBe("paint");
+    expect(el.style.getPropertyPriority("contain")).toBe("important");
+    expect(el.style.getPropertyPriority("inset")).toBe("important");
+  });
+
+  it("locks paint containment on the host and the modal geometry", () => {
+    expect(HOST_CONTAINMENT).toEqual({ contain: "paint" });
+    expect(BACKDROP_LOCK).toMatchObject({ position: "fixed", inset: "0", transform: "none" });
+    expect(MODAL_LOCK).toMatchObject({ width: "var(--qaid-modal-width, 480px)", transform: "translate(-50%, -50%)" });
   });
 });

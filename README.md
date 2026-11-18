@@ -135,7 +135,8 @@ require-trusted-types-for 'script';
 - `img-src`: option images in a questionnaire load from wherever their URLs point; narrow `https:` to your image hosts if you can. The embed draws only `https:` option images, and sends no `Referer` with them.
 - `trusted-types qaid-embed`: on a page that sets `require-trusted-types-for 'script'`, the embed sets the bundle's `src` through one Trusted Types policy named `qaid-embed`, which signs only the URL the embed worked out itself. List it in your `trusted-types` directive, or the embed prints a warning and does not load. thumbs-embed uses the same policy name, so one entry covers both.
 - The embed writes no HTML strings (`innerHTML`): its icons are built as DOM nodes.
-- A quest theme's tokens and CSS come from qaid's server, so the embed filters them before use: a token value must be a plain CSS value, and theme CSS loses `@import`, any `url()` other than `url(#id)`, `image-set()`, `expression()`, `behavior`, `-moz-binding` and `position: fixed|sticky`. Your own `css` option is not filtered. The full list is in `src/theme-css-safety.ts`.
+- A quest theme's tokens and CSS come from qaid's server, so the embed filters them before use: a token value must be a plain CSS value, and theme CSS loses `@import`, `@scope`, any `url()` other than `url(#id)`, `image-set()`, `expression()`, `behavior`, `-moz-binding` and `position: fixed|sticky`, and a `:host` rule keeps only custom properties and `color`, `color-scheme`, `font`, `font-*`, `line-height` and `letter-spacing`. Your own `css` option is not filtered. The full list is in `src/theme-css-safety.ts`.
+- Nothing a quest draws can paint outside its own element. The embed sets `contain: paint` on the element it adds to your page, inline and `!important`, so a theme can't use `position: absolute`, negative margins or a transform to cover your page. In modal mode that element covers the viewport, as you asked; the theme can recolour the backdrop and the dialog but not move or resize them.
 
 ### Self-hosting the files
 
@@ -580,6 +581,8 @@ The embed renders inside a Shadow DOM, so your page's CSS can't leak in. To them
 ```
 
 The variable names are shared with `@qaiddev/thumbs-embed`, so a single theme can drive both embeds.
+
+Everything the quest draws is clipped to the element the embed adds to your page (`contain: paint`). With a `container`, that is the container's box: a glow or shadow a theme puts around the card is cut off at its edge. To show it, give the root some room in your own `css`, such as `.qaid-q-root { padding: 12px; }`. A theme from qaid's server can't turn the clipping off; your own `css` can, since it is your page.
 
 For a quick change, the tag takes a preset, a light or dark theme and an accent color. This is `data-preset="pill" data-theme="dark" data-accent-color="#d97706"`:
 
