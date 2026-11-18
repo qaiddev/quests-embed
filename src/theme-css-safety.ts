@@ -283,9 +283,16 @@ export function sanitizeThemeCss(css: unknown): string {
 // Containment (see CONTAINMENT in the header)
 // ---------------------------------------------------------------------------
 
-/** On the shadow host, in both modes: nothing inside paints past its box. */
+/**
+ * On the shadow host, in both modes: nothing inside paints more than 40px past
+ * its box. The 40px (`overflow-clip-margin`, which `contain: paint` honours)
+ * keeps a card's glow or drop shadow, as the neon and glass themes draw, from
+ * being cut off; it is far too little to cover a partner's page. Browsers
+ * without `overflow-clip-margin` (Safari) clip at the box itself.
+ */
 export const HOST_CONTAINMENT: Readonly<Record<string, string>> = {
   contain: "paint",
+  "overflow-clip-margin": "40px",
 };
 
 /** Modal mode: the backdrop always covers the (viewport-sized) host exactly. */

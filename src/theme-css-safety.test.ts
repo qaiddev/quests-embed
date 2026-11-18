@@ -281,7 +281,7 @@ describe("lockStyles", () => {
   });
 
   it("locks paint containment on the host and the modal geometry", () => {
-    expect(HOST_CONTAINMENT).toEqual({ contain: "paint" });
+    expect(HOST_CONTAINMENT).toEqual({ contain: "paint", "overflow-clip-margin": "40px" });
     expect(BACKDROP_LOCK).toMatchObject({ position: "fixed", inset: "0", transform: "none" });
     expect(MODAL_LOCK).toMatchObject({ width: "var(--qaid-modal-width, 480px)", transform: "translate(-50%, -50%)" });
   });

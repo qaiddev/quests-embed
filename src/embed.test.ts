@@ -2748,6 +2748,8 @@ describe("QaidQuests containment", () => {
     });
     const h = await host();
     expectLocked(h, "contain", "paint");
+    // Room for a glow or shadow, never enough to cover the page.
+    expectLocked(h, "overflow-clip-margin", "40px");
     // The theme's :host rule lost everything that could undo or escape it.
     const css = themeCssText(h.shadowRoot!) ?? "";
     expect(css).not.toMatch(/contain:\s*none|overflow:\s*visible|outline:\s*9999px/);

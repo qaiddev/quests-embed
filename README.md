@@ -582,7 +582,7 @@ The embed renders inside a Shadow DOM, so your page's CSS can't leak in. To them
 
 The variable names are shared with `@qaiddev/thumbs-embed`, so a single theme can drive both embeds.
 
-Everything the quest draws is clipped to the element the embed adds to your page (`contain: paint`). With a `container`, that is the container's box: a glow or shadow a theme puts around the card is cut off at its edge. To show it, give the root some room in your own `css`, such as `.qaid-q-root { padding: 12px; }`. A theme from qaid's server can't turn the clipping off; your own `css` can, since it is your page.
+Everything the quest draws is clipped to the element the embed adds to your page (`contain: paint`). With a `container`, that is the container's box plus 40px (`overflow-clip-margin`), so a theme's glow or drop shadow still shows. Safari has no `overflow-clip-margin` and clips at the box; to show a glow there too, give the root some room in your own `css`, such as `.qaid-q-root { padding: 12px; }`. A theme from qaid's server can't turn the clipping off; your own `css` can, since it is your page.
 
 For a quick change, the tag takes a preset, a light or dark theme and an accent color. This is `data-preset="pill" data-theme="dark" data-accent-color="#d97706"`:
 
