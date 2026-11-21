@@ -1,0 +1,46 @@
+# Publish to npm when a version tag is pushed (git tag v1.2.3 && git push origin v1.2.3).
+#
+# npm Trusted Publishing: npm trusts this workflow file in this repo through
+# GitHub's OIDC token, so no npm token is stored anywhere. The trust is set on
+# npmjs.com (package Settings -> Trusted Publisher) and names this file:
+# renaming it breaks publishing.
+name: Publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write # the OIDC token npm checks
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      # Trusted Publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@11
+
+      - name: Tag matches package.json
+        run: test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME"
+
+      - run: npm ci
+      - run: npm run test:run
+      - run: npm run build
+
+      # dist/ is committed, and snippets pin its sha384. Publish only when a
+      # clean build here gives the same files, so npm and git never differ.
+      - name: Built dist matches the committed dist
+        run: |
+          git status --porcelain -- dist
+          test -z "$(git status --porcelain -- dist)"
+
+      # Tests and build already ran above; skip prepublishOnly's second pass.
+      - run: npm publish --access public --ignore-scripts
