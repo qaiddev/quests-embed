@@ -100,7 +100,7 @@ The script runs on your page with your page's rights, so treat it like any other
 
 ```html
 <script
-  src="https://unpkg.com/@qaiddev/quests-embed@1.12.1/dist/embed.js"
+  src="https://unpkg.com/@qaiddev/quests-embed@1.12.2/dist/embed.js"
   integrity="sha384-SDgCadpjETz/FJLo7AvPQ4PODFGtBOxb5Q8ShkPn5lMAS54ET5SKXRYG5n6mdwdc"
   crossorigin="anonymous"
   defer
@@ -111,8 +111,8 @@ The script runs on your page with your page's rights, so treat it like any other
 ></script>
 ```
 
-- The `@1.12.1` pins the release. Without it unpkg serves the newest release, and a hash can never match for long.
-- `integrity` is the sha384 of `dist/embed.js` for that release. It is printed in each release's notes; to work it out yourself: `curl -s https://unpkg.com/@qaiddev/quests-embed@1.12.1/dist/embed.js | openssl dgst -sha384 -binary | openssl base64 -A`.
+- The `@1.12.2` pins the release. Without it unpkg serves the newest release, and a hash can never match for long.
+- `integrity` is the sha384 of `dist/embed.js` for that release. It is printed in each release's notes; to work it out yourself: `curl -s https://unpkg.com/@qaiddev/quests-embed@1.12.2/dist/embed.js | openssl dgst -sha384 -binary | openssl base64 -A`.
 - When the tag carries `integrity`, `embed.js` gives the bundle it loads (`qaid-quests.umd.cjs`) that file's own sha384, baked in when the release was built. Your one hash covers every byte of the embed's JavaScript: if either file on the CDN changes, the browser refuses to run it.
 - `crossorigin="anonymous"` is required for the browser to check a hash on a file from another origin.
 
@@ -121,7 +121,7 @@ The script runs on your page with your page's rights, so treat it like any other
 A policy that lets the embed work and nothing else from its side:
 
 ```
-script-src 'self' https://unpkg.com/@qaiddev/quests-embed@1.12.1/;
+script-src 'self' https://unpkg.com/@qaiddev/quests-embed@1.12.2/;
 style-src 'self' 'unsafe-inline';
 connect-src 'self' https://qaid.dev;
 img-src 'self' data: https:;
