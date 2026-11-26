@@ -22,7 +22,7 @@ import { QaidQuests } from '@qaiddev/quests-embed';
 
 new QaidQuests({
   endpoint: 'https://qaid.dev/api/responses',
-  apiKey: 'YOUR_API_KEY',
+  apiKey: 'QAID_PUB_your_key',
   configUrl: '/forms/intake.json',
   container: '#form',
 });
@@ -37,7 +37,7 @@ new QaidQuests({
   src="https://unpkg.com/@qaiddev/quests-embed/dist/embed.js"
   defer
   data-endpoint="https://qaid.dev/api/responses"
-  data-api-key="YOUR_API_KEY"
+  data-api-key="QAID_PUB_your_key"
   data-config-url="/forms/intake.json"
   data-container="#form"
 ></script>
@@ -68,7 +68,7 @@ For complex configurations or inline questionnaires, use a separate JSON config 
 <script type="application/json" data-quests-config>
 {
   "endpoint": "https://qaid.dev/api/responses",
-  "apiKey": "YOUR_API_KEY",
+  "apiKey": "QAID_PUB_your_key",
   "container": "#form",
   "questionnaire": {
     "title": "Tell us about your project",
@@ -100,19 +100,19 @@ The script runs on your page with your page's rights, so treat it like any other
 
 ```html
 <script
-  src="https://unpkg.com/@qaiddev/quests-embed@1.12.2/dist/embed.js"
-  integrity="sha384-SDgCadpjETz/FJLo7AvPQ4PODFGtBOxb5Q8ShkPn5lMAS54ET5SKXRYG5n6mdwdc"
+  src="https://unpkg.com/@qaiddev/quests-embed@1.13.0/dist/embed.js"
+  integrity="sha384-I3SmryJiXaaghF/6G4s4GlD7Bn+tsT4nEgbNLLQxVbTmHAVs7jGXSPn+XS1ScKbv"
   crossorigin="anonymous"
   defer
   data-endpoint="https://qaid.dev/api/responses"
-  data-api-key="YOUR_API_KEY"
+  data-api-key="QAID_PUB_your_key"
   data-config-url="https://qaid.dev/api/quests/QUEST_ID/definition"
   data-container="#form"
 ></script>
 ```
 
-- The `@1.12.2` pins the release. Without it unpkg serves the newest release, and a hash can never match for long.
-- `integrity` is the sha384 of `dist/embed.js` for that release. It is printed in each release's notes; to work it out yourself: `curl -s https://unpkg.com/@qaiddev/quests-embed@1.12.2/dist/embed.js | openssl dgst -sha384 -binary | openssl base64 -A`.
+- The `@1.13.0` pins the release. Without it unpkg serves the newest release, and a hash can never match for long.
+- `integrity` is the sha384 of `dist/embed.js` for that release. It is printed in each release's notes; to work it out yourself: `curl -s https://unpkg.com/@qaiddev/quests-embed@1.13.0/dist/embed.js | openssl dgst -sha384 -binary | openssl base64 -A`.
 - When the tag carries `integrity`, `embed.js` gives the bundle it loads (`qaid-quests.umd.cjs`) that file's own sha384, baked in when the release was built. Your one hash covers every byte of the embed's JavaScript: if either file on the CDN changes, the browser refuses to run it.
 - `crossorigin="anonymous"` is required for the browser to check a hash on a file from another origin.
 
@@ -121,7 +121,7 @@ The script runs on your page with your page's rights, so treat it like any other
 A policy that lets the embed work and nothing else from its side:
 
 ```
-script-src 'self' https://unpkg.com/@qaiddev/quests-embed@1.12.2/;
+script-src 'self' https://unpkg.com/@qaiddev/quests-embed@1.13.0/;
 style-src 'self' 'unsafe-inline';
 connect-src 'self' https://qaid.dev;
 img-src 'self' data: https:;
@@ -334,7 +334,7 @@ For programmatic embedding — e.g. launching a quest from another widget — th
 const quest = new QaidQuests({
   endpoint: 'https://qaid.dev/api/quests/responses',
   configUrl: 'https://qaid.dev/api/quests/<questId>/definition',
-  apiKey: 'YOUR_API_KEY',
+  apiKey: 'QAID_PUB_your_key',
   metadata: { feedbackId: 'clx…' },       // correlate this response server-side
   onComplete: (answers) => console.log('done', answers),
   onClose: () => { /* drop your reference */ },
@@ -498,7 +498,7 @@ The embed talks to your endpoint in three steps:
 
 ```json
 {
-  "apiKey": "YOUR_API_KEY",
+  "apiKey": "QAID_PUB_your_key",
   "questId": "intake-2026",
   "pageUrl": "https://example.com/contact",
   "visitorId": "a1b2c3d4-...",

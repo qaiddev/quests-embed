@@ -8,6 +8,7 @@ import type {
   ResolvedQuestsConfig,
   ResolvedQuestTheme,
 } from "./types";
+import { guardSecretKeys } from "./secret-key-guard";
 import { fetchJson } from "./prefetch";
 import { applyCssVars, buildCssVars, getEmbedStyles, getPresetCss } from "./styles";
 import {
@@ -203,6 +204,8 @@ export class QaidQuests {
   private closed = false;
 
   constructor(config: QuestsConfig) {
+    // A platform secret in a public config is dropped, logged and reported.
+    config = guardSecretKeys(config, "quests-embed");
     this.config = {
       endpoint: config.endpoint,
       apiKey: config.apiKey ?? "",
