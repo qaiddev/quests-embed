@@ -99,6 +99,21 @@ describe("sanitizeThemeCss", () => {
     expect(css).toBe(":host {\n  color: blue;\n}");
   });
 
+  // The cases above sit in a :host rule, whose property allowlist drops most
+  // of them first. In an ordinary rule only the declaration check stands.
+  it.each([
+    "behavior: url(x.htc)",
+    "-ms-behavior: url(x.htc)",
+    "width: expression(alert(1))",
+    "position: fixed",
+    "position: sticky",
+  ])(
+    "drops `%s` from an ordinary rule",
+    (decl) => {
+      expect(sanitizeThemeCss(`.qaid-q-card { ${decl}; color: blue }`)).toBe(".qaid-q-card {\n  color: blue;\n}");
+    },
+  );
+
   it("keeps url(#id), a same-document reference", () => {
     expect(sanitizeThemeCss(".x { filter: url(#blur) }")).toContain("filter: url(#blur);");
   });

@@ -183,6 +183,66 @@ describe("single-tag quest loader (embed-loader.ts)", () => {
     expect(injected()).toHaveLength(0);
   });
 
+  it("skips inline scripts (no src) while looking for its own tag", async () => {
+    setCurrentScript(null);
+    addLoaderTag(EMBED_SRC, { "data-endpoint": "/r" });
+    const inline = document.createElement("script");
+    inline.textContent = "var x = 1;";
+    document.head.appendChild(inline);
+    await runLoader();
+    expect(injected()[0].src).toBe(BUNDLE_SRC);
+  });
+
+  it("does nothing outside a browser, where there is no document", async () => {
+    setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r" }));
+    vi.stubGlobal("document", undefined);
+    try {
+      await runLoader();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+    expect(injected()).toHaveLength(0);
+  });
+
+  it("appends to <html> when the document has no <head>", async () => {
+    setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r" }));
+    Object.defineProperty(document, "head", { value: null, configurable: true });
+    try {
+      await runLoader();
+    } finally {
+      delete (document as unknown as Record<string, unknown>).head;
+    }
+    const [entry] = injected();
+    expect(entry.parentNode).toBe(document.documentElement);
+    entry.remove();
+  });
+
+  it("fetches a URL once when the page already asked for it", async () => {
+    const fetchMock = vi.fn(() => Promise.resolve(new Response("{}")));
+    vi.stubGlobal("fetch", fetchMock);
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+    setCurrentScript(
+      addLoaderTag(EMBED_SRC, { "data-endpoint": "/r", "data-config-url": "/same.json", "data-theme-url": "/same.json" }),
+    );
+    await runLoader();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+  });
+
+  it("swallows a failed prefetch nobody picked up", async () => {
+    let reject!: (e: Error) => void;
+    const request = new Promise<Response>((_res, rej) => (reject = rej));
+    const catchSpy = vi.spyOn(request, "catch");
+    vi.stubGlobal("fetch", vi.fn(() => request));
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+    setCurrentScript(addLoaderTag(EMBED_SRC, { "data-endpoint": "/r", "data-config-url": "/q.json" }));
+    await runLoader();
+    expect(catchSpy).toHaveBeenCalledTimes(1);
+    reject(new Error("offline"));
+    await expect(catchSpy.mock.results[0].value).resolves.toBeUndefined();
+    delete (window as unknown as Record<string, unknown>).__qaidQuestsPrefetch;
+  });
+
   describe("pinned with integrity", () => {
     const UMD_HASH = "sha384-umdhashumdhashumdhashumdhashumdhashumdhashumdhashumdhashumdhash";
 
